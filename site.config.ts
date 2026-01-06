@@ -1,21 +1,21 @@
 import siteConfig from "./src/utils/config";
 
 const config = siteConfig({
-	title: "ThoughtLite",
-	prologue: "If you need a website\nthat loads fast and has great SEO, then Astro is for you.",
+	title: "Dylearning",
+	prologue: "Becoming a professional.\nMore responsibility, higher standards.",
 	author: {
-		name: "Your Name",
-		email: "hi@your.mail",
-		link: "https://your.website"
+		name: "dylan-jung",
+		email: "dylanjungko@gmail.com",
+		link: "https://blog.dylearning.com"
 	},
-	description: "A modern Astro theme focused on content creation.",
+	description: "Dylan Jung Blog",
 	copyright: {
-		type: "CC BY-NC-ND 4.0",
-		year: "2025"
+		type: "CC BY 4.0",
+		year: "2026"
 	},
 	i18n: {
-		locales: ["en", "zh-cn", "ja"],
-		defaultLocale: "en"
+		locales: ["ko", "en"],
+		defaultLocale: "ko"
 	},
 	feed: {
 		section: "*",

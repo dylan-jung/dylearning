@@ -1,0 +1,56 @@
+about:
+  introduction: 소개
+  linkroll: 링크
+feed:
+  address: 구독 주소
+  copy:
+    failure: 복사에 실패했습니다. 구독 주소를 수동으로 복사해 주세요.
+    name: 복사
+    success: 구독 주소를 클립보드에 복사했습니다!
+  description: 이 페이지는 Atom 형식의 기사 구독 소스입니다.
+  last: 최종 업데이트
+  usage: 지원되는 리더에서 현재 주소를 추가하여 이 콘텐츠를 구독하고, 최신 기사 업데이트를 적시에 받아볼 수 있습니다.
+  visit: 이것은 피드 페이지입니다. 전체 웹사이트 경험을 위해 {title}를 방문해 주세요.
+home:
+  heatmap:
+    empty: 없음
+    jotting:
+      other: 짧은글 {count}편
+    note:
+      other: 문서 {count}편
+  latest: 최신 글
+  prefaces: 서문 기록
+jotting:
+  empty: 짧은글이 없습니다
+  tag: 태그
+language: 한국어
+navigation:
+  about: 정보
+  home: 홈
+  jotting: 짧은글
+  note: 문서
+  policy: 약관
+  preface: 서문
+  subscription: 구독
+note:
+  contents: 목차
+  empty: 문서가 없습니다
+  series: 시리즈
+  tag: 태그
+  top: 맨 위로
+read:
+  words:
+    other: '{count}자'
+sensitive:
+  back: 목록으로 돌아가기
+  continue: 확인했습니다. 계속 읽겠습니다
+  description: 이 글에는 성적, 폭력적, 유혈적이거나 감정적으로 자극적인 내용이 포함되어 있을 수 있습니다.
+  feed: |-
+    <p>이 글에는 성적, 폭력적, 유혈적이거나 감정적으로 자극적인 내용이 포함되어 있을 수 있습니다.</p>
+    <p>읽으려면 <a href="{link}">원본 링크</a>를 방문해 주세요.</p>
+  icon: 민감한 콘텐츠 포함
+  title: 콘텐츠 경고
+  warning: 이 글이 당신의 정신 건강에 영향을 줄 수 있다고 느껴진다면 즉시 페이지를 떠나 주세요!
+statistics:
+  other: '{count}자를 작성함'
+theme: '테마: ThoughtLite'

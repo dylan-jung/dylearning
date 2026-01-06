@@ -5,6 +5,7 @@
 }
 
 :root {
+	--font-norican: "Norican", cursive;
 	--primary-color: #2a2a28;
 	--secondary-color: #50504d;
 	--remark-color: #757575;
@@ -48,12 +49,8 @@
 }
 
 /* Language-specific fonts */
-:lang(zh-cn) {
-	--font-serif: var(--font-noto-serif-sc);
-}
-
-:lang(ja) {
-	--font-serif: var(--font-noto-serif-jp);
+:lang(ko) {
+	--font-serif: var(--font-noto-serif-kr);
 }
 
 [data-theme="dark"] .astro-code,
@@ -235,6 +232,7 @@
 
 	--font-serif: var(--font-noto-serif);
 	--font-mono: var(--font-maple-mono-nf-cn);
+	--font-norican: var(--font-norican);
 	--font-cursive: var(--font-playwrite-mx), var(--font-the-peak-font-plus);
 
 	@keyframes shaky {

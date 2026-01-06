@@ -1,9 +1,9 @@
 ---
+import Icon from "$components/Icon.svelte";
+import { monolocale } from "$config";
+import i18nit from "$i18n";
 import { getCollection, getEntry, render } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { monolocale } from "$config";
-import Icon from "$components/Icon.svelte";
-import i18nit from "$i18n";
 
 let { locale, author, copyright } = Astro.props;
 
@@ -122,10 +122,7 @@ const policy = await getEntry("information", `${localePrefix}policy`);
 		}
 	</div>
 	<code class="flex items-center gap-2.5">
-		<p>Powered by</p>
-		<a href="https://astro.build/" aria-label="Astro" target="_blank" class="inline-flex"><Icon name="simple-icons--astro" /></a>
-		<a href="https://svelte.dev/" aria-label="Svelte" target="_blank" class="inline-flex"><Icon name="simple-icons--svelte" /></a>
-		<span>·</span>
-		<a href="https://github.com/tuyuritio/astro-theme-thought-lite" aria-label="Theme" target="_blank" class="inline-flex"><Icon name="simple-icons--github" title={t("theme")} /></a>
+		<a href="https://github.com/dylan-jung" aria-label="Github" target="_blank" class="inline-flex"><Icon name="simple-icons--github" title="github" /></a>
+		<a href="https://www.linkedin.com/in/dylan-jung-ko" aria-label="Linkedin" target="_blank" class="inline-flex"><Icon name="simple-icons--linkedin" title="linkedin" /></a>
 	</code>
 </footer>

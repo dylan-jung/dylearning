@@ -17,8 +17,8 @@ const title = config.title;
 ---
 
 <script>
-	import zoom from "medium-zoom/dist/pure";
 	import Time from "$utils/time";
+import zoom from "medium-zoom/dist/pure";
 
 	// Set the `title` attribute of all `<time>` elements to localized date-time strings
 	const localizeTimes = () => document.querySelectorAll("time").forEach(time => time.dateTime && (time.title = Time.locale(time.dateTime, navigator.language, Time.userTimezone)));
@@ -44,7 +44,7 @@ const title = config.title;
 	<div class="flex flex-col mx-auto *:*:px-3 w-[min(100%,1000px)]">
 		<div id="body" class="flex flex-col min-h-screen">
 			<header class="sticky top-0 flex items-center justify-between pt-3 pb-1 mb-4 bg-background z-4 sm:static sm:mb-12">
-				<a href={getRelativeLocaleUrl(locale)} class="text-lg sm:text-2xl font-bold">{title}</a>
+				<a href={getRelativeLocaleUrl(locale)} class="text-lg sm:text-2xl font-bold font-norican">{title}</a>
 				<Navigator {locale} {route} client:load />
 			</header>
 

@@ -7,8 +7,7 @@ const CACHE_DIR = path.resolve(process.cwd(), "node_modules", ".cache", "og-font
 // Locale-specific font URLs
 const fonts: Record<string, string> = {
 	en: "https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io/fonts/NotoSerif/unhinted/otf/NotoSerif-Bold.otf",
-	"zh-cn": "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/release/OTF/SimplifiedChinese/SourceHanSerifSC-Bold.otf",
-	ja: "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/release/OTF/Japanese/SourceHanSerif-Bold.otf"
+	ko: "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/release/OTF/Japanese/SourceHanSerif-Bold.otf"
 };
 
 // Ensure cache directory exists
