@@ -5,6 +5,7 @@ import svelte from "@astrojs/svelte";
 import yaml from "@rollup/plugin-yaml";
 import swup from "@swup/astro";
 import tailwindcss from "@tailwindcss/vite";
+import mermaid from "astro-mermaid";
 import { defineConfig, fontProviders } from "astro/config";
 import githubLight from "shiki/themes/github-light.mjs";
 
@@ -109,6 +110,10 @@ export default defineConfig({
 	integrations: [
 		svelte(),
 		mdx(),
+		mermaid({
+			theme: "forest",
+			autoTheme: true
+		}),
 		sitemap({
 			filter: page => !page.includes("/resume")
 		}),
