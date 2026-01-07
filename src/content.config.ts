@@ -60,4 +60,76 @@ const information = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx,yaml}", base: "./src/content/information" })
 });
 
-export const collections = { note, jotting, preface, information };
+/**
+ * Resume collection configuration
+ * Represents different versions of the resume
+ */
+const resume = defineCollection({
+	loader: glob({ pattern: "**/*.json", base: "./src/content/resume" }),
+	schema: z.object({
+		header: z.object({
+			name: z.string(),
+			role: z.string(),
+			email: z.string(),
+			phone: z.string(),
+			website: z.string(),
+			github: z.string(),
+			linkedin: z.string()
+		}),
+		introLines: z.array(z.string()),
+		experience: z.array(
+			z.object({
+				company: z.string(),
+				role: z.string(),
+				date: z.string(),
+				intro: z.string().optional(),
+				activities: z.array(z.string()).optional(),
+				techStack: z
+					.array(
+						z.object({
+							name: z.string(),
+							description: z.string()
+						})
+					)
+					.optional(),
+				relatedLinks: z
+					.array(
+						z.object({
+							text: z.string(),
+							url: z.string()
+						})
+					)
+					.optional()
+			})
+		),
+		education: z.array(
+			z.object({
+				school: z.string(),
+				degree: z.string(),
+				date: z.string()
+			})
+		),
+		activities_list: z
+			.array(
+				z.object({
+					name: z.string(),
+					role: z.string(),
+					date: z.string(),
+					description: z.string()
+				})
+			)
+			.optional(),
+		awards: z
+			.array(
+				z.object({
+					name: z.string(),
+					role: z.string(),
+					date: z.string()
+				})
+			)
+			.optional(),
+		certifications: z.array(z.string()).optional()
+	})
+});
+
+export const collections = { note, jotting, preface, information, resume };

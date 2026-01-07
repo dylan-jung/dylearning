@@ -1,5 +1,5 @@
 ---
-date: 2025-01-06
+timestamp: 2025-01-06
 publish: true
 tags:
   - book

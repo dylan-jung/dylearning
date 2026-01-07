@@ -109,7 +109,9 @@ export default defineConfig({
 	integrations: [
 		svelte(),
 		mdx(),
-		sitemap(),
+		sitemap({
+			filter: page => !page.includes("/resume")
+		}),
 		swup({
 			globalInstance: true,
 			preload: false,

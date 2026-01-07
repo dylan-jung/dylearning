@@ -1,0 +1,66 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Resume" } = Astro.props;
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <!-- Use Google Fonts for a clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style is:global>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gray-100 */
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            @page {
+                margin: 10mm; /* Reduced logs from 20mm to fit more */
+                size: auto;
+            }
+            .no-print {
+                display: none !important;
+            }
+            /* Hide URL printing in hrefs */
+            a[href]:after {
+                content: none !important;
+            }
+            /* Ensure text contrast */
+            * {
+                color: black !important;
+                border-color: #e5e7eb !important; /* gray-200 */
+            }
+            /* Allow background colors for headers/tags */
+            .bg-gray-100 {
+                background-color: #f3f4f6 !important;
+            }
+            .bg-gray-50 {
+                background-color: #f9fafb !important;
+            }
+        }
+    </style>
+  </head>
+  <body class="text-gray-900 leading-relaxed antialiased">
+    <main class="max-w-[210mm] mx-auto bg-white min-h-screen p-8 md:p-12 print:p-0 shadow-lg print:shadow-none my-8 print:my-0">
+        <slot />
+    </main>
+  </body>
+</html>

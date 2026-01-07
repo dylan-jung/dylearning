@@ -1,0 +1,91 @@
+---
+import { getEntry } from "astro:content";
+import ResumeLayout from "../../layouts/ResumeLayout.astro";
+import ResumeHeader from "../../components/resume/ResumeHeader.astro";
+import ResumeExperienceItem from "../../components/resume/ResumeExperienceItem.astro";
+import ResumeItem from "../../components/resume/ResumeItem.astro";
+import ResumeSection from "../../components/resume/ResumeSection.astro";
+import ResumeSkills from "../../components/resume/ResumeSkills.astro";
+
+// Fetch default resume
+const entry = await getEntry("resume", "default");
+if (!entry) {
+	throw new Error("Default resume not found");
+}
+const resumeData = entry.data;
+---
+
+<ResumeLayout title={`${resumeData.header.name} - Resume`} description={resumeData.introLines?.join(" ") || "Resume"}>
+  <div class="flex justify-end mb-4 no-print">
+    <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
+      Print to PDF
+    </button>
+  </div>
+  
+  <ResumeHeader {...resumeData.header} />
+
+  {resumeData.introLines && (
+    <ResumeSection title="Introduction">
+        <ul class="list-disc list-outside ml-5 space-y-2 text-gray-700 leading-relaxed font-medium">
+        {resumeData.introLines.map(line => <li>{line}</li>)}
+        </ul>
+    </ResumeSection>
+  )}
+
+  <ResumeSection title="Education">
+    {resumeData.education.map((edu) => (
+      <ResumeItem
+        title={edu.school}
+        subtitle={edu.degree}
+        date={edu.date}
+      />
+    ))}
+  </ResumeSection>
+
+  <ResumeSection title="Experience">
+    {resumeData.experience.map((exp) => (
+      <ResumeExperienceItem
+        company={exp.company}
+        role={exp.role}
+        date={exp.date}
+        intro={exp.intro}
+        activities={exp.activities}
+        techStack={exp.techStack}
+        relatedLinks={exp.relatedLinks}
+      />
+    ))}
+  </ResumeSection>
+
+  {resumeData.activities_list && (
+    <ResumeSection title="Activities">
+        {resumeData.activities_list.map((act) => (
+        <ResumeItem
+            title={act.name}
+            subtitle={act.role}
+            date={act.date}
+        >
+            <p class="mt-1 text-gray-700" set:html={act.description}></p>
+        </ResumeItem>
+        ))}
+    </ResumeSection>
+  )}
+
+  {resumeData.awards && (
+    <ResumeSection title="Awards">
+        {resumeData.awards.map((award) => (
+        <ResumeItem
+            title={award.name}
+            subtitle={award.role}
+            date={award.date}
+        />
+        ))}
+    </ResumeSection>
+  )}
+  
+  {resumeData.certifications && (
+    <ResumeSection title="Certifications">
+        <ResumeSkills items={resumeData.certifications} />
+    </ResumeSection>
+  )}
+
+</ResumeLayout>

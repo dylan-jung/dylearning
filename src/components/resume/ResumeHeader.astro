@@ -1,0 +1,28 @@
+---
+interface Props {
+	name: string;
+	role: string;
+	email: string;
+	website?: string;
+	github?: string;
+	linkedin?: string;
+	phone?: string;
+}
+
+const { name, role, email, website, github, linkedin, phone } = Astro.props;
+---
+<header class="mb-8 border-b border-gray-200 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+  <div>
+    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{name}</h1>
+    <p class="text-xl text-gray-600 font-medium">{role}</p>
+  </div>
+  <div class="text-sm text-gray-600 flex flex-col items-start md:items-end gap-1">
+    {phone && <a href={`tel:${phone}`} class="hover:text-gray-900 transition-colors">{phone}</a>}
+    <a href={`mailto:${email}`} class="hover:text-gray-900 transition-colors">{email}</a>
+    {website && <a href={website} target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 transition-colors">{website.replace(/^https?:\/\//, '')}</a>}
+    <div class="flex gap-3 mt-1 no-print">
+        {github && <a href={github} target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 font-medium">GitHub</a>}
+        {linkedin && <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 font-medium">LinkedIn</a>}
+    </div>
+  </div>
+</header>
