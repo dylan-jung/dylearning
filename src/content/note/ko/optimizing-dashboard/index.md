@@ -1,8 +1,8 @@
 ---
-title: Designing a dashboard
+title: Optimizing Dashboard
 timestamp: 2026-01-07 02:56:32+09:00
 toc: true
-draft: true
+draft: false
 tags:
   - learn/design
   - tech/backend

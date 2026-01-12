@@ -9,70 +9,218 @@
 		"linkedin": "https://www.linkedin.com/in/dylan-jung-ko/"
 	},
 	"introLines": [
-		"운영 비용, 구현 난이도, 사용자 경험을 함께 고려하며 현실적인 최적해를 도출하는 문제 해결 능력",
-		"서비스 UX를 해치지 않으면서 개발자 경험(DX)까지 고려한, 협업과 유지보수가 용이한 설계 지향"
+		"본인이 작성한 코드에 대한 기술적 의사결정과 결과에 책임지는 개발자입니다.",
+		"설계 복잡도와 사용자 경험를 입체적으로 고려하여, 현실적 최적해를 찾는 설계를 지향합니다."
+	],
+	"projects": [
+		{
+			"company": "Attenz",
+			"role": "개인 프로젝트",
+			"date": "2024.12 ~ 2025.05",
+			"intro": "자연어로 영상 편집을 지시하면, 긴 비디오를 자동으로 분석·편집해주는 AI 기반 영상 편집 사이드 프로젝트. 컨텍스트 윈도우 한계와 대규모 영상 임베딩으로 인한 인덱싱 비용 문제를 해결하기 위해 에이전트 아키텍처와 고신뢰성 비동기 파이프라인 설계를 중심으로 개발함.",
+			"activities": [
+				{
+					"summary": "주요활동 1. LangGraph 기반 자동 편집 에이전트 설계",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "긴 비디오 전체를 그대로 MLLM 컨텍스트에 입력할 경우 **컨텍스트 윈도우 한계**와 **토큰 비용 급증** 문제가 발생했으며, 비디오를 구조적으로 이해하지 못해 **편집 정확도** 또한 낮아지는 한계가 있었음."
+						},
+						{
+							"label": "솔루션",
+							"content": "영상·오디오를 장면 단위로 분해해 **시멘틱 서치 인덱스**를 구성하고, **LangGraph 기반 ReAct(Reasoning-Acting) Agent**가 **Retrieval 및 Editing Tool**을 문맥에 따라 자동 선택·조합하도록 아키텍처를 재설계함. 에이전트가 필요한 Scene만 Top-K로 검색해 **핵심 구간만 LLM에 전달**하는 구조를 확립함."
+						},
+						{
+							"label": "결과",
+							"content": "**최소 컨텍스트로 최대 정보 밀도**를 확보하는 편집 구조를 구현해 **평균 컨텍스트 토큰 사용량을 70% 이상 절감**했으며, 긴 영상에서도 안정적으로 **자연어 기반 자동 편집**이 가능한 에이전트 아키텍처를 구축함."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 2. 고신뢰성 비동기 인덱싱 시스템 설계",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "영상 인덱싱은 수 분이 소요되는 **고비용 작업**으로, **동기 API 호출 구조**에서는 **장시간 대기, 타임아웃, 재시도 실패**가 빈번하게 발생하는 구조적 한계가 있었음."
+						},
+						{
+							"label": "솔루션",
+							"content": "인덱싱 트리거를 클라이언트가 아닌 **서버 측 비동기 워커**가 책임지도록 **MongoDB 기반 Transactional Outbox + Polling 아키텍처**를 도입함. **find_one_and_update 기반 Atomic Locking**으로 다중 워커 간 중복 실행을 방지하고, **semaphore를 활용한 Application-level Throttling**으로 리소스 과부하 없이 병렬 처리를 안정화함."
+						},
+						{
+							"label": "결과",
+							"content": "업로드된 모든 영상이 메시지 유실이나 중복 실행 없이 **정확히 1회 처리**되도록 보장하여 워커 장애·중복 실행으로 인한 **인덱싱 실패율 0%**를 달성함."
+						}
+					]
+				}
+			],
+			"techStack": [
+				{
+					"name": "LangGraph",
+					"description": "ReAct 패턴 기반 자동 편집 에이전트 설계 및 상태 전이 관리"
+				},
+				{
+					"name": "OpenAI API",
+					"description": "자연어 편집 지시 해석 및 장면 이해를 위한 LLM 활용"
+				},
+				{
+					"name": "FastAPI",
+					"description": "에이전트 실행 및 비동기 인덱싱 파이프라인을 위한 서버 구현"
+				},
+				{
+					"name": "Faiss",
+					"description": "장면 단위 시멘틱 서치를 위한 고속 벡터 인덱스 구성"
+				},
+				{
+					"name": "MongoDB",
+					"description": "Transactional Outbox 패턴을 적용한 비동기 작업 상태 관리"
+				},
+				{
+					"name": "Whisper",
+					"description": "영상 오디오 트랜스크립션 및 장면 의미 분석"
+				},
+				{
+					"name": "Python",
+					"description": "에이전트 로직, 인덱싱 파이프라인, 비동기 워커 구현"
+				}
+			],
+			"relatedLinks": [
+				{
+					"text": "GitHub",
+					"url": "https://github.com/dylan-jung/video-edit"
+				}
+			]
+		}
 	],
 	"experience": [
 		{
-			"company": "Cigro (씨그로)",
+			"company": "씨그로(주)",
 			"role": "데이터 엔지니어 & 서버 개발자",
 			"date": "2024.05 ~ 2024.09",
-			"intro": "이커머스 셀러들은 다양한 판매 채널과 광고 채널을 운영하여 자신의 상품을 판매함.(판매채널: 네이버 스마트스토어, 쿠팡, cafe24 등 / 광고채널: 구글 Ads, 메타 Ads 등)\n셀러들은 이렇게 흩어져 있는 모든 판매채널과 광고채널의 총 판매 실적, 광고 실적을 한 눈에 확인하고 싶어함 (핵심지표: Blended ROAS).\n따라서 각 채널별 대규모 크롤링 파이프라인 운영(50+ 채널, 하루 500+ 크롤링 job) 및 B2B 대시보드 서비스를 운영하여 데이터를 한 곳에 모으고 분석할 수 있는 대시보드 서비스 운영.",
+			"intro": "이커머스 셀러들이 다수의 판매·광고 채널(네이버 스마트스토어, 쿠팡, Cafe24 / Google Ads, Meta Ads 등)에 분산된 데이터를 한 곳에서 분석할 수 있도록, **각 채널별 대규모 크롤링 파이프라인 운영(50+ 채널, 하루 500+ 크롤링 job)** 및 **B2B 대시보드 서비스**를 운영하여 데이터를 한 곳에 모으고 분석할 수 있는 대시보드 서비스 운영.",
 			"activities": [
-				"<strong>주요활동 1. 대시보드 판매·광고 집계 조회 p99 10s → <1s 개선 (Rollup Table 기반 캐싱/증분 갱신)</strong>\n        <ul class=\"list-disc list-inside ml-2 mt-2 space-y-1\">\n          <li><strong>배경 및 원인:</strong> 특정 고객사의 판매 데이터 폭증(일간 10만+). 주간/월간 집계시 실시간 Group By 집계가 병목이 되어 p99 지연시간 10초 이상 발생. CS 문의 및 이탈 위기.</li>\n          <li><strong>솔루션 검토:</strong> Materialized View(갱신 비용 문제), OLAP(운영 복잡도 및 수기 데이터 정합성 문제) 배제. <strong>Rollup Table + 비동기 증분 갱신</strong> 방식 채택.</li>\n          <li><strong>결과:</strong> 조회 속도 1초 미만으로 단축, 대형 고객사 이탈 방지, 추가 인프라 비용 없이 수익성 유지.</li>\n        </ul>",
-				"<strong>주요활동 2. Kubernetes 기반 대규모 크롤링 인프라 장애 대응 및 안정화</strong>\n        <ul class=\"list-disc list-inside ml-2 mt-2 space-y-1\">\n          <li><strong>배경 및 원인:</strong> 특정 채널 크롤링 Job의 메모리 급증으로 인한 OOMKilled 및 무한 재시도로 클러스터 자원 고갈, 전면 중단 장애 발생.</li>\n          <li><strong>솔루션:</strong> Headless Browser 렌더링 비활성화 및 메모리 Request/Limit 재산정. Loki+Grafana 기반 로그/메트릭 모니터링 및 알림 체계 구축.</li>\n          <li><strong>결과:</strong> OOM 기반 장애 월 20+회에서 0회로 감소. 수동 확인에서 알림 기반 즉시 인지 체제로 전환하여 Observability 개선.</li>\n        </ul>"
+				{
+					"summary": "주요활동 1. 대시보드 판매·광고 집계 조회 p99 10s → <1s 개선 (Aggregate Table 기반 캐싱/증분 갱신)",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "특정 고객사의 판매 데이터가 **일간 10만 건 이상**으로 급증하면서, 대시보드에서 주간·월간 판매/광고 집계 조회 시 실시간 **Group By & Aggregation 기반 집계 쿼리**가 병목이 되어 p99 지연 시간이 **10초 이상 발생함.** 실제 고객 CS 문의가 증가하며 **이탈**로 이어질 수 있는 비즈니스 크리티컬 상황이었음."
+						},
+						{
+							"label": "솔루션 검토",
+							"content": "다양한 성능 개선 방안을 비교·검토함. Materialized View는 **refresh 비용이 새로운 병목**이 될 가능성이 있어 제외함. OLAP 도입은 **운영 복잡도가 높고** 사용자 값 수정 요청에 비용이 커 배제함. [자세한 솔루션 선택 과정 ↗](https://github.com/dylan-jung)"
+						},
+						{
+							"label": "솔루션 구현",
+							"content": "일 단위로 사전 집계된 **Aggregate Table을 별도로 구축**하고, 크롤링 완료 시점 및 사용자 수기 입력 변경 시 해당 기간 아이템만 **비동기적으로 재계산**하는 증분 갱신 로직을 구현함. 이를 통해 실시간 Group By 기반 집계 쿼리를 제거하고, 대시보드 조회 경로를 단순화함."
+						},
+						{
+							"label": "결과",
+							"content": "대시보드 집계 조회 p99 지연 시간을 10초 이상에서 1초 미만으로 단축함. 성능 이슈로 **이탈 위기에 있던 2건의 대형 고객사를 유지**했으며, OLAP 등 추가 인프라 도입 없이도 서비스 안정성과 수익성을 동시에 확보함."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 2. Kubernetes 기반 대규모 ETL 인프라 장애 대응 및 안정화",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "Kubernetes 기반 대규모 ETL 파이프라인에서 특정 채널의 Job들이 OOMKilled로 실패한 뒤 무한 재시도되어 클러스터의 리소스를 고갈시켜, 전체 파이프라인이 중단되는 장애가 발생함. 당일 데이터 수집이 불가능해져 고객이 최신 데이터를 확인할 수 없는 치명적인 서비스 장애로 이어지는 상황."
+						},
+						{
+							"label": "대응",
+							"content": "문제가 된 Job이 무한 재생성되지 않도록 **restartPolicy를 수정하여 장애 확산을 즉시 차단**한 후 수동 파이프라인 수행. 이후 크롤링 파이프라인의 구조적 안정성이 비즈니스적으로 최우선 과제라고 판단하여 파이프라인 고도화를 제안함."
+						},
+						{
+							"label": "솔루션 1: 메모리 최적화",
+							"content": "\n1. cgroup 메모리 사용량 계측을 통해 컨테이너 memory request/limit를 재산정\n2. Headless Browser의 이미지 렌더링을 비활성화"
+						},
+						{
+							"label": "솔루션 2: Observability 개선",
+							"content": "기존에는 로그 부재로 장애 원인 분석이 어려운 상황이었으나, **Loki + Grafana 기반 Observability 체계를 구축**하여 OOM 발생 로그를 수집함. 이상 징후 발생 시 Grafana 알림을 이메일로 연동하여 장애를 즉시 인지할 수 있는 체계를 구축함."
+						},
+						{
+							"label": "결과",
+							"content": "OOM 기반 장애를 월 20+회 → **0회**로 제거하고, 수동 확인 중심의 장애 인지를 **알림 기반 인지 체계**로 전환함. Observability를 높여 **장애 대응 및 디버깅 효율을 대폭 개선**함."
+						}
+					]
+				}
 			],
 			"techStack": [
 				{
 					"name": "Postgres",
-					"description": "대시보드 메인 DB 및 Rollup Table 기반 집계 데이터 관리"
+					"description": "대시보드 메인 DB 및 Aggregate Table 기반 집계 데이터 관리"
 				},
 				{
 					"name": "FastAPI",
-					"description": "비동기 처리에 특화된 백엔드 API 서버 개발"
+					"description": "대시보드 및 내부 운영 도구를 위한 백엔드 API 서버를 구현"
 				},
 				{
 					"name": "SQLAlchemy",
-					"description": "ORM을 활용한 데이터베이스 모델링 및 쿼리 최적화"
+					"description": "ORM을 활용해 PostgreSQL과의 데이터 접근 계층을 구성"
 				},
 				{
 					"name": "Prefect",
-					"description": "복잡한 크롤링 및 데이터 파이프라인 오케스트레이션 관리"
+					"description": "데이터 파이프라인 오케스트레이션 관리"
 				},
 				{
 					"name": "Kubernetes",
-					"description": "대규모 크롤링 Job의 컨테이너 오케스트레이션 및 리소스 관리"
+					"description": "대규모 Job의 컨테이너 오케스트레이션"
 				},
 				{
 					"name": "Loki/Grafana",
-					"description": "로그 수집 및 시각화를 통한 모니터링/알림 시스템 구축"
+					"description": "Loki를 활용해 Job의 로그를 중앙 수집, Grafana를 통해 메트릭과 로그를 시각화 및 알림을 설정"
 				}
 			]
 		},
 		{
-			"company": "모인나 (리베이스)",
-			"role": "서버 개발 (Co-founder)",
+			"company": "리베이스(모인나 서비스)",
+			"role": "서버 개발 (Founder)",
 			"date": "2023.11 ~ 2024.02",
-			"intro": "마케터들이 아이디어와 인사이트를 직관적으로 찾을 수 있는 텍스트-이미지 검색 툴.\n퍼포먼스 마케터들의 레퍼런스 수집 비효율 문제를 해결하기 위해 흩어져 있는 광고 이미지를 한 곳에 모아 시각적 탐색 경험 제공.",
+			"intro": "퍼포먼스 마케터들이 여러 플랫폼을 오가며 광고 레퍼런스(이미지·카피)를 수작업으로 수집·정리해야 하는 비효율 문제를 해결하기 위해 제작한 텍스트-이미지 검색 툴.",
 			"activities": [
-				"<strong>주요활동. 검색 인프라 구조 재설계 및 성능 최적화</strong>\n        <ul class=\"list-disc list-inside ml-2 mt-2 space-y-1\">\n          <li><strong>배경 및 원인:</strong> 30K+ 이미지/텍스트 임베딩 검색 시 단일 DB(pgvector) CPU 병목으로 검색 속도 3초 이상 소요, 이탈률 21% 발생.</li>\n          <li><strong>솔루션:</strong> 검색 기능을 DB에서 분리하여 FastAPI + Faiss 기반 전용 검색 서버 구축 (IVFFLAT 인메모리 인덱스). Cloud Run을 이용한 수평 확장 구조 설계. Atomic Swap 방식의 인덱스 교체 구현.</li>\n          <li><strong>결과:</strong> 검색 속도 0.9초로 단축, 이탈률 6%로 개선. 비용 최적화된 임베딩 검색 시스템 구축.</li>\n        </ul>"
+				{
+					"summary": "주요활동. 검색 인프라 구조 재설계 및 성능 최적화",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "베타 운영 중 200+명의 사용자 환경에서 검색 응답 시간이 평균 3초 이상 소요되며 **검색 과정에서 21%의 사용자 이탈**이 발생함. 이미지+텍스트 30K+개 임베딩을 단일 DB(pgvector)에서 처리하는 구조로 인해 **CPU 병목**이 발생했고, 검색 트래픽이 다른 트랜잭션성 API 성능에도 영향을 주고 있었음."
+						},
+						{
+							"label": "솔루션 검토",
+							"content": "단일 DB 기반 pgvector 검색 구조는 처리량과 확장성에 한계가 있다고 판단함. 검색 워크로드가 다른 API 트래픽에 영향을 주지 않도록 **검색 기능을 완전히 분리**하는 방향으로 아키텍처 변경을 결정함. GPU 도입은 서비스 규모 대비 비용 부담이 커 **CPU 기반 수평 확장 구조를 유지**하는 전략을 선택. [자세한 고민 과정 ↗](https://blog.dylearning.com/note/designing-a-image-search-system-2)"
+						},
+						{
+							"label": "솔루션 구현",
+							"content": "검색 기능을 DB에서 분리하여 **FastAPI + Faiss 기반의 전용 검색 서버**를 구축하고, IVFFLAT 인덱스를 인메모리로 운영함. GCP Cloud Run을 활용해 컨테이너 단위 **수평 확장**이 가능하도록 설계했으며, 검색 요청 처리 중 인덱스 교체가 발생하는 상황을 고려해 인메모리 인덱스를 락 기반으로 관리하고 다운로드 완료 후 **Atomic Swap** 방식으로 교체하는 무중단 구조를 구현함."
+						},
+						{
+							"label": "결과",
+							"content": "검색 응답 속도를 평균 3.2초에서 **0.9초로 단축**하고, 검색 중 **이탈률을 21%에서 6%로 개선**함. GPU 도입 없이도 비용 효율적인 임베딩 검색 시스템을 구축했으며, 인덱스 추가 및 교체 과정에서도 **다운타임 0초**를 달성함."
+						}
+					]
+				}
 			],
 			"techStack": [
 				{
 					"name": "FastAPI",
-					"description": "Faiss 기반의 고성능 전용 검색 서버 구축"
+					"description": "서비스 API 및 검색 서버 구현"
 				},
 				{
 					"name": "Faiss",
-					"description": "고차원 벡터의 고속 유사도 검색 인덱스 구현 (IVFFLAT)"
+					"description": "고차원 이미지·텍스트 임베딩의 고속 유사도 검색을 위한 IVFFLAT 인메모리 인덱스 구성"
 				},
 				{
-					"name": "Supabase",
-					"description": "PostgreSQL 기반의 주 데이터 저장소 및 인증 처리"
+					"name": "Supabase (PostgreSQL)",
+					"description": "서비스 메인 데이터 저장소로 활용, 이미지·메타데이터 관리 및 pgvector 기반 초기 검색 구조 운영"
 				},
 				{
 					"name": "Cloud Run",
-					"description": "트래픽에 따라 유연하게 확장되는 서버리스 컨테이너 환경 구성"
+					"description": "검색 서버를 컨테이너 단위로 배포하여 트래픽에 따라 자동 수평 확장되는 서버리스 환경 구성"
+				},
+				{
+					"name": "Docker",
+					"description": "서버를 컨테이너화하여 배포 및 환경 일관성 확보"
 				}
 			],
 			"relatedLinks": [
@@ -83,42 +231,95 @@
 				{
 					"text": "GitHub",
 					"url": "https://github.com/dylan-jung/moinna-public"
-				},
-				{
-					"text": "아키텍쳐 변경 이유",
-					"url": "https://blog.dylearning.com/writings/Designing-a-Image-Search-System---2"
 				}
 			]
 		},
 		{
-			"company": "지미 (리베이스)",
-			"role": "서버 개발 (Co-founder)",
+			"company": "리베이스(지미 서비스)",
+			"role": "풀스택 개발 (Founder)",
 			"date": "2022.06 ~ 2023.11",
 			"intro": "환경 관련 미션을 수행하고 인증하면 포인트를 받는 환경 리워드 앱 (누적 다운로드 27,000+, DAU 1,000+).\n4인 팀 리딩 및 핵심 기능 기획/개발, 데이터 기반 의사결정으로 D+1 리텐션 30% 달성.",
 			"activities": [
-				"<strong>주요활동 1. Docker & Cloud Run 기반 무중단 배포 CI/CD 구축</strong>\n        <ul class=\"list-disc list-inside ml-2 mt-2 space-y-1\">\n          <li><strong>문제:</strong> 주 1일 배포 주기로 인한 배포 병목 및 수동 배포의 불안정성.</li>\n          <li><strong>솔루션:</strong> GitHub Actions - Artifact Registry - Cloud Run 연계 완전 자동화 파이프라인 구축. Docker Buildx 캐시 최적화.</li>\n          <li><strong>결과:</strong> 배포 시간 20분 → 3분 단축, 안정적인 수시 및 핫픽스 롤백 배포 환경 마련.</li>\n        </ul>",
-				"<strong>주요활동 2. 랜덤 페이지네이션 기능 개발</strong>\n        <ul class=\"list-disc list-inside ml-2 mt-2 space-y-1\">\n          <li><strong>문제:</strong> ORDER BY RAND() 사용 시 DB 풀스캔 부하.</li>\n          <li><strong>솔루션:</strong> 세션별 Seed 기반 Random 인덱스 생성 및 B+Tree 인덱스를 활용한 Range Scan 최적화.</li>\n          <li><strong>결과:</strong> D+1 리텐션 5.3%p 상승, 앱 체류 시간 2배 증대.</li>\n        </ul>"
+				{
+					"summary": "주요활동 1. NestJS 기반 계층형 아키텍처 도입을 통한 복잡한 도메인 로직 관리",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "미션 평가, 포인트 계산, 그룹 챌린지 등 gamification 도메인 로직이 빠르게 복잡해짐. 특히 미션 검증, 포인트 지급 등의 로직이 강하게 결합되면 테스트와 기능 확장이 어려워질 수 있는 구조적 문제가 존재했음."
+						},
+						{
+							"label": "솔루션",
+							"content": "**NestJS**를 도입해 Controller-Service-Repository로 역할을 명확히 분리한 **계층형 아키텍처**를 설계·구현함. 미션, 포인트, 그룹 챌린지 등 도메인 간 로직을 **하나의 트랜잭션 경계**로 묶어 처리해 **데이터 일관성을 보장**하고, 테스트와 확장이 용이한 구조로 재설계함. 또한 기능 단위(Module)로 구조를 분리해 **DI 기반 확장성**을 확보함."
+						},
+						{
+							"label": "결과",
+							"content": "**도메인 로직의 결합도**를 낮춘 구조로 전환해 **테스트와 유지보수**가 용이해졌으며, 기능 확장 시에도 안정적으로 대응할 수 있는 기반을 마련함."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 2. 랜덤 페이지네이션 기반 피드 기능 구현",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "피드 조회 시 ORDER BY RAND() 방식으로 인해 **DB 풀스캔**이 발생하며, 데이터 증가에 따라 **성능 저하**와 DB 부하 문제가 점차 심화되고 있었음."
+						},
+						{
+							"label": "솔루션 구현",
+							"content": "세션별 Seed를 기반으로 랜덤 인덱스를 생성하고, 무작위 Chunk 시작점을 계산하는 **랜덤 페이지네이션** 방식을 설계함. DB에서는 **B+ 인덱스**를 활용한 **Range Scan**으로 필요한 데이터만 조회하도록 구현해 랜덤성과 성능을 동시에 확보함."
+						},
+						{
+							"label": "결과",
+							"content": "매번 다른 피드 경험을 제공하면서도 **DB 부하를 최소화**하는 구조를 구현함. 그 결과 **D+1 리텐션을 25.3%에서 30.6%(+5.3%p)로 개선**했으며, 사용자 평균 앱 체류 시간도 3분에서 6분으로 증가함."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 3. Docker & Cloud Run 기반 무중단 배포 CI/CD 구축",
+					"details": [
+						{
+							"label": "문제",
+							"content": "애자일 팀의 **잦은 기능 업데이트**로 인해 수동 배포 과정에서 배포 지연과 **휴먼 에러가 반복적**으로 발생."
+						},
+						{
+							"label": "솔루션",
+							"content": "GitHub Actions-Artifact Registry-GCP Cloud Run을 연계한 **CI/CD 파이프라인**을 설계·구현하여, main 브랜치 코드 푸시 시 도커 이미지 빌드부터 저장, 배포까지 전 과정을 **자동화**함. **Docker Buildx**와 **GitHub Actions 캐시(mode=max)**를 적용해 중복 레이어 빌드를 제거하고 빌드 속도를 최적화함."
+						},
+						{
+							"label": "결과",
+							"content": "전체 배포 시간을 30분(수동)에서 **3분으로 90% 단축**했으며, **무중단 수시 배포**가 가능한 환경을 구축해 배포 속도와 서비스 안정성을 확보함."
+						}
+					]
+				}
 			],
 			"techStack": [
 				{
-					"name": "NestJS",
-					"description": "앱 내 많은 기능(많은 도메인)을 효율적으로 구현하기 위한 프레임워크"
+					"name": "TypeScript",
+					"description": "백엔드 서버 전반의 주요 개발 언어로 사용"
 				},
 				{
-					"name": "PlanetScale",
-					"description": "Vitess 기반의 스케일러블한 MySQL 호환 DB 운영"
-				},
-				{
-					"name": "Prisma",
-					"description": "Type-safe한 ORM을 통한 생산성 높은 DB 접근"
-				},
-				{
-					"name": "Docker/GCP",
-					"description": "컨테이너 기반 배포 및 서버리스 런타임 환경 구성"
+					"name": "Docker",
+					"description": "서버 애플리케이션 컨테이너화 및 Buildx 기반 멀티 스테이지 빌드로 배포 속도 최적화"
 				},
 				{
 					"name": "GitHub Actions",
-					"description": "CI/CD 파이프라인 구축을 통한 배포 자동화"
+					"description": "CI/CD 파이프라인 구성으로 코드 푸시부터 빌드·배포까지 자동화"
+				},
+				{
+					"name": "GCP Cloud Run",
+					"description": "서버리스 컨테이너 환경에서 무중단 배포 및 트래픽 분할 기반 카나리 배포 운영"
+				},
+				{
+					"name": "NestJS",
+					"description": "확장성과 유지보수를 고려한 백엔드 애플리케이션 아키텍처 구성"
+				},
+				{
+					"name": "PlanetScale (Vitess)",
+					"description": "수평 확장이 가능한 MySQL 기반 DB로, 인덱스 최적화 및 대규모 트래픽 대응"
+				},
+				{
+					"name": "Prisma",
+					"description": "타입 안정성을 보장하는 ORM을 활용해 DB 접근 로직 관리"
 				}
 			]
 		}
@@ -126,22 +327,40 @@
 	"education": [
 		{
 			"school": "University of Seoul (서울시립대학교)",
-			"degree": "B.S. in Computer Science (GPA: 4.12/4.5)",
+			"degree": "컴퓨터과학전공 (GPA: 4.12/4.5)",
 			"date": "2019.03 ~ 2026.08 (예정)"
 		}
 	],
 	"activities_list": [
 		{
+			"name": "오픈소스 기여 모임 10기",
+			"role": "기여자",
+			"date": "2026.01 ~ ",
+			"description": "Spring AI 기여 <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request ↗</a>"
+		},
+		{
 			"name": "시립대 최초 교내 해커톤 ‘플랑크톤’ 주최",
 			"role": "총괄 기획 및 운영",
 			"date": "2024.06 ~ 2024.11",
-			"description": "학교 내 최초 해커톤 기획, 60여 명 참가. <a href='https://www.youtube.com/watch?v=HaYcCNN_5_M' target='_blank' class='text-blue-600 hover:underline'>영상 링크</a>"
+			"description": "학교 내 최초 해커톤 기획, 60여 명 참가. <a href='https://www.youtube.com/watch?v=HaYcCNN_5_M' target='_blank' class='text-blue-600 hover:underline'>영상 ↗</a>"
+		},
+		{
+			"name": "서울과학기술대학교 예비창업패키지",
+			"role": "대표",
+			"date": "2023.03 ~ 2023.12",
+			"description": "초기 스타트업 프로젝트로 선정되어 정부 지원금 수령. 최우수 기업 및 지역사회 공헌 인정제 기업으로 선정."
+		},
+		{
+			"name": "한양대학교 캠퍼스타운 입주기업",
+			"role": "대표",
+			"date": "2023.06 ~ 2023.12",
+			"description": "창업팀 리베이스 선발되어 입주."
 		},
 		{
 			"name": "소프트웨어 마에스트로 13기",
 			"role": "팀 리더",
 			"date": "2022.04 ~ 2022.12",
-			"description": "기술 아키텍처 설계 및 팀 운영 총괄. 팀 전원 상위 8% 우수자 선정 및 해외 연수 수행. <a href='https://www.youtube.com/watch?v=v8bKdQOxdkE' target='_blank' class='text-blue-600 hover:underline'>영상 링크</a>"
+			"description": "기술 아키텍처 설계 및 팀 운영 총괄. 팀 전원 상위 8% 우수자 선정 및 해외 연수 수행. <a href='https://www.youtube.com/watch?v=v8bKdQOxdkE' target='_blank' class='text-blue-600 hover:underline'>영상 ↗</a>"
 		},
 		{
 			"name": "공군 사이버작전센터",
@@ -153,6 +372,11 @@
 	"awards": [
 		{
 			"name": "마이데이터 아이디어 공모전",
+			"role": "과학기술정보통신부 장관상",
+			"date": "2023.08"
+		},
+		{
+			"name": "소프트웨어 마에스트로 13기 우수자 선정",
 			"role": "과학기술정보통신부 장관상",
 			"date": "2023.08"
 		},

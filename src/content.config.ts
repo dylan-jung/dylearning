@@ -83,7 +83,21 @@ const resume = defineCollection({
 				role: z.string(),
 				date: z.string(),
 				intro: z.string().optional(),
-				activities: z.array(z.string()).optional(),
+				activities: z
+					.array(
+						z.object({
+							summary: z.string(),
+							details: z
+								.array(
+									z.object({
+										label: z.string().optional(),
+										content: z.string()
+									})
+								)
+								.optional()
+						})
+					)
+					.optional(),
 				techStack: z
 					.array(
 						z.object({
@@ -102,6 +116,47 @@ const resume = defineCollection({
 					.optional()
 			})
 		),
+		projects: z
+			.array(
+				z.object({
+					company: z.string(), // Project name or organization
+					role: z.string(),
+					date: z.string(),
+					intro: z.string().optional(),
+					activities: z
+						.array(
+							z.object({
+								summary: z.string(),
+								details: z
+									.array(
+										z.object({
+											label: z.string().optional(),
+											content: z.string()
+										})
+									)
+									.optional()
+							})
+						)
+						.optional(),
+					techStack: z
+						.array(
+							z.object({
+								name: z.string(),
+								description: z.string()
+							})
+						)
+						.optional(),
+					relatedLinks: z
+						.array(
+							z.object({
+								text: z.string(),
+								url: z.string()
+							})
+						)
+						.optional()
+				})
+			)
+			.optional(),
 		education: z.array(
 			z.object({
 				school: z.string(),

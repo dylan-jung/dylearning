@@ -42,6 +42,23 @@ const resumeData = entry.data;
     ))}
   </ResumeSection>
 
+
+  {resumeData.projects && (
+    <ResumeSection title="Projects">
+      {resumeData.projects.map((project) => (
+        <ResumeExperienceItem
+          company={project.company}
+          role={project.role}
+          date={project.date}
+          intro={project.intro}
+          activities={project.activities}
+          techStack={project.techStack}
+          relatedLinks={project.relatedLinks}
+        />
+      ))}
+    </ResumeSection>
+  )}
+
   <ResumeSection title="Experience">
     {resumeData.experience.map((exp) => (
       <ResumeExperienceItem
