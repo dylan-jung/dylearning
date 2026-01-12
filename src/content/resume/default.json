@@ -108,7 +108,7 @@
 						},
 						{
 							"label": "솔루션 검토",
-							"content": "다양한 성능 개선 방안을 비교·검토함. Materialized View는 **refresh 비용이 새로운 병목**이 될 가능성이 있어 제외함. OLAP 도입은 **운영 복잡도가 높고** 사용자 값 수정 요청에 비용이 커 배제함. [자세한 솔루션 선택 과정 ↗](https://github.com/dylan-jung)"
+							"content": "다양한 성능 개선 방안을 비교·검토함. Materialized View는 **refresh 비용이 새로운 병목**이 될 가능성이 있어 제외함. OLAP 도입은 **운영 복잡도가 높고** 사용자 값 수정 요청에 비용이 커 배제함. [자세한 솔루션 선택 과정 ↗](https://blog.dylearning.com/note/optimizing-dashboard/)"
 						},
 						{
 							"label": "솔루션 구현",
@@ -336,7 +336,7 @@
 			"name": "오픈소스 기여 모임 10기",
 			"role": "기여자",
 			"date": "2026.01 ~ ",
-			"description": "Spring AI 기여 <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request ↗</a>"
+			"description": "Spring AI 기여 <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request(open) ↗</a>"
 		},
 		{
 			"name": "시립대 최초 교내 해커톤 ‘플랑크톤’ 주최",
