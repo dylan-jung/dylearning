@@ -6,6 +6,7 @@ import ResumeExperienceItem from "../../components/resume/ResumeExperienceItem.a
 import ResumeItem from "../../components/resume/ResumeItem.astro";
 import ResumeSection from "../../components/resume/ResumeSection.astro";
 import ResumeSkills from "../../components/resume/ResumeSkills.astro";
+import ResumeTimeline from "../../components/resume/ResumeTimeline.astro";
 
 // Fetch default resume
 const entry = await getEntry("resume", "default");
@@ -42,6 +43,11 @@ const resumeData = entry.data;
     ))}
   </ResumeSection>
 
+  {resumeData.careers && (
+    <ResumeSection title="Career Timeline">
+      <ResumeTimeline items={resumeData.careers} />
+    </ResumeSection>
+  )}
 
   {resumeData.projects && (
     <ResumeSection title="Projects">
@@ -54,6 +60,7 @@ const resumeData = entry.data;
           activities={project.activities}
           techStack={project.techStack}
           relatedLinks={project.relatedLinks}
+          forcePageBreak={true}
         />
       ))}
     </ResumeSection>
@@ -69,6 +76,7 @@ const resumeData = entry.data;
         activities={exp.activities}
         techStack={exp.techStack}
         relatedLinks={exp.relatedLinks}
+        forcePageBreak={true}
       />
     ))}
   </ResumeSection>

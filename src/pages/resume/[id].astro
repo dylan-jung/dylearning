@@ -6,6 +6,7 @@ import ResumeExperienceItem from "../../components/resume/ResumeExperienceItem.a
 import ResumeItem from "../../components/resume/ResumeItem.astro";
 import ResumeSection from "../../components/resume/ResumeSection.astro";
 import ResumeSkills from "../../components/resume/ResumeSkills.astro";
+import ResumeTimeline from "../../components/resume/ResumeTimeline.astro";
 
 export async function getStaticPaths() {
 	const resumes = await getCollection("resume");
@@ -39,6 +40,12 @@ if (!resumeData) {
     </ResumeSection>
   )}
 
+  {resumeData.careers && (
+    <ResumeSection title="Career Timeline">
+      <ResumeTimeline items={resumeData.careers} />
+    </ResumeSection>
+  )}
+
   <ResumeSection title="Education">
     {resumeData.education.map((edu) => (
       <ResumeItem
@@ -59,6 +66,7 @@ if (!resumeData) {
         activities={exp.activities}
         techStack={exp.techStack}
         relatedLinks={exp.relatedLinks}
+        forcePageBreak={true}
       />
     ))}
   </ResumeSection>

@@ -1,7 +1,7 @@
 {
 	"header": {
 		"name": "정민혁",
-		"role": "Backend Engineer",
+		"role": "Software Engineer",
 		"email": "dylanjungko@gmail.com",
 		"phone": "010-4536-6741",
 		"website": "https://blog.dylearning.com",
@@ -11,6 +11,43 @@
 	"introLines": [
 		"본인이 작성한 코드에 대한 기술적 의사결정과 결과에 책임지는 개발자입니다.",
 		"설계 복잡도와 사용자 경험를 입체적으로 고려하여, 현실적 최적해를 찾는 설계를 지향합니다."
+	],
+	"careers": [
+		{
+			"term": "24.06 ~ 26.08 (예정)",
+			"title": "서울시립대학교 복학 및 재학",
+			"description": "컴퓨터과학전공"
+		},
+		{
+			"term": "24.05 ~ 24.09",
+			"title": "씨그로, 백엔드 엔지니어",
+			"description": "데이터 엔지니어 & 서버 개발자"
+		},
+		{
+			"term": "23.11 ~ 24.02",
+			"title": "리베이스, 모인나 서비스 개발",
+			"description": "서버 개발 (Founder)"
+		},
+		{
+			"term": "22.06 ~ 23.11",
+			"title": "리베이스, 지미 서비스 개발",
+			"description": "풀스택 개발 (Founder)"
+		},
+		{
+			"term": "22.04 ~ 22.12",
+			"title": "소프트웨어 마에스트로 13기",
+			"description": "팀 리더 / 팀 전원 우수자 선정"
+		},
+		{
+			"term": "20.07 ~ 22.04",
+			"title": "공군 사이버작전센터 정보보호상황병",
+			"description": "보안관제 및 침해대응"
+		},
+		{
+			"term": "19.03 ~ 20.07",
+			"title": "서울시립대학교 입학",
+			"description": "컴퓨터과학전공"
+		}
 	],
 	"projects": [
 		{
@@ -382,7 +419,7 @@
 		},
 		{
 			"name": "TOPCIT 우수 성적상",
-			"role": "한전KDN주식회사상 (680점)",
+			"role": "Level 4 /한전KDN주식회사상 (680점)",
 			"date": "2022.12"
 		},
 		{

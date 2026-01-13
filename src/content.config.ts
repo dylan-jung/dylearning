@@ -164,6 +164,15 @@ const resume = defineCollection({
 				date: z.string()
 			})
 		),
+		careers: z
+			.array(
+				z.object({
+					term: z.string(),
+					title: z.string(),
+					description: z.string().optional()
+				})
+			)
+			.optional(),
 		activities_list: z
 			.array(
 				z.object({
