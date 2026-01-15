@@ -91,8 +91,7 @@ AI의 추천이 완벽하지 않다는 것을 깨닫고, 좀 더 전통적인 �
 - `PgVectorColumnNames`라는 새로운 클래스 추가
 - SQL 쿼리 빌더 전반에 걸친 하드코딩 제거
 - 테스트 코드 업데이트
-
-![Github diff 스크린샷](git-diff.png)
+- 설정 클래스 추가
 
 ## 전략적 접근: Partial Implementation
 
@@ -105,6 +104,8 @@ AI의 추천이 완벽하지 않다는 것을 깨닫고, 좀 더 전통적인 �
 이 조언에 따라 핵심 기능만 구현한 PR을 제출했다:
 
 **[Add support for custom column names in PgVectorStore](https://github.com/spring-projects/spring-ai/pull/5216)**
+
+![GitHub diff 스크린샷](git-diff.png)
 
 # 마치며: 오픈소스 기여는 생각보다 가깝다
 
