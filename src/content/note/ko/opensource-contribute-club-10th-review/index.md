@@ -92,7 +92,7 @@ AI의 추천이 완벽하지 않다는 것을 깨닫고, 좀 더 전통적인 �
 - SQL 쿼리 빌더 전반에 걸친 하드코딩 제거
 - 테스트 코드 업데이트
 
-![Git diff 스크린샷](git-diff.png)
+![Github diff 스크린샷](git-diff.png)
 
 ## 전략적 접근: Partial Implementation
 
