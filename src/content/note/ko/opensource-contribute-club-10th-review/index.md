@@ -1,5 +1,5 @@
 ---
-title: Opensource Contribute Club 10th Review
+title: 오픈소스 기여? 야 너두 할 수 있어! (feat. Spring AI 첫 PR 경험기)
 timestamp: 2026-01-14 21:56:57+09:00
 toc: true
 ---
@@ -11,6 +11,8 @@ toc: true
 그러던 중 개발자 행사 플랫폼에서 **"오픈소스 기여모임 10기"** 모집 공고를 발견했고, 좋은 기회라고 생각해 참여하게 되었다. 이 글에서는 오픈소스 기여모임에 참여하면서 경험한 전체 과정과, 실제로 Spring AI 프로젝트에 기여하기까지의 여정을 공유하려고 한다.
 
 결론부터 말하자면, **오픈소스 기여는 생각보다 어렵지 않았다.** 체계적인 프로세스와 적절한 가이드만 있다면 누구나 충분히 도전할 수 있다는 것을 깨달았다.
+
+![you can do it](youcandoit.png)
 
 # 기여할 이슈 찾기: 가장 중요한 첫 단계
 
@@ -106,6 +108,8 @@ AI의 추천이 완벽하지 않다는 것을 깨닫고, 좀 더 전통적인 �
 **[Add support for custom column names in PgVectorStore](https://github.com/spring-projects/spring-ai/pull/5216)**
 
 ![GitHub diff 스크린샷](git-diff.png)
+
+아직까지 PR이 승인되지 않았고 open 상태이지만 추후 진행사항이 있으면 따로 공유하려고 한다.
 
 # 마치며: 오픈소스 기여는 생각보다 가깝다
 
