@@ -111,10 +111,12 @@
 #retrospective/weekly
 #retrospective/monthly
 #retrospective/project
+#retrospective/experience
 ```
 
 * 반드시 **되돌아봄 + 개선 인사이트**
 * 감정 기록 ❌
+* `#retrospective/experience`: 행사, 모임, 커뮤니티 참여 경험 공유
 
 ---
 
@@ -232,6 +234,7 @@
 ```
 #retrospective/weekly
 #retrospective/project
+#retrospective/experience
 ```
 
 ---
@@ -269,6 +272,7 @@
 #retrospective/weekly
 #retrospective/monthly
 #retrospective/project
+#retrospective/experience
 
 #book
 ```

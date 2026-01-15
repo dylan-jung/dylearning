@@ -2,6 +2,8 @@
 title: 오픈소스 기여? 야 너두 할 수 있어! (feat. Spring AI 첫 PR 경험기)
 timestamp: 2026-01-14 21:56:57+09:00
 toc: true
+tags:
+  - retrospective/experience
 ---
 
 # 들어가며
