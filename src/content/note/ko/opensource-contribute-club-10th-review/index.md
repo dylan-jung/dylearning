@@ -1,5 +1,5 @@
 ---
-title: 오픈소스 기여모임 10기 참여 후기
+title: Opensource Contribute Club 10th Review
 timestamp: 2026-01-14 21:56:57+09:00
 toc: true
 ---
