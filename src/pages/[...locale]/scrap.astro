@@ -1,0 +1,47 @@
+---
+import config from "$config";
+import i18nit from "$i18n";
+import Base from "$layouts/Base.astro";
+import Time from "$utils/time";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+	return config.i18n.locales.map(locale => ({ params: { locale: config.i18n.defaultLocale === locale ? undefined : locale } }));
+}
+
+const { locale = config.i18n.defaultLocale } = Astro.params;
+
+const t = i18nit(locale);
+
+const scraps = await getCollection("scrap");
+
+const list = scraps.sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime());
+---
+
+<Base title="Scrap" {locale}>
+	<main class="flex flex-col grow gap-6">
+		<header>
+			<h1 class="text-2xl font-bold">Scrap</h1>
+			<p class="text-secondary">Collection of external links and resources.</p>
+		</header>
+		
+		<ul class="flex flex-col gap-4">
+			{
+				list.map((item) => (
+					<li>
+						<a href={item.data.source} target="_blank" rel="noopener noreferrer" class="block group">
+							<article class="flex flex-col gap-1 transition-colors hover:text-primary">
+								<h2 class="text-lg font-medium group-hover:underline underline-offset-4 decoration-2">{item.data.title}</h2>
+								<div class="flex items-center gap-2 text-sm text-secondary">
+									<time datetime={item.data.timestamp.toISOString()}>{Time(item.data.timestamp)}</time>
+									<span>•</span>
+									<span class="truncate max-w-[300px]">{new URL(item.data.source).hostname}</span>
+								</div>
+							</article>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</main>
+</Base>

@@ -196,4 +196,18 @@ const resume = defineCollection({
 	})
 });
 
-export const collections = { note, jotting, preface, information, resume };
+/**
+ * Scrap collection configuration
+ * Represents external links/clips
+ */
+const scrap = defineCollection({
+	loader: glob({ pattern: "**/*.md", base: "./src/content/scrap" }),
+	schema: z.object({
+		title: z.string(),
+		timestamp: z.coerce.date(),
+		tags: z.array(z.string()).optional(),
+		source: z.string()
+	})
+});
+
+export const collections = { note, jotting, preface, information, resume, scrap };
