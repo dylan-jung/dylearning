@@ -12,6 +12,7 @@ aliases: clean_architecture
 클린아키텍쳐의 책은 1장에서부터 ‘코드는 나중에 정리하면 돼! 우선은 시장에 출시하는 것이 먼저야!’라는 생각을 비판하는 입장을 취하고 있다. 클린아키텍쳐의 철학은 ‘빠르게 가는 유일한 방법은 올바르게 가는 것이다.’ 라는 입장이다. 오히려 깨끗한 코드를 유지하는 것이 더 코스트가 적다는 주장임.
 
 ---
+# 책 내용 요약
 
 ### **PART I: INTRODUCTION (소개)**
 
@@ -149,7 +150,7 @@ aliases: clean_architecture
 
 ### **Chapter 22: The Clean Architecture**
 
-![[clean_architecture.png]]
+![클린아키텍쳐](clean_architecture.png)
 
 - **의존성 규칙 (Dependency Rule):**
   - 모든 의존성은 "안쪽"을 가리켜야 하며, 더 높은 수준의 정책(비즈니스 규칙)이 저수준 구현 세부사항에 영향을 받아서는 안 됨.
@@ -170,4 +171,218 @@ aliases: clean_architecture
 
 ---
 
-클린 아키텍쳐 또한 개념들 중 하나다. 마스터키는 없고, 항상 철학을 이해하고 아키텍터의 판단이 중요함.
+# 실무에서의 클린 아키텍처
+
+개인적으로 너무 좋은 책이지만 이론적인 내용은 이론일뿐, 실무에 적용하기 위해선 조금 더 많은 맥락을 고려해야할 것 같다 같다. 클린 아키텍처와 DDD를 공부하면서 가장 중요하게 고민한 점은 **이론적 순수성과 실무적 타협 사이의 균형**이다. 실제 프로덕션 환경에서 마주치게 되는 핵심 질문들과 그에 대한 실용적인 접근법을 팀원들과 논의했고 생각해보았다.
+
+## 아키텍처는 철학이지 마스터키가 아니다
+
+클린 아키텍처는 하나의 개념이자 철학이다. 모든 상황에 적용 가능한 만능 해법이 아니라, **상황에 맞게 판단하고 적용해야 하는 가이드라인**이다. 중요한 것은 그 철학을 이해하고, 필요한 순간에 적절히 활용하는 아키텍트의 판단력이다.
+
+## 도메인 엔티티와 DB 엔티티의 경계
+
+클린 아키텍처와 DDD를 학습하면서 가장 혼란스러웠던 부분은 **도메인 엔티티에 인프라 관련 어노테이션이 포함되어도 되는가**였다.
+
+예를 들어
+```java
+@Entity
+@Table(name = "orders")
+public class Order {
+  @Id
+  private Long id;
+  
+  @OneToMany(...)
+  private List<OrderLine> lines;
+}
+```
+
+이 코드는 분명히 JPA라는 인프라 기술에 대한 지식을 포함하고 있다. 순수한 이론에서는 "도메인 모델은 인프라를 몰라야 한다"고 말하지만, 실무에서는 대부분 이런 방식으로 구현한다. 이론상으로 구현하면 너무 편의성이 떨어져 보인다.
+
+### 이론과 실무 사이
+
+완전히 순수한 방식으로 구현하려면 도메인 엔티티와 JPA 엔티티를 분리하고, Mapper로 변환하는 구조가 필요하다. 하지만 이는 클래스 수가 2배로 늘어나고, 매핑 코드가 폭증하며, 생산성이 급감하는 결과를 낳는다.
+
+**실무에서의 합의점**은 일부만 타협하는 접근법이다.
+
+예를 들어
+- **허용**: `@Entity`, `@Id`, `@Embeddable` 같은 구조적 매핑 정보
+- **금지**: 쿼리 로직, DB 최적화 힌트, 프레임워크 콜백에 의존하는 비즈니스 로직
+
+핵심은 **어노테이션이 존재하는 것 자체가 문제가 아니라, 그 어노테이션 때문에 도메인이 결정을 내리게 되는 순간이 문제**라는 것이다.
+
+## 경계를 판단하는 기준
+
+도메인 엔티티에 ORM 어노테이션을 포함해도 되는지 판단하는 명확한 기준:
+
+1. **JPA 없이도 테스트할 수 있는가?**
+2. **비즈니스 메서드가 어노테이션을 의식하지 않는가?**
+3. **어노테이션을 제거해도 도메인 개념이 변하지 않는가?**
+4. **지연 로딩이나 영속성 상태에 따라 규칙이 달라지지 않는가?**
+
+이 질문들에 모두 YES라면, 그것은 "ORM-aware 도메인"이지 "ORM-dependent 도메인"은 아니다.
+
+### 절대 넘지 말아야 할 선
+
+다음과 같은 패턴은 도메인이 인프라에 오염된 상태다:
+
+```java
+// 영속성 상태에 의존
+if (Hibernate.isInitialized(lines)) { ... }
+
+// lazy 로딩을 전제로 한 규칙
+if (lines.size() > 10) discount();
+
+// JPA 이벤트에 비즈니스 로직
+@PrePersist
+void validate() { ... }
+```
+
+## 완전 분리가 필요한 시점
+
+다음 상황에서는 도메인과 영속성 계층의 완전한 분리를 고려해야 한다.
+
+- 도메인 모델이 매우 복잡하고 장기적인 자산일 때
+- 여러 저장소(SQL + NoSQL + Event Store)를 동시에 사용할 때
+- 저장 전략이 자주 변경될 가능성이 있을 때
+- 테스트가 "JPA 없이는 불가능"해진 상태일 때
+
+## SRP와 액터: 중복에 대한 새로운 관점
+
+클린 아키텍처를 공부하면서 가장 흥미로웠던 부분 중 하나는 **단일 책임 원칙(SRP)을 "액터" 기준으로 정의**한다는 점이었다. 이는 기존에 알고 있던 "하나의 클래스는 하나의 일만 해야 한다"는 막연한 이해와는 완전히 다른 관점이다.
+
+### 책임의 기준은 기능이 아니라 변경 이유
+
+Robert C. Martin이 정의한 SRP의 핵심은 다음과 같다:
+
+> **A module should have one, and only one, reason to change.**
+
+여기서 "reason to change"는 **변경을 요구하는 사람이나 조직, 즉 액터(Actor)**를 의미한다. 따라서 SRP를 판단할 때는
+
+- "이 함수가 무엇을 하는가?"
+- "누가 이 코드의 변경을 요구하는가?"
+
+라는 관점으로 접근해야 한다.
+
+### 중복은 항상 제거해야 하는가?
+
+이 관점은 **중복 코드에 대한 이해를 근본적으로 바꾼다**. 일반적으로 DRY(Don't Repeat Yourself) 원칙에 따라 중복은 무조건 제거해야 한다고 배운다. 하지만 SRP 관점에서 보면 이는 불완전한 명제다.
+
+**제거해야 할 중복**:
+- 같은 액터가 소유
+- 같은 변경 이유
+- 같은 정책(policy)을 표현
+
+**제거하면 위험한 중복**:
+- 겉보기엔 동일한 로직
+- 하지만 서로 다른 액터가 소유
+- 변경 시점과 방향이 다를 가능성
+
+후자의 경우, 중복은 **우연의 일치(accidental duplication)**일 뿐 **개념적 중복(logical duplication)**이 아니다.
+
+### 예시: 급여 계산과 근무 시간 보고
+
+다음과 같이 Employee 클래스에 중복된 로직이 있다고 가정하자:
+
+```java
+public class Employee {
+    private String name;
+    private double hourlyRate;
+    private int hoursWorked;
+    
+    // CFO(재무팀)가 관리하는 급여 계산
+    public double calculatePay() {
+        double regularHours = Math.min(hoursWorked, 40);
+        double overtimeHours = Math.max(hoursWorked - 40, 0);
+        return (regularHours * hourlyRate) + (overtimeHours * hourlyRate * 1.5);
+    }
+    
+    // COO(운영팀)가 관리하는 근무 시간 보고
+    public int reportHours() {
+        double regularHours = Math.min(hoursWorked, 40);
+        double overtimeHours = Math.max(hoursWorked - 40, 0);
+        return (int) (regularHours + overtimeHours);
+    }
+}
+```
+
+`regularHours`와 `overtimeHours`를 계산하는 로직이 중복되어 있다. DRY 원칙에 따라 이를 제거하고 싶은 유혹이 생긴다:
+
+```java
+public class Employee {
+    // 중복 제거를 위한 공통 메서드
+    private double calculateRegularHours() {
+        return Math.min(hoursWorked, 40);
+    }
+    
+    private double calculateOvertimeHours() {
+        return Math.max(hoursWorked - 40, 0);
+    }
+    
+    public double calculatePay() {
+        return (calculateRegularHours() * hourlyRate) 
+             + (calculateOvertimeHours() * hourlyRate * 1.5);
+    }
+    
+    public int reportHours() {
+        return (int) (calculateRegularHours() + calculateOvertimeHours());
+    }
+}
+```
+
+하지만 이제 문제가 발생한다:
+
+- **재무팀(CFO)**: "초과 근무 수당 계산 방식을 변경해주세요. 주말 근무는 2배로 계산해야 합니다."
+- **운영팀(COO)**: "근무 시간 보고는 그대로 유지해주세요."
+
+`calculateOvertimeHours()`를 수정하면 **두 액터 모두에게 영향**을 미치게 된다. 이는 명백한 SRP 위반이다.
+
+올바른 설계는 액터별로 분리하는 것이다:
+
+```java
+public class Employee {
+    private PayCalculator payCalculator;
+    private HourReporter hourReporter;
+    
+    public double calculatePay() {
+        return payCalculator.calculate(this);
+    }
+    
+    public int reportHours() {
+        return hourReporter.report(this);
+    }
+}
+
+// CFO(재무팀)의 책임
+class PayCalculator {
+    public double calculate(Employee employee) {
+        double regularHours = Math.min(employee.getHoursWorked(), 40);
+        double overtimeHours = Math.max(employee.getHoursWorked() - 40, 0);
+        return (regularHours * employee.getHourlyRate()) 
+             + (overtimeHours * employee.getHourlyRate() * 1.5);
+    }
+}
+
+// COO(운영팀)의 책임
+class HourReporter {
+    public int report(Employee employee) {
+        double regularHours = Math.min(employee.getHoursWorked(), 40);
+        double overtimeHours = Math.max(employee.getHoursWorked() - 40, 0);
+        return (int) (regularHours + overtimeHours);
+    }
+}
+```
+
+겉보기엔 중복처럼 보이지만, 변경 이유가 다르고 소유권이 다르다면 **이것은 중복이 아니라 경계(boundary)**다.
+
+
+### 설계 사고의 변화
+
+SRP를 액터 기준으로 이해하면 다음과 같은 변화가 생긴다:
+
+**리팩터링 기준**: "코드를 줄일 수 있나?" → "같이 변하는가?"
+
+**추상화 타이밍**: 공통 함수를 만들기 전에 액터와 정책을 먼저 확인
+
+**설계 질문**: "이 코드를 누가 변경 요청할까?", "이 요구사항이 바뀌면 누가 연락할까?"
+
+결국 **중복은 코드 형태가 아니라 "변경의 결합도"로 판단**해야 한다.
