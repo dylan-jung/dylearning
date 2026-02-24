@@ -370,9 +370,15 @@
 	],
 	"activities_list": [
 		{
+			"name": "클라우드 클럽 9기",
+			"role": "동아리원",
+			"date": "2026.03 ~ ",
+			"description": ""
+		},
+		{
 			"name": "오픈소스 기여 모임 10기",
 			"role": "기여자",
-			"date": "2026.01 ~ ",
+			"date": "2026.01",
 			"description": "Spring AI 기여 <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request(open) ↗</a>"
 		},
 		{
