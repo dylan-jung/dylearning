@@ -70,8 +70,8 @@ const resume = defineCollection({
 		header: z.object({
 			name: z.string(),
 			role: z.string(),
-			email: z.string(),
-			phone: z.string(),
+			email: z.string().optional(),
+			phone: z.string().optional(),
 			website: z.string(),
 			github: z.string(),
 			linkedin: z.string()
