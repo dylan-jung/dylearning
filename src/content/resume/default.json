@@ -82,7 +82,7 @@
 						},
 						{
 							"label": "솔루션",
-							"content": "인덱싱 트리거를 클라이언트가 아닌 **서버 측 비동기 워커**가 책임지도록 **MongoDB 기반 Transactional Outbox + Polling 아키텍처**를 도입함. **find_one_and_update 기반 Atomic Locking**으로 다중 워커 간 중복 실행을 방지하고, **semaphore를 활용한 Application-level Throttling**으로 리소스 과부하 없이 병렬 처리를 안정화함."
+							"content": "인덱싱 트리거를 클라이언트가 아닌 **서버 측 비동기 워커**가 책임지도록 **MongoDB 기반 Outbox + Polling 아키텍처**를 도입함. **find_one_and_update 기반 Atomic Locking**으로 다중 워커 간 중복 실행을 방지하고, **semaphore를 활용한 Application-level Throttling**으로 리소스 과부하 없이 병렬 처리를 안정화함."
 						},
 						{
 							"label": "결과",
