@@ -98,7 +98,7 @@
 
 	body {
 		font-size: 1.0625rem;
-		font-family: var(--font-serif), var(--font-mono);
+		font-family: "Pretendard Variable", Pretendard, var(--font-serif), var(--font-mono);
 		color: var(--primary-color);
 		background-color: var(--background-color);
 		overflow-x: clip;
