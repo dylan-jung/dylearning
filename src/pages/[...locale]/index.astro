@@ -105,7 +105,6 @@ const { Content } = preface ? await render(preface) : ({} as any);
 						<h4>{t("home.latest")}</h4>
 						<div class="flex flex-col sm:flex-row justify-between gap-1 mt-1">
 							<a href={getRelativeLocaleUrl(locale, `/${latest.type}/${monolocale ? latest.id : latest.id.split("/").slice(1).join("/")}`)} class="link">
-								{latest.data.series && `${latest.data.series} | `}
 								{latest.data.title}
 							</a>
 							<div class="flex gap-1">
@@ -116,9 +115,16 @@ const { Content } = preface ? await render(preface) : ({} as any);
 								))}
 							</div>
 						</div>
-						<time datetime={latest.data.timestamp.toISOString()} class="text-remark font-mono text-xs">
-							{Time(latest.data.timestamp)}
-						</time>
+						<div class="flex items-center gap-2">
+							<time datetime={latest.data.timestamp.toISOString()} class="text-remark font-mono text-xs">
+								{Time(latest.data.timestamp)}
+							</time>
+							{latest.data.series && (
+								<a href={`${getRelativeLocaleUrl(locale, `/${latest.type}`)}?series=${encodeURIComponent(latest.data.series)}`} class="text-[0.65rem] font-mono px-1.5 rounded border border-weak text-remark hover:text-primary hover:border-primary transition-colors">
+									{latest.data.series}
+								</a>
+							)}
+						</div>
 					</blockquote>
 				</footer>
 			)

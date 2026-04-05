@@ -103,10 +103,6 @@ onMount(() => {
 					<div class="leading-[1.55] *:inline *:align-middle">
 						{#if note.data.top > 0}<Icon name="lucide--flag-triangle-right" class="rtl:-scale-x-100" />{/if}
 						{#if note.data.sensitive}<Icon name="lucide--siren" title={t("sensitive.icon")} />{/if}
-						{#if note.data.series}
-							<button onclick={() => chooseSeries(note.data.series, true)}>{note.data.series}</button>
-							<span aria-hidden="true">|</span>
-						{/if}
 						<a href={getRelativeLocaleUrl(locale, `/note/${monolocale ? note.id : note.id.split("/").slice(1).join("/")}`)} class="link">{note.data.title}</a>
 					</div>
 					<span class="inline-flex items-center sm:justify-end gap-1 flex-wrap content-start sm:ms-auto">
@@ -115,7 +111,12 @@ onMount(() => {
 						{/each}
 					</span>
 				</div>
-				<time datetime={note.data.timestamp.toISOString()} class="font-mono text-[0.65rem] text-remark">{Time(note.data.timestamp)}</time>
+				<div class="flex items-center gap-2">
+					<time datetime={note.data.timestamp.toISOString()} class="font-mono text-[0.65rem] text-remark">{Time(note.data.timestamp)}</time>
+					{#if note.data.series}
+						<button onclick={() => chooseSeries(note.data.series, true)} class="text-[0.65rem] font-mono px-1.5 rounded border border-weak text-remark hover:text-primary hover:border-primary transition-colors">{note.data.series}</button>
+					{/if}
+				</div>
 			</section>
 		{:else}
 			<div class="pt-[10vh] text-center text-secondary font-bold text-xl">{t("note.empty")}</div>
