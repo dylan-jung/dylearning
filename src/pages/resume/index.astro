@@ -49,6 +49,21 @@ const resumeData = entry.data;
     </ResumeSection>
   )}
 
+  <ResumeSection title="Experience">
+    {resumeData.experience.map((exp) => (
+      <ResumeExperienceItem
+        company={exp.company}
+        role={exp.role}
+        date={exp.date}
+        intro={exp.intro}
+        activities={exp.activities}
+        techStack={exp.techStack}
+        relatedLinks={exp.relatedLinks}
+        forcePageBreak={true}
+      />
+    ))}
+  </ResumeSection>
+
   {resumeData.projects && (
     <ResumeSection title="Projects">
       {resumeData.projects.map((project) => (
@@ -65,21 +80,6 @@ const resumeData = entry.data;
       ))}
     </ResumeSection>
   )}
-
-  <ResumeSection title="Experience">
-    {resumeData.experience.map((exp) => (
-      <ResumeExperienceItem
-        company={exp.company}
-        role={exp.role}
-        date={exp.date}
-        intro={exp.intro}
-        activities={exp.activities}
-        techStack={exp.techStack}
-        relatedLinks={exp.relatedLinks}
-        forcePageBreak={true}
-      />
-    ))}
-  </ResumeSection>
 
   {resumeData.activities_list && (
     <ResumeSection title="Activities">
