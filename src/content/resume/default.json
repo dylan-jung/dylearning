@@ -15,7 +15,7 @@
 	"careers": [
 		{
 			"term": "26.02 ~ 26.05(예정)",
-			"title": "LG AI Research, 인턴십",
+			"title": "LG AI Research Language Lab, 인턴십",
 			"description": "Exaone 모델 파인튜닝 및 제품화"
 		},
 		{
@@ -130,6 +130,69 @@
 		}
 	],
 	"experience": [
+		{
+			"company": "LG AI Research",
+			"role": "Language Lab Intern",
+			"date": "2026.02 ~ 2026.05 (예정)",
+			"intro": "사내 LLM(Exaone)을 오픈소스 코딩 에이전트(opencode)에서 에이전틱하게 동작하도록 파인튜닝·배포하는 팀에서, **모델 학습을 위한 SFT 데이터 파이프라인** 전체 설계·구축을 담당. 코딩 에이전트 특성상 실행마다 독립 repo가 필요해 **Docker 컨테이너 단위 격리 실행**을 설계하고, Dagster 기반 trajectory 수집 → **2-tier Judge 합의 품질 필터링** → gold 확정 전 과정을 자동화한 **SFT 데이터 파운드리**를 구축.",
+			"activities": [
+				{
+					"summary": "주요활동 1. 불안정 공유 환경에서의 대량 trajectory 수집 인프라 설계",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "opencode는 실행마다 독립 repo가 필요한 코딩 에이전트로, 다수 연구원이 공유하는 노드에서 외부 요인으로 프로세스가 언제든 죽을 수 있는 환경. 이 위에서 **대량의 trajectory를 안정적으로 수집**하는 파이프라인이 필요했음."
+						},
+						{
+							"label": "기존 방식",
+							"content": "연구원 각자 로컬 수동 실행, 환경 불일치, 실패 시 재시도 불가, 품질 검증 없음."
+						},
+						{
+							"label": "솔루션",
+							"content": "실행 단위를 **Docker 컨테이너로 격리**, 라이프사이클 관리 컴포넌트를 분리하여 UDS 기반 API로 제어. 쿼리당 20~30분 장기 실행에 **폴링 기반 모델**로 커넥션 점유 제거, 단계별 결과를 **GCS에 배치(10건) 단위로 영속화**하여 크래시 시 재실행만으로 복구되는 **멱등 구조**를 확립. H100 GPU 슬롯 변동은 **health-check 기반 라우팅**으로 파이프라인에서 유연하게 처리."
+						},
+						{
+							"label": "결과",
+							"content": "단일 엔지니어 운영 체계로 전환, 불안정한 공유 노드 환경에서 **3일간 2,000~3,000건 trajectory 안정 수집**."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 2. 2-tier Judge 합의 기반 자동 품질 검증",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "SFT 학습 품질은 trajectory 품질에 직결되므로 **신뢰할 수 있는 자동 검증 체계**가 필수였으나, 상용 모델 전수 채점은 **비용 부담이 과도**하고, 자체 모델 단독은 **편향 리스크**가 존재했음."
+						},
+						{
+							"label": "솔루션",
+							"content": "Agentic Judge를 **2-tier 계층화** — 1차(자체 GLM 4.7)가 전수 저비용 채점, **Oracle(Sonnet 4) 대비 상관 분석으로 calibration한 threshold** 기준으로 false positive 의심 항목만 2차(Claude Sonnet 4) escalation, **gold는 양 tier verdict 합의로만 확정**. **Circuit Breaker**로 비정상 상태 시 파이프라인 즉시 중단하여 추가 실행 방어."
+						},
+						{
+							"label": "결과",
+							"content": "5일 실측 **M1 전수 1,806건 채점, M2 escalation 934건(51.7%)**, 상용 모델 전수 채점 대비 비용을 억제하면서도 교차 검증을 확보."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 3. Dagster 기반 파이프라인 오케스트레이션",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "위 수집 인프라(주요활동 1)와 품질 검증(주요활동 2), 그리고 gold 선별까지 단계별 의존성이 있으며, 각 단계의 장애가 전체를 막지 않도록 독립 운영해야 했음."
+						},
+						{
+							"label": "솔루션",
+							"content": "Dagster의 **asset × partition 단위 재실행**과 **센서 기반 동적 partition 등록**을 활용하여 Execution → Judge → Selection **3단 파이프라인을 분리**, 미니배치 100건 단위 장애 격리 + **센서 자동 체이닝**으로 운영자 개입 없이 끝까지 진행. pass@k 재시도는 탈락 쿼리를 새 배치로 재투입하여 동일 센서가 재수거하는 구조로, 실패 상태 재사용 없이 **매회 fresh env 독립 실행**으로 pass@k 성립."
+						},
+						{
+							"label": "결과",
+							"content": "유동적인 H100 자원과 불안정한 공유 서버 환경에서 **5일간 gold 약 1,400건** 지속 생산, 상용 모델 API 비용 **~$500**으로 통제. 별도 실험을 통해 **pass@1(68.5%) → pass@3(93.2%)** 효과를 확인(k=4 이후 한계수익 <2%), max_retries=3 확정."
+						}
+					]
+				}
+			]
+		},
 		{
 			"company": "씨그로(주)",
 			"role": "데이터 엔지니어 & 서버 개발자",
