@@ -137,11 +137,11 @@
 			"intro": "사내 LLM(Exaone)을 오픈소스 코딩 에이전트(opencode)에서 에이전틱하게 동작하도록 파인튜닝·배포하는 팀에서, **모델 학습을 위한 SFT 데이터 파이프라인** 전체 설계·구축을 담당. 코딩 에이전트 특성상 실행마다 독립 repo가 필요해 **Docker 컨테이너 단위 격리 실행**을 설계하고, Dagster 기반 trajectory 수집 → **2-tier Judge 합의 품질 필터링** → gold 확정 전 과정을 자동화한 **SFT 데이터 파운드리**를 구축.",
 			"activities": [
 				{
-					"summary": "주요활동 1. 불안정 공유 환경에서의 대량 trajectory 수집 인프라 설계",
+					"summary": "주요활동 1. 대량 trajectory 수집 인프라 설계",
 					"details": [
 						{
 							"label": "배경 및 원인",
-							"content": "opencode는 실행마다 독립 repo가 필요한 코딩 에이전트로, 다수 연구원이 공유하는 노드에서 외부 요인으로 프로세스가 언제든 죽을 수 있는 환경. 이 위에서 **대량의 trajectory를 안정적으로 수집**하는 파이프라인이 필요했음."
+							"content": "opencode는 filesystem·shell을 자유롭게 사용하는 코딩 에이전트로, 호스트에서 직접 병렬 실행 시 환경 오염 문제가 있었음. 또한 다수 연구원이 공유하는 노드에서 타 사용자의 리소스 점유, vLLM 프로세스 중단 등 **외부 요인으로 언제든 깨질 수 있는 환경**이었으며, '깨지지 않게'가 아닌 **'깨져도 자동 복구되는'** 설계가 필요했음."
 						},
 						{
 							"label": "기존 방식",
@@ -149,11 +149,11 @@
 						},
 						{
 							"label": "솔루션",
-							"content": "실행 단위를 **Docker 컨테이너로 격리**, 라이프사이클 관리 컴포넌트를 분리하여 UDS 기반 API로 제어. 쿼리당 20~30분 장기 실행에 **폴링 기반 모델**로 커넥션 점유 제거, 단계별 결과를 **GCS에 배치(10건) 단위로 영속화**하여 크래시 시 재실행만으로 복구되는 **멱등 구조**를 확립. H100 GPU 슬롯 변동은 **health-check 기반 라우팅**으로 파이프라인에서 유연하게 처리."
+							"content": "실행 단위를 **Docker 컨테이너로 격리**, 자체 설계한 **컨테이너 매니저** API에 lifecycle 위임. 쿼리당 20~30분 장기 실행에 커넥션을 점유하지 않도록 **비동기 제출 + 상태 폴링** 방식으로 처리하고, 결과를 **GCS에 배치 단위로 영속화**하여 크래시 시 재실행만으로 복구되는 **멱등 구조** 확립."
 						},
 						{
 							"label": "결과",
-							"content": "단일 엔지니어 운영 체계로 전환, 불안정한 공유 노드 환경에서 **3일간 2,000~3,000건 trajectory 안정 수집**."
+							"content": "연구원 수동 실행 체제에서 **단일 엔지니어 운영의 자동화 체계로 전환**."
 						}
 					]
 				},
@@ -166,7 +166,7 @@
 						},
 						{
 							"label": "솔루션",
-							"content": "Agentic Judge를 **2-tier 계층화** — 1차(자체 GLM 4.7)가 전수 저비용 채점, **Oracle(Sonnet 4) 대비 상관 분석으로 calibration한 threshold** 기준으로 false positive 의심 항목만 2차(Claude Sonnet 4) escalation, **gold는 양 tier verdict 합의로만 확정**. **Circuit Breaker**로 비정상 상태 시 파이프라인 즉시 중단하여 추가 실행 방어."
+							"content": "Agentic Judge를 **2-tier 계층화** — 1차(자체 호스팅 모델)가 **전수 저비용 채점**, Oracle 대비 상관 분석으로 calibration한 threshold 기준으로 **false positive 의심 항목만 2차(Claude Sonnet 4) escalation**, **gold는 양 tier verdict 합의로만 확정**. **Circuit Breaker**로 비정상 상태 시 파이프라인 즉시 중단하여 추가 실행 방어."
 						},
 						{
 							"label": "결과",
@@ -499,7 +499,7 @@
 	],
 	"certifications": [
 		"AWS Certified AI Practitioner Foundational (2025.10)",
-		"Berkely Entrepreneurship Education Certification (2023.01)",
+		"Berkeley Entrepreneurship Education Certification (2023.01)",
 		"네트워크 관리사 2급 (2021.08)"
 	]
 }
