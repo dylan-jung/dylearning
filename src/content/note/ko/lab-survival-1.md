@@ -2,6 +2,7 @@
 title: 랩에서 살아남기 — 왜 LLM을 밑바닥부터 뜯어봐야 했나
 timestamp: 2026-04-05
 toc: true
+draft: true
 series: lab-survival
 tags:
   - tech/ai
