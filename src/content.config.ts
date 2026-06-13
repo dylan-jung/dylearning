@@ -76,7 +76,7 @@ const resume = defineCollection({
 			github: z.string(),
 			linkedin: z.string()
 		}),
-		introLines: z.array(z.string()),
+		introLines: z.array(z.string()).optional(),
 		experience: z.array(
 			z.object({
 				company: z.string(),
