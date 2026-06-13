@@ -72,7 +72,7 @@ const resume = defineCollection({
 			role: z.string(),
 			email: z.string().optional(),
 			phone: z.string().optional(),
-			website: z.string(),
+			website: z.string().optional(),
 			github: z.string(),
 			linkedin: z.string()
 		}),
@@ -91,7 +91,7 @@ const resume = defineCollection({
 								.array(
 									z.object({
 										label: z.string().optional(),
-										content: z.string()
+										content: z.union([z.string(), z.array(z.string())])
 									})
 								)
 								.optional()
@@ -131,7 +131,7 @@ const resume = defineCollection({
 									.array(
 										z.object({
 											label: z.string().optional(),
-											content: z.string()
+											content: z.union([z.string(), z.array(z.string())])
 										})
 									)
 									.optional()

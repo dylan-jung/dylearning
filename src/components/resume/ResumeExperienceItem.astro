@@ -1,7 +1,7 @@
 ---
 interface ActivityDetail {
 	label?: string;
-	content: string;
+	content: string | string[];
 }
 
 interface Activity {
@@ -21,15 +21,27 @@ interface Props {
 }
 const { company, role, date, intro, activities, techStack, relatedLinks, forcePageBreak = false } = Astro.props;
 
-const parseContent = (text: string) => {
-	// 1. Replace links: [text](url) -> <a href="url"...>text</a>
+// Inline markup only: links + bold (no newline handling)
+const parseInline = (text: string) => {
 	let parsed = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:underline">$1</a>');
-	// 2. Replace bold: **text** -> <strong>text</strong>
 	parsed = parsed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-	// 3. Replace newlines: \n -> <br />
-	parsed = parsed.replace(/\n/g, "<br />");
 	return parsed;
 };
+
+const parseContent = (text: string) => parseInline(text).replace(/\n/g, "<br />");
+
+// If the content is a "1. ... \n2. ... \n3. ..." numbered list, return the
+// parsed item HTML strings; otherwise null (caller falls back to parseContent).
+const parseListItems = (text: string): string[] | null => {
+	const trimmed = text.trim();
+	if (!/^\d+\.\s/.test(trimmed)) return null;
+	const parts = trimmed.split(/\n(?=\d+\.\s)/);
+	if (parts.length < 2) return null;
+	return parts.map(part => parseInline(part.replace(/^\d+\.\s*/, "").trim()));
+};
+
+// content may be a plain string (optionally a "1. ... \n2. ..." list) or a string[].
+const getListItems = (content: string | string[]): string[] | null => (Array.isArray(content) ? content.map(parseInline) : parseListItems(content));
 ---
 <div class:list={["mb-8", { "print:break-inside-avoid print:break-after-page": forcePageBreak }]}>
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-baseline mb-2 border-b border-gray-200 pb-2 break-inside-avoid">
@@ -56,12 +68,23 @@ const parseContent = (text: string) => {
             <div class="font-bold mb-1" set:html={activity.summary}></div>
             {activity.details && (
                 <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
-                    {activity.details.map(detail => (
-                        <li class="pl-1 -indent-5 ml-5">
-                            {detail.label && <strong class="text-gray-700 mr-1">{detail.label}:</strong>}
-                            <span set:html={parseContent(detail.content)}></span>
-                        </li>
-                    ))}
+                    {activity.details.map(detail => {
+                        const listItems = getListItems(detail.content);
+                        return (
+                            <li class="pl-1 -indent-5 ml-5">
+                                {detail.label && <strong class="text-gray-700 mr-1">{detail.label}:</strong>}
+                                {listItems ? (
+                                    <ol class="list-decimal list-outside mt-1.5 ml-5 space-y-1 indent-0 marker:text-gray-400 marker:font-medium">
+                                        {listItems.map(item => (
+                                            <li class="pl-1" set:html={item}></li>
+                                        ))}
+                                    </ol>
+                                ) : (
+                                    <span set:html={parseContent(detail.content as string)}></span>
+                                )}
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
           </div>

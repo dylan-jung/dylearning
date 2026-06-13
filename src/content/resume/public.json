@@ -2,7 +2,6 @@
 	"header": {
 		"name": "정민혁",
 		"role": "Software Engineer",
-		"website": "https://blog.dylearning.com",
 		"github": "https://github.com/dylan-jung",
 		"linkedin": "https://www.linkedin.com/in/dylan-jung-ko/"
 	},
@@ -12,7 +11,7 @@
 	],
 	"careers": [
 		{
-			"term": "26.02 ~ 26.05(예정)",
+			"term": "26.02 ~ 26.08(예정)",
 			"title": "LG AI Research, 인턴십",
 			"description": "Exaone 모델 파인튜닝 및 제품화"
 		},
@@ -377,7 +376,7 @@
 			"name": "오픈소스 기여 모임 10기",
 			"role": "기여자",
 			"date": "2026.01",
-			"description": "Spring AI 기여 <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request(open) ↗</a>"
+			"description": "Spring AI에 기여 PR 제출 (리뷰 진행 중) <a href='https://github.com/spring-projects/spring-ai/pull/5216' target='_blank' class='text-blue-600 hover:underline'>Pull Request ↗</a>"
 		},
 		{
 			"name": "시립대 최초 교내 해커톤 '플랑크톤' 주최",
