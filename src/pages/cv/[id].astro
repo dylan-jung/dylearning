@@ -24,8 +24,7 @@ if (!resumeData) {
 ---
 
 <ResumeLayout title={`${resumeData.header.name} - CV`} description={resumeData.introLines?.join(" ") || "CV"}>
-  <div class="flex justify-between items-center mb-4 no-print">
-    <a href="/resume" class="text-sm text-blue-600 hover:underline">← 1장 요약 (Resume)</a>
+  <div class="flex justify-end mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
     </button>
