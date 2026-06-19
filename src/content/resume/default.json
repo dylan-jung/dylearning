@@ -1,7 +1,7 @@
 {
 	"header": {
 		"name": "정민혁",
-		"role": "AI Infrastructure / Platform Engineer",
+		"role": "AI Infrastructure Engineer",
 		"email": "dylanjungko@gmail.com",
 		"phone": "010-4536-6741",
 		"github": "https://github.com/dylan-jung",
@@ -11,7 +11,7 @@
 		{
 			"term": "26.02 ~ 26.08(예정)",
 			"title": "LG AI Research Language Lab, 인턴십",
-			"description": "Agentic 데이터셋·실행 인프라 구축·운영"
+			"description": "Exaone 에이전트 파인튜닝 + 제품화 서빙·운영"
 		},
 		{
 			"term": "24.06 ~ 26.08 (예정)",
@@ -129,10 +129,10 @@
 			"company": "LG AI Research",
 			"role": "Language Lab · Internship",
 			"date": "2026.02 ~ 2026.08 (예정)",
-			"intro": "소속 팀의 목표는 **Exaone을 Opencode와 같이 에이전트로 동작하게 만드는 것**. 그 안에서 **Agentic 데이터셋 생성·실행 인프라**를 담당 — Exaone 4.0 → 독자 파운데이션 모델 K Exaone 2차수에 걸쳐 데이터 생성·검증 파이프라인과 대규모 실행 인프라(동시 8,000+)를 설계·운영함.",
+			"intro": "Exaone을 opencode 같은 코딩·터미널 에이전트로 만들기 위한 파인튜닝 중 **데이터·인프라를 담당**. 에이전트를 대규모로 실행해 학습 데이터를 만들고, 이를 **8,000+ 동시**로 굴리는 실행·빌드·서빙 인프라를 직접 구축·운영.",
 			"activities": [
 				{
-					"summary": "주요활동 1. Exaone 4.0 Agentic 데이터셋 생산·검증 — 에이전트 실행부터 품질 검증까지 자동화",
+					"summary": "주요활동 1. Exaone 4.0 Agentic 데이터셋 생산 → 에이전트 실행 데이터부터 품질 검증까지 자동화",
 					"details": [
 						{
 							"label": "배경 및 원인",
@@ -145,8 +145,8 @@
 						{
 							"label": "솔루션 구현",
 							"content": [
-								"**실행 워크플로우 정립**: 팀원이 태스크(문제)를 작성하고, **이를 대량 실행해 trajectory를 수집하는 실행 파트를 전담** — 분업 구조로 전환",
-								"**Data Flywheel 자동화 (Dagster)**: 실행 → 전처리 → trajectory 추출 → sanity 체크 → 2단 검증(강한 모델 전수 → 의심 건만 Claude)을 한 사이클로 오케스트레이션 — 통과분은 gold 확정, 실패분은 재시도. 끊김없이 돌려 GPU 풀가동",
+								"**실행 워크플로우 정립**: 팀원이 태스크(문제)를 작성하고, **이를 대량 실행해 trajectory를 수집하는 실행 파트를 전담**해 분업 구조로 전환",
+								"**Data Flywheel 자동화 (Dagster)**: 실행 → 전처리 → trajectory 추출 → sanity 체크 → 2단 검증(강한 모델 전수 → 의심 건만 Claude)을 한 사이클로 오케스트레이션. 통과분은 gold 확정, 실패분은 재시도. 끊김없이 돌려 GPU 풀가동",
 								"**실행·서빙 인프라**: 에이전트 롤아웃을 Docker 샌드박스로 격리 실행, 결과는 GCS에 영속화. vLLM을 Data Parallel로 수평 확장하고 **세션(trajectory) affinity 라우팅**으로 동일 prefix 요청을 KV 캐시 보유 엔진에 고정 → prefix 캐시 적중률↑, 서빙 처리량 ~10%"
 							]
 						},
