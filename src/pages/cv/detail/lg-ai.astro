@@ -1,0 +1,511 @@
+---
+// 단일 문서(2쪽) — LG AI Research 인턴십. 임원·테크리드 보고용 (성과 중심).
+// 로고는 public/lg-ai-research-logo.png
+const LOGO_SRC = "/lg-ai-research-logo.png";
+
+// 각 phase: points = [{ title?, motive, action, result, links?, todo? }]
+// motive/action/result 는 문자열 또는 문자열 배열(불렛).
+const phases = [
+	{
+		period: "2026.02 — 2026.04",
+		title: "ChatEXAONE CLI 제작 및 운영",
+		desc: "Exaone을 코딩·터미널 에이전트(ChatEXAONE CLI)로 만들어 실제 개발 업무를 자동화하는 것을 목표로 하는 팀.",
+		points: [
+			{
+				title: "에이전트 하네스 분석·팀 가이드 정립",
+				motive: "데이터 생성 전략 수립에 앞서 에이전트 하네스(에이전트의 도구 사용·실행 골격)에 대한 깊은 이해가 선행 요구됨.",
+				action: [
+					"Opencode 하네스의 내부 로직(구조·Compaction·Skills·MCP)을 기술적으로 깊이 분석하고, 동작 원리를 처음부터 끝까지 팀에 설명·공유해 데이터 생성 가이드라인을 정립",
+					"오픈소스(Opencode) 내부 로직을 직접 수정해 데이터 생성에 용이하도록 개조"
+				],
+				result: "Compaction / Skill / Subagent 등 복잡한 동작 메커니즘에 대한 타겟 데이터 생성 기반 확립."
+			},
+			{
+				title: "학습 시드 데이터 생산",
+				motive: "여러 학습 시드 데이터 중, 에이전트 Skills(필요 기능을 불러 쓰는 모듈) 역량 수요가 높아 우선순위로 요구됨.",
+				action: [
+					"Skills 관련 repo·레퍼런스를 수집·분류하고, skill 이름 지정만으로 자동 로드되는 생성 파이프라인에 연동",
+					"해당 파이프라인으로 Skills 타겟 학습 데이터를 생산"
+				],
+				result: "우선순위 높던 Skills 역량의 학습 데이터 확보 및 학습 후 정상 동작 검증 완료."
+			},
+			{
+				title: "데이터 자동 생산 파이프라인·실행 인프라 (Dagster)",
+				motive: "수작업 실행·검증으로는 학습 데이터의 양·품질을 안정적으로 확보 불가.",
+				action: [
+					"생성 → 정합성 검사 → 2단 검증(저비용 모델 전수 → 의심 건 Claude) → 재시도가 무중단으로 도는 Data Flywheel 구축 (Dagster)",
+					"에이전트를 대량 격리 실행하고, 서빙은 동일 작업을 동일 엔진으로 라우팅해 캐시 재활용"
+				],
+				result: [
+					"5일간 gold ~1,400건을 ~$500로 생산 (전량 Claude 생성 시 ~$1,500 추정 대비 ~3배↓)",
+					"재시도로 문제당 확보율(pass@k) 68.5%(k=1) → 93.2%(k=3)",
+					"서빙 처리량 ~10%↑, 데이터 생산을 1인 자동화 체계로 전환 (GPU 풀가동 지속)"
+				]
+			},
+			{
+				title: "OSS(Opencode·vLLM) 문제 대응",
+				motive: "",
+				action: [
+					"좀비 프로세스 누수: judge 운영 중 죽은 프로세스(좀비) 60만+가 쌓여 서버 마비(load 449) → opencode 자체 버그가 원인임을 바이너리 분석으로 규명하고, 즉시 차단 후 바이너리를 직접 패치해 영구 해결",
+					"버전 호환성: session id 누락·reasoning 포맷 불일치 등을 직접 진단하고 앱 레벨로 우회 해결"
+				],
+				result: ""
+			},
+			{
+				title: "실서비스 장애 대응 (장기 세션 compaction 미발동)",
+				motive: "",
+				action: "code-cli 실서비스에서 스트리밍 응답에 토큰 usage가 빠져 사용량 기반 compaction(대화 압축)이 작동하지 않아, 장기 세션이 한도 초과로 깨지는 문제를 직접 진단.",
+				result: ""
+			},
+			{
+				title: "공용 노드 모니터링 구축",
+				motive: "",
+				action: "공용 노드에 Netdata 실시간 모니터링을 붙이고, 부하 진단용 skill과 Slack 장애 알림을 연동.",
+				result: "공용 노드 장애를 확산 전 조기 포착·선제 대응하는 체계 확보."
+			},
+			{
+				title: "사용자용 에이전트 활용 문서화 (Coding Agent CLI)",
+				motive: "",
+				action: "개발·데이터·운영 전반의 end-to-end 활용 사례를 대표 User Case로 구조화 (단일 파일 수정 → 다중 파일 → 자동화까지).",
+				result: ""
+			},
+			{
+				title: "남은 기간 계획 (7월~)",
+				todo: ["공개된 ChatEXAONE CLI 운영·디버깅·개선에 집중"]
+			}
+		]
+	},
+	{
+		period: "2026.05 — 2026.06",
+		title: "독자 파운데이션 모델 K Exaone 2차수",
+		points: [
+			{
+				title: "TB 향 학습 데이터 생산",
+				motive: "공개 데이터셋으로 안 되는 다도메인 문제라, 타겟 학습 데이터를 직접 생산해야 했음.",
+				action: "담당 도메인(수학·최적화·과학연산·게임)별로 태스크를 만들어 SFT·RL 학습 데이터를 생산.",
+				result: ["담당 도메인 데이터 기여: TB 점수 SFT 전 14.3 → 후 39.3", "RL 진행 중"]
+			},
+			{
+				title: "대규모 실행 인프라 구축 (Self-hosted Daytona)",
+				motive: "",
+				action: [
+					"EKS 기반 self-hosted Daytona를 구축·운영하고, 관측 스택(Prometheus·Tempo·Loki → Grafana)을 선구축해 운영 가시성을 확보 (w. 용우님)",
+					"Daytona 스케줄러 가중치를 sandbox 분포 기준으로 재설계해 노드 간 부하 분산"
+				],
+				result: ["최대 8,000+ 동시 실행 기반 마련", "병목·이상 실시간 관측 + 노드 간 sandbox 부하 분산 개선"]
+			},
+			{
+				title: "빌드·이미지 파이프라인 최적화 (빌드 서비스 분리 + Harbor S3)",
+				motive: "수만 건 실패를 분석하니 대부분 빌드·레지스트리 발(이미지 pull 거부 등)이었고, 실행마다 끼는 무거운 빌드가 최대 병목·비용 요인 (빌드 대기 P95 93분, 일 1,500만원).",
+				action: [
+					"빌드를 실행 경로에서 분리한 전용 서비스로 재설계 — 환경 사전 빌드·캐시 공유로 중복 빌드 제거",
+					"Harbor 레지스트리를 S3로 전환 — 단일 볼륨 제약 제거·다중 replica 확장, 전환 중 내부 트래픽·인증 이슈까지 해결"
+				],
+				result: [
+					"빌드 대기 P95 93분 → 4.4분 (-95%), 에러율 16.3% → 0.47%",
+					"일 비용 1,500만 → 200만원 (~7.5배↓), 노드 256 → 32, 클러스터 전체 다운 1회/일 → 0건",
+					"동시 푸시 병목 해소, 레지스트리 ~133TB / 약 46만 이미지 안정 운영"
+				]
+			},
+			{
+				title: "외부 연동용 고정 IP 자동화 (EIP)",
+				motive: "",
+				action: "외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여(kubeip), 스케일 인/아웃 시 부여·반납 자동화.",
+				result: "33개 노드 ~25초 내 고정 IP 자동 부여 (NAT 비용 절감)."
+			},
+			{
+				title: "샌드박스의 노드 권한 접근 차단",
+				motive: "AWS 보안 알림으로, 에이전트 샌드박스가 서버(노드)의 AWS 권한을 가져갈 수 있는 경로 발견 (실제 침해는 없었음).",
+				action: "샌드박스가 서버 권한에 닿지 못하도록 접근을 막고, 전체 노드에 적용·코드로 고정해 재발 방지.",
+				result: "패치 전 권한 탈취 가능 → 패치 후 100개 동시 테스트 100/100 차단."
+			}
+		]
+	}
+];
+
+const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content="LG AI Research 인턴십 활동 정리" />
+    <title>LG AI Research · Internship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      :root {
+        --lg: #a50034;
+        --ink: #18181c;
+        --muted: #5a5a64;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", "Pretendard", sans-serif;
+        color: var(--ink);
+        background: #ececef;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 800px;
+        margin: 24px auto;
+        background: #fff;
+        padding: 32px 44px 40px;
+      }
+
+      /* ── Header ── */
+      .brand img {
+        height: 22px;
+        width: auto;
+        display: block;
+      }
+      .brand .fallback {
+        font-weight: 800;
+        font-size: 15px;
+      }
+      .brand .fallback b {
+        color: var(--lg);
+      }
+      h1 {
+        margin: 14px 0 6px;
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .meta {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .meta b {
+        color: var(--lg);
+      }
+
+      /* ── Phase ── */
+      .phase {
+        margin-top: 26px;
+      }
+      .phase-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .phase-head .no {
+        font-size: 11px;
+        font-weight: 800;
+        color: #fff;
+        background: var(--lg);
+        padding: 2px 8px;
+        border-radius: 3px;
+        letter-spacing: 0.02em;
+      }
+      .phase-head .period {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--lg);
+        font-variant-numeric: tabular-nums;
+      }
+      .phase-head .title {
+        font-size: 15.5px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      .phase-desc {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      /* ── 항목 (동기 → 액션 → 결과) ── */
+      ol.points {
+        margin: 0;
+        padding-left: 20px;
+      }
+      ol.points > li {
+        margin-bottom: 14px;
+      }
+      ol.points > li::marker {
+        color: var(--lg);
+        font-weight: 800;
+      }
+      .pt-title {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: #1f1f25;
+        margin-bottom: 5px;
+        letter-spacing: -0.01em;
+      }
+      .pt-title .badge {
+        margin-left: 7px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--lg);
+        border: 1px solid var(--lg);
+        border-radius: 999px;
+        padding: 1px 7px;
+        vertical-align: middle;
+      }
+      li.is-todo .pt-title {
+        color: var(--lg);
+      }
+      ul.todo {
+        margin: 0;
+        padding-left: 16px;
+        list-style: none;
+      }
+      ul.todo > li {
+        position: relative;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: #45454f;
+        margin-bottom: 2px;
+      }
+      ul.todo > li::before {
+        content: "☐";
+        position: absolute;
+        left: -16px;
+        color: var(--lg);
+      }
+
+      /* 동기/액션/결과 — 라벨 칩 + 불렛 */
+      .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 12.5px;
+        line-height: 1.55;
+        margin-bottom: 6px;
+      }
+      .step .k {
+        flex: none;
+        width: 30px;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-align: center;
+        border-radius: 3px;
+        padding: 1px 0;
+        margin-top: 1px;
+      }
+      .step.motive .k {
+        color: var(--muted);
+        background: #efeff2;
+      }
+      .step.action .k {
+        color: #fff;
+        background: var(--lg);
+      }
+      .step.result .k {
+        color: var(--lg);
+        background: #f7dde6;
+      }
+      .ctx {
+        margin: 0 0 5px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      .ctx-k {
+        font-weight: 700;
+        color: var(--muted);
+      }
+      ul.lv1 {
+        margin: 0;
+        padding-left: 16px;
+        font-size: 12.5px;
+        line-height: 1.6;
+      }
+      ul.lv1 > li {
+        color: #25252b;
+        margin-bottom: 3px;
+      }
+      ul.lv1 > li:last-child {
+        margin-bottom: 0;
+      }
+      ul.lv1 > li::marker {
+        color: var(--lg);
+      }
+      ul.lv2 {
+        margin: 4px 0 0;
+        padding-left: 32px;
+        list-style: none;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      ul.lv2 > li {
+        position: relative;
+        color: #3a3a44;
+        margin-bottom: 2px;
+      }
+      ul.lv2 > li:last-child {
+        margin-bottom: 0;
+      }
+      ul.lv2 > li::before {
+        content: "→";
+        position: absolute;
+        left: -15px;
+        color: var(--lg);
+        font-weight: 700;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 6px 0 0 16px;
+      }
+      .links a {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--lg);
+        text-decoration: none;
+        border: 1px solid #f0d6df;
+        background: #fdf5f8;
+        border-radius: 4px;
+        padding: 2px 8px;
+      }
+      .links a:hover {
+        background: #f7dde6;
+      }
+
+      .print-btn {
+        margin-top: 24px;
+        border: 1px solid var(--lg);
+        color: var(--lg);
+        background: #fff;
+        padding: 6px 13px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          margin: 0;
+          padding: 24px 18px 30px;
+        }
+        .phase-head {
+          flex-wrap: wrap;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          max-width: 100%;
+          padding: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .phase.break {
+          break-before: page;
+          page-break-before: always;
+          margin-top: 0;
+        }
+        .phase,
+        ol.points > li {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div class="brand">
+          <img
+            src={LOGO_SRC}
+            alt="LG AI Research"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+          />
+          <span class="fallback" style="display:none;"><b>LG</b> AI Research</span>
+        </div>
+
+        <h1>Job Summary</h1>
+        <div class="meta">Language Lab, Code & Analysis, Internship</div>
+      </header>
+
+      {
+        phases.map((p, i) => (
+          <section class={i === 0 ? "phase" : "phase break"}>
+            <div class="phase-head">
+              <span class="no">PHASE {String(i + 1).padStart(2, "0")}</span>
+              <span class="period">{p.period}</span>
+              <span class="title">{p.title}</span>
+            </div>
+            {p.desc && <p class="phase-desc">{p.desc}</p>}
+
+            <ol class="points">
+              {p.points.map((pt) => (
+                <li class={pt.todo ? "is-todo" : ""}>
+                  {pt.title && (
+                    <div class="pt-title">
+                      {pt.title}
+                      {pt.todo && <span class="badge">예정</span>}
+                    </div>
+                  )}
+                  {pt.todo ? (
+                    <ul class="todo">
+                      {pt.todo.map((t) => (
+                        <li>{t}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <>
+                      {arr(pt.motive).length > 0 && (
+                        <p class="ctx">
+                          <span class="ctx-k">배경:</span> {arr(pt.motive).join(" ")}
+                        </p>
+                      )}
+                      {arr(pt.action).length > 0 && (
+                        <ul class="lv1">
+                          {arr(pt.action).map((t) => (
+                            <li>{t}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {arr(pt.result).length > 0 && (
+                        <ul class="lv2">
+                          {arr(pt.result).map((t) => (
+                            <li>{t}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {pt.links && (
+                        <div class="links">
+                          {pt.links.map((l) => (
+                            <a href={l.url} target="_blank" rel="noopener noreferrer">
+                              {l.label}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+
+      <button class="print-btn no-print" onclick="window.print()">
+        Print to PDF
+      </button>
+    </main>
+  </body>
+</html>
