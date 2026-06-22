@@ -12,7 +12,7 @@ const phases = [
 		desc: "ChatEXAONE이 long-horizon 코딩 태스크를 수행하도록 모델을 학습·고도화하는 과제.",
 		points: [
 			{
-				title: "에이전트 하네스 분석·팀 가이드 정립",
+				title: "Opencode 하네스 분석·데이터 생성 가이드",
 				motive: "데이터 생성 전략 수립에 앞서 에이전트 하네스(에이전트의 도구 사용·실행 골격)에 대한 깊은 이해가 선행 요구됨.",
 				action: [
 					"Opencode 하네스의 내부 로직(구조·Compaction·Skills·MCP)을 기술적으로 깊이 분석하고, 동작 원리를 처음부터 끝까지 팀에 설명·공유해 데이터 생성 가이드라인을 정립",
@@ -21,8 +21,8 @@ const phases = [
 				result: "Compaction / Skill / Subagent 등 복잡한 동작 메커니즘에 대한 타겟 데이터 생성 기반 확립."
 			},
 			{
-				title: "학습 시드 데이터 생산",
-				motive: "여러 학습 시드 데이터 중, 에이전트 Skills(필요 기능을 불러 쓰는 모듈) 역량 수요가 높아 우선순위로 요구됨.",
+				title: "Agent Skill 학습 데이터셋 생산",
+				motive: "Agent Skill(필요 기능을 불러 쓰는 모듈) 역량 수요가 높아 관련 학습 데이터가 우선순위로 요구됨.",
 				action: [
 					"Skills 관련 repo·레퍼런스를 수집·분류하고, skill 이름 지정만으로 자동 로드되는 생성 파이프라인에 연동",
 					"해당 파이프라인으로 Skills 타겟 학습 데이터를 생산"
@@ -33,45 +33,53 @@ const phases = [
 				title: "데이터 자동 생산 파이프라인·실행 인프라 (Dagster)",
 				motive: "수작업 실행·검증으로는 학습 데이터의 양·품질을 안정적으로 확보 불가.",
 				action: [
-					"생성 → 정합성 검사 → 2단 검증(저비용 모델 전수 → 의심 건 Claude) → 재시도가 무중단으로 도는 Data Flywheel 구축 (Dagster)",
+					"생성 → 정합성 검사 → 2단 품질 검증 → 재시도가 무중단으로 도는 Data Flywheel 구축 (Dagster)",
+					"2단 품질 검증: 비용·편향 균형을 위한 fallback 기반 이중 Agent Judge verification 설계 (weak verifier → strong verifier)",
+					"멀티턴 데이터 생성: 턴별 도커 이미지·trajectory를 저장(노드 볼륨 한계 → Docker Registry + GCS에 효율 저장)해 follow-up 질문을 상태 복원으로 이어서 실행",
 					"에이전트를 대량 격리 실행하고, 서빙은 동일 작업을 동일 엔진으로 라우팅해 캐시 재활용"
 				],
 				result: [
-					"5일간 gold ~1,400건을 ~$500로 생산 (전량 Claude 생성 시 ~$1,500 추정 대비 ~3배↓)",
+					"5일간 gold ~1,400건 생산, 비용 ~$1,500(전량 Claude Sonnet 추정) → ~$500 (~67%↓)",
 					"재시도로 문제당 확보율(pass@k) 68.5%(k=1) → 93.2%(k=3)",
 					"서빙 처리량 ~10%↑, 데이터 생산을 1인 자동화 체계로 전환 (GPU 풀가동 지속)"
 				]
 			},
 			{
-				title: "OSS(Opencode·vLLM) 문제 대응",
+				title: "Opencode 버그·호환성 대응",
 				motive: "",
 				action: [
-					"좀비 프로세스 누수: judge 운영 중 죽은 프로세스(좀비) 60만+가 쌓여 서버 마비(load 449) → opencode 자체 버그가 원인임을 바이너리 분석으로 규명하고, 즉시 차단 후 바이너리를 직접 패치해 영구 해결",
-					"버전 호환성: session id 누락·reasoning 포맷 불일치 등을 직접 진단하고 앱 레벨로 우회 해결"
+					"Opencode 자체 버그 수정: 파일이 바뀔 때마다 git 명령을 정리 없이 계속 실행해 좀비가 쌓이는 버그를 직접 패치",
+					"Opencode 버전 불일치 동작 오류(session id 누락·reasoning 포맷 불일치 등)를 직접 진단하고 어댑터 레이어를 추가해 우회"
 				],
 				result: ""
 			},
 			{
-				title: "실서비스 장애 대응 (장기 세션 compaction 미발동)",
+				title: "Agent Judge (실행 기반 평가자) 구축",
 				motive: "",
-				action: "code-cli 실서비스에서 스트리밍 응답에 토큰 usage가 빠져 사용량 기반 compaction(대화 압축)이 작동하지 않아, 장기 세션이 한도 초과로 깨지는 문제를 직접 진단.",
+				action: "LLM judge·고정 테스트의 한계를 넘어, patch를 실제 repo에 적용·빌드·테스트하고 필요 시 검증 테스트를 직접 작성·실행해 궤적·patch·답변을 평가하는 execution-grounded evaluator 설계. (w. 원기님)",
+				result: ""
+			},
+			{
+				title: "서비스 운영 (Coding Agent CLI)",
+				motive: "",
+				action: [
+					"개발·데이터·운영 전반의 end-to-end 활용 사례를 대표 User Case로 구조화 (사용자 가이드)",
+					"장애 식별 및 원인 파악: 스트리밍 응답에 토큰 사용량(usage)이 빠져 자동 압축(compaction)이 트리거되지 않아 긴 세션이 깨지던 문제를 직접 진단"
+				],
 				result: ""
 			},
 			{
 				title: "공용 노드 모니터링 구축",
 				motive: "",
-				action: "공용 노드에 Netdata 실시간 모니터링을 붙이고, 부하 진단용 skill과 Slack 장애 알림을 연동.",
+				action: "공용 노드에 Netdata 실시간 모니터링을 붙이고, 부하 진단 Claude Code 스킬 제작 및 Slack 장애 알림 연동.",
 				result: "공용 노드 장애를 확산 전 조기 포착·선제 대응하는 체계 확보."
 			},
 			{
-				title: "사용자용 에이전트 활용 문서화 (Coding Agent CLI)",
-				motive: "",
-				action: "개발·데이터·운영 전반의 end-to-end 활용 사례를 대표 User Case로 구조화 (단일 파일 수정 → 다중 파일 → 자동화까지).",
-				result: ""
-			},
-			{
 				title: "남은 기간 계획 (7월~)",
-				todo: ["공개된 ChatEXAONE CLI 운영·디버깅·개선에 집중"]
+				todo: [
+					"공개된 ChatEXAONE CLI 운영·디버깅·개선에 집중",
+					"A100 추론 자원 효율화: DCGM exporter·Grafana 기반 GPU 관측 인프라 구축 완료, 활용률 병목 분석을 통한 최적화 예정"
+				]
 			}
 		]
 	},
@@ -80,10 +88,14 @@ const phases = [
 		title: "독자 파운데이션 모델 K Exaone 2차수",
 		points: [
 			{
-				title: "TB 향 학습 데이터 생산",
-				motive: "공개 데이터셋으로 안 되는 다도메인 문제라, 타겟 학습 데이터를 직접 생산해야 했음.",
-				action: "담당 도메인(수학·최적화·과학연산·게임)별로 태스크를 만들어 SFT·RL 학습 데이터를 생산.",
-				result: ["담당 도메인 데이터 기여: TB 점수 SFT 전 14.3 → 후 39.3", "RL 진행 중"]
+				title: "TB 학습 데이터 생성·결과 분석 이터레이션",
+				motive: "다양한 도메인을 포괄해야 해 공개 데이터셋만으로는 부족했고, 타겟 학습 데이터의 직접 생산이 요구됨.",
+				action: [
+					"태스크 생성 → trajectory 분석으로 데이터 사용 가능성·부족분을 진단하는 데이터 생성 파이프라인 설계 (담당: 수학·최적화·과학연산·게임)",
+					"생성 → 학습(SFT) → 결과 분석으로 약점 도메인·부족 데이터를 찾아 재생성하는 사이클을 반복하며 데이터셋을 고도화",
+					"Claude Code의 Skill·Goal로 생성·분석·재생성 워크플로우를 자동화해 이터레이션 속도·반복성을 확보"
+				],
+				result: ["44k 규모 SFT/RL 데이터셋 전달", "담당 도메인 데이터 기여: TB 점수 SFT 전 14.3 → 후 39.3 (RL 진행 중)"]
 			},
 			{
 				title: "대규모 실행 인프라 구축 (Self-hosted Daytona)",
@@ -91,7 +103,7 @@ const phases = [
 				action: [
 					"EKS 기반 self-hosted Daytona 구축·운영 + 관측 스택(Grafana 등)·Control Plane 대시보드 선구축, 안정성 체크리스트·모니터링 지표 합의 (w. 용우님)",
 					"스케줄러 가중치 재설계로 노드 간 sandbox 부하 분산",
-					"대규모 운영 이슈 직접 디버깅 — 노드 unresponsive, ingress-nginx, Daytona(OSS) 버그 등",
+					"대규모 운영 이슈 직접 디버깅: 노드 unresponsive, ingress-nginx, Daytona(OSS) 버그 등",
 					"외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여 (kubeip)",
 					"샌드박스가 서버(노드) 권한에 닿지 못하도록 접근 차단 (보안)"
 				],
@@ -101,8 +113,8 @@ const phases = [
 				title: "빌드·이미지 파이프라인 최적화 (빌드 서비스 분리 + Harbor S3)",
 				motive: "수만 건 실패를 분석하니 대부분 빌드·레지스트리 발(이미지 pull 거부 등)이었고, 실행마다 끼는 무거운 빌드가 최대 병목·비용 요인 (빌드 대기 P95 93분, 일 1,500만원).",
 				action: [
-					"빌드를 실행 경로에서 분리한 전용 서비스로 재설계 — 환경 사전 빌드·캐시 공유로 중복 빌드 제거",
-					"Harbor 레지스트리를 S3로 전환 — 단일 볼륨 제약 제거·다중 replica 확장, 전환 중 내부 트래픽·인증 이슈까지 해결"
+					"빌드를 실행 경로에서 분리한 전용 서비스로 재설계: 환경 사전 빌드·캐시 공유로 중복 빌드 제거",
+					"Harbor 레지스트리를 S3로 전환: 단일 볼륨 제약 제거·다중 replica 확장, 전환 중 내부 트래픽·인증 이슈까지 해결"
 				],
 				result: [
 					"빌드 대기 P95 93분 → 4.4분 (-95%), 에러율 16.3% → 0.47%",
@@ -115,6 +127,17 @@ const phases = [
 ];
 
 const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
+
+// 연구 역량(데이터·모델) vs 엔지니어링 역량(인프라·운영) — 제목으로 매핑
+const RESEARCH = new Set([
+	"Opencode 하네스 분석·데이터 생성 가이드",
+	"Agent Skill 학습 데이터셋 생산",
+	"Agent Judge (실행 기반 평가자) 구축",
+	"TB 학습 데이터 생성·결과 분석 이터레이션"
+]);
+const trackOf = t => (RESEARCH.has(t) ? "research" : "eng");
+const rankOf = pt => (pt.todo ? 2 : trackOf(pt.title) === "research" ? 0 : 1);
+const trackLabel = pt => (trackOf(pt.title) === "research" ? "연구" : "엔지니어링");
 ---
 
 <!doctype html>
@@ -180,6 +203,28 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
       .meta b {
         color: var(--lg);
       }
+      .legend {
+        display: flex;
+        gap: 16px;
+        margin-top: 8px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .legend .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+      .legend .dot.research {
+        background: #64748b;
+      }
+      .legend .dot.eng {
+        background: var(--lg);
+      }
 
       /* ── Phase ── */
       .phase {
@@ -199,6 +244,8 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
         padding: 2px 8px;
         border-radius: 3px;
         letter-spacing: 0.02em;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
       .phase-head .period {
         font-size: 12px;
@@ -221,14 +268,28 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
       /* ── 항목 (동기 → 액션 → 결과) ── */
       ol.points {
         margin: 0;
-        padding-left: 20px;
+        padding-left: 0;
+        list-style: none;
       }
       ol.points > li {
         margin-bottom: 14px;
       }
-      ol.points > li::marker {
-        color: var(--lg);
+      li.grp-div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 2px 0 11px;
+        font-size: 11px;
         font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      li.grp-div::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e2e2e7;
       }
       .pt-title {
         font-size: 13.5px;
@@ -431,7 +492,9 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
       </header>
 
       {
-        phases.map((p, i) => (
+        phases.map((p, i) => {
+          const ordered = [...p.points].sort((a, b) => rankOf(a) - rankOf(b));
+          return (
           <section class={i === 0 ? "phase" : "phase break"}>
             <div class="phase-head">
               <span class="no">PHASE {String(i + 1).padStart(2, "0")}</span>
@@ -441,7 +504,22 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
             {p.desc && <p class="phase-desc">{p.desc}</p>}
 
             <ol class="points">
-              {p.points.map((pt) => (
+              {ordered.map((pt, idx) => {
+                const tk = pt.todo ? "todo" : trackOf(pt.title);
+                const prevTk =
+                  idx > 0
+                    ? ordered[idx - 1].todo
+                      ? "todo"
+                      : trackOf(ordered[idx - 1].title)
+                    : null;
+                const showDiv = !pt.todo && tk !== prevTk;
+                return (
+                  <>
+                    {showDiv && (
+                      <li class="grp-div">
+                        {tk === "research" ? "AI 연구" : "엔지니어링"}
+                      </li>
+                    )}
                 <li class={pt.todo ? "is-todo" : ""}>
                   {pt.title && (
                     <div class="pt-title">
@@ -488,10 +566,13 @@ const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
                     </>
                   )}
                 </li>
-              ))}
+                  </>
+                );
+              })}
             </ol>
           </section>
-        ))
+          );
+        })
       }
 
       <button class="print-btn no-print" onclick="window.print()">
