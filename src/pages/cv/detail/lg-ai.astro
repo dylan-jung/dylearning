@@ -57,7 +57,7 @@ const phases = [
 				title: "Agent Judge (실행 기반 평가자) 구축",
 				motive: "",
 				action: [
-					"에이전트가 만든 코드를 실제로 실행해 '동작 여부'로 채점하는 평가자 설계 (코드만 읽고 채점하거나 고정 테스트만 돌리는 방식의 한계 보완, w. 원기님)",
+					"에이전트가 만든 코드를 실제로 실행해 '동작 여부'로 채점하는 평가자 설계 (코드만 읽고 채점하거나 고정 테스트만 돌리는 방식의 한계 보완)",
 					"코드를 실제 저장소에 적용·빌드·테스트하고, 필요하면 검증 테스트까지 직접 만들어 실행해 결과·과정·설명을 종합 평가"
 				],
 				result: ""
@@ -104,7 +104,7 @@ const phases = [
 				title: "대규모 실행 인프라 구축 (Self-hosted Daytona)",
 				motive: "수천 개 에이전트를 동시에 굴릴 전용 대규모 실행 인프라가 필요.",
 				action: [
-					"EKS 기반 self-hosted Daytona 구축·운영 + 관측 스택(Grafana 등)·Control Plane 대시보드 선구축, 안정성 체크리스트·모니터링 지표 합의 (w. 용우님)",
+					"EKS 기반 self-hosted Daytona 구축·운영 + 관측 스택(Grafana 등)·Control Plane 대시보드 선구축, 안정성 체크리스트·모니터링 지표 합의",
 					"스케줄러 가중치 재설계로 노드 간 sandbox 부하 분산",
 					"대규모 운영 이슈 직접 디버깅: 노드 unresponsive, ingress-nginx, Daytona(OSS) 버그 등",
 					"외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여 (kubeip)",
@@ -495,7 +495,8 @@ const trackLabel = pt => (trackOf(pt.title) === "research" ? "연구" : "엔지�
         </div>
 
         <h1>Job Summary</h1>
-        <div class="meta">Language Lab, Code & Analysis, Internship</div>
+        <div class="meta">Language Lab, Code & Analysis Tech Cell, Internship</div>
+        <div class="meta">테크리드 박용철 · 멘토 이원기</div>
       </header>
 
       {
