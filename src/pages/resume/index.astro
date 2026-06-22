@@ -2,7 +2,6 @@
 import { getEntry } from "astro:content";
 import ResumeLayout from "../../layouts/ResumeLayout.astro";
 import ResumeHeader from "../../components/resume/ResumeHeader.astro";
-import ResumeItem from "../../components/resume/ResumeItem.astro";
 import ResumeSection from "../../components/resume/ResumeSection.astro";
 
 const entry = await getEntry("resume", "default");
@@ -115,9 +114,11 @@ const projects = [
 
   {cv.education && (
     <ResumeSection title="Education">
-      {cv.education.map((edu) => (
-        <ResumeItem title={edu.school} subtitle={edu.degree} date={edu.date} />
-      ))}
+      <ul class="list-disc list-outside ml-5 text-sm text-gray-700 leading-relaxed space-y-1">
+        {cv.education.map((edu) => (
+          <li>{edu.school} · {edu.degree} ({edu.date})</li>
+        ))}
+      </ul>
     </ResumeSection>
   )}
 
