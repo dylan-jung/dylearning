@@ -83,8 +83,7 @@ const parseInline = (text: string) =>
 ---
 
 <ResumeLayout title={`${cv.header.name} | Resume`} description={`${cv.header.name} 경력기술서`}>
-  <div class="flex justify-between items-center mb-4 no-print">
-    <a href="/cv" class="text-sm text-blue-600 hover:underline">상세 이력 (CV) →</a>
+  <div class="flex justify-end items-center mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
     </button>
