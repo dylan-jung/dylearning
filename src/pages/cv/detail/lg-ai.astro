@@ -18,7 +18,7 @@ const phases = [
 					"Opencode 하네스의 내부 로직(구조·Compaction·Skills·MCP)을 기술적으로 깊이 분석하고, 동작 원리를 처음부터 끝까지 팀에 설명·공유해 데이터 생성 가이드라인을 정립",
 					"오픈소스(Opencode) 내부 로직을 직접 수정해 데이터 생성에 용이하도록 개조"
 				],
-				result: "Compaction / Skill / Subagent 등 복잡한 동작 메커니즘에 대한 타겟 데이터 생성 기반 확립."
+				result: "Compaction / Skill / Subagent 등 복잡한 동작 메커니즘에 대한 **타겟 데이터 생성 기반 확립**."
 			},
 			{
 				title: "Agent Skill 학습 데이터셋 생산",
@@ -27,7 +27,7 @@ const phases = [
 					"Skills 관련 repo·레퍼런스를 수집·분류하고, skill 이름 지정만으로 자동 로드되는 생성 파이프라인에 연동",
 					"해당 파이프라인으로 Skills 타겟 학습 데이터를 생산"
 				],
-				result: "우선순위 높던 Skills 역량의 학습 데이터 확보 및 학습 후 정상 동작 검증 완료."
+				result: "우선순위 높던 Skills 역량의 학습 데이터 확보 및 학습 후 **정상 동작 검증 완료**."
 			},
 			{
 				title: "데이터 자동 생산 파이프라인·실행 인프라 (Dagster)",
@@ -39,9 +39,9 @@ const phases = [
 					"에이전트를 대량 격리 실행하고, 서빙은 동일 작업을 동일 엔진으로 라우팅해 캐시 재활용"
 				],
 				result: [
-					"5일간 gold ~1,400건 생산, 비용 ~$1,500(전량 Claude Sonnet 추정) → ~$500 (~67%↓)",
-					"재시도로 문제당 확보율(pass@k) 68.5%(k=1) → 93.2%(k=3)",
-					"서빙 처리량 ~10%↑, 데이터 생산을 1인 자동화 체계로 전환 (GPU 풀가동 지속)"
+					"5일간 gold ~1,400건 생산, 비용 ~$1,500(전량 Claude Sonnet 추정) → **~$500 (~67%↓)**",
+					"재시도로 문제당 확보율(pass@k) **68.5%(k=1) → 93.2%(k=3)**",
+					"서빙 처리량 **~10%↑**, 데이터 생산을 **1인 자동화 체계**로 전환 (GPU 풀가동 지속)"
 				]
 			},
 			{
@@ -56,7 +56,10 @@ const phases = [
 			{
 				title: "Agent Judge (실행 기반 평가자) 구축",
 				motive: "",
-				action: "LLM judge·고정 테스트의 한계를 넘어, patch를 실제 repo에 적용·빌드·테스트하고 필요 시 검증 테스트를 직접 작성·실행해 궤적·patch·답변을 평가하는 execution-grounded evaluator 설계. (w. 원기님)",
+				action: [
+					"에이전트가 만든 코드를 실제로 실행해 '동작 여부'로 채점하는 평가자 설계 (코드만 읽고 채점하거나 고정 테스트만 돌리는 방식의 한계 보완, w. 원기님)",
+					"코드를 실제 저장소에 적용·빌드·테스트하고, 필요하면 검증 테스트까지 직접 만들어 실행해 결과·과정·설명을 종합 평가"
+				],
 				result: ""
 			},
 			{
@@ -72,7 +75,7 @@ const phases = [
 				title: "공용 서버 모니터링·장애 알림 구축",
 				motive: "여러 작업이 함께 쓰는 서버가 느려지거나 죽어도 즉시 인지할 방법이 없었음.",
 				action: "Netdata로 서버 상태를 실시간 수집하고, 부하 원인을 자동 진단하는 Claude Code 스킬과 Slack 장애 알림을 연동.",
-				result: "이상을 조기에 감지해 장애로 번지기 전에 대응."
+				result: "이상을 조기에 감지해 **장애로 번지기 전에 대응**."
 			},
 			{
 				title: "남은 기간 계획 (7월~)",
@@ -95,7 +98,7 @@ const phases = [
 					"생성 → 학습(SFT) → 결과 분석으로 약점 도메인·부족 데이터를 찾아 재생성하는 사이클을 반복하며 데이터셋을 고도화",
 					"Claude Code의 Skill·Goal로 생성·분석·재생성 워크플로우를 자동화해 이터레이션 속도·반복성을 확보"
 				],
-				result: ["44k 규모 SFT/RL 데이터셋 전달", "담당 도메인 데이터 기여: TB 점수 SFT 전 14.3 → 후 39.3 (RL 진행 중)"]
+				result: ["**44k 규모 SFT/RL 데이터셋** 전달", "담당 도메인 데이터 기여: TB 점수 **SFT 전 14.3 → 후 39.3** (RL 진행 중)"]
 			},
 			{
 				title: "대규모 실행 인프라 구축 (Self-hosted Daytona)",
@@ -107,7 +110,10 @@ const phases = [
 					"외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여 (kubeip)",
 					"샌드박스가 서버(노드) 권한에 닿지 못하도록 접근 차단 (보안)"
 				],
-				result: ["최대 8,000+ 동시 실행 기반 마련 + 대규모 운영 안정화", "노드 고정 IP 자동화(NAT 비용↓), 샌드박스 권한 접근 100% 차단"]
+				result: [
+					"최대 **8,000+ 동시 실행** 기반 마련 + 대규모 운영 안정화",
+					"노드 고정 IP 자동화(NAT 비용↓), 샌드박스 권한 접근 **100% 차단**"
+				]
 			},
 			{
 				title: "빌드·이미지 파이프라인 최적화 (빌드 서비스 분리 + Harbor S3)",
@@ -117,9 +123,9 @@ const phases = [
 					"Harbor 레지스트리를 S3로 전환: 단일 볼륨 제약 제거·다중 replica 확장, 전환 중 내부 트래픽·인증 이슈까지 해결"
 				],
 				result: [
-					"빌드 대기 P95 93분 → 4.4분 (-95%), 에러율 16.3% → 0.47%",
-					"일 비용 1,500만 → 200만원 (~7.5배↓), 노드 256 → 32, 클러스터 전체 다운 1회/일 → 0건",
-					"동시 푸시 병목 해소, 레지스트리 ~133TB / 약 46만 이미지 안정 운영"
+					"빌드 대기 P95 **93분 → 4.4분 (-95%)**, 에러율 **16.3% → 0.47%**",
+					"일 비용 **1,500만 → 200만원 (~7.5배↓)**, 노드 256 → 32, 클러스터 전체 다운 1회/일 → 0건",
+					"동시 푸시 병목 해소, 레지스트리 **~133TB / 약 46만 이미지** 안정 운영"
 				]
 			}
 		]
@@ -127,6 +133,7 @@ const phases = [
 ];
 
 const arr = v => (Array.isArray(v) ? v : v ? [v] : []);
+const md = s => String(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
 
 // 연구 역량(데이터·모델) vs 엔지니어링 역량(인프라·운영) — 제목으로 매핑
 const RESEARCH = new Set([
@@ -530,27 +537,28 @@ const trackLabel = pt => (trackOf(pt.title) === "research" ? "연구" : "엔지�
                   {pt.todo ? (
                     <ul class="todo">
                       {pt.todo.map((t) => (
-                        <li>{t}</li>
+                        <li set:html={md(t)} />
                       ))}
                     </ul>
                   ) : (
                     <>
                       {arr(pt.motive).length > 0 && (
                         <p class="ctx">
-                          <span class="ctx-k">배경:</span> {arr(pt.motive).join(" ")}
+                          <span class="ctx-k">배경:</span>{" "}
+                          <span set:html={md(arr(pt.motive).join(" "))} />
                         </p>
                       )}
                       {arr(pt.action).length > 0 && (
                         <ul class="lv1">
                           {arr(pt.action).map((t) => (
-                            <li>{t}</li>
+                            <li set:html={md(t)} />
                           ))}
                         </ul>
                       )}
                       {arr(pt.result).length > 0 && (
                         <ul class="lv2">
                           {arr(pt.result).map((t) => (
-                            <li>{t}</li>
+                            <li set:html={md(t)} />
                           ))}
                         </ul>
                       )}
