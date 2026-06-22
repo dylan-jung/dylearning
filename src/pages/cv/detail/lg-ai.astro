@@ -9,7 +9,7 @@ const phases = [
 	{
 		period: "2026.02 — 2026.04",
 		title: "ChatEXAONE CLI 제작 및 운영",
-		desc: "Exaone을 코딩·터미널 에이전트(ChatEXAONE CLI)로 만들어 실제 개발 업무를 자동화하는 것을 목표로 하는 팀.",
+		desc: "ChatEXAONE이 long-horizon 코딩 태스크를 수행하도록 모델을 학습·고도화하는 과제.",
 		points: [
 			{
 				title: "에이전트 하네스 분석·팀 가이드 정립",
@@ -87,12 +87,15 @@ const phases = [
 			},
 			{
 				title: "대규모 실행 인프라 구축 (Self-hosted Daytona)",
-				motive: "",
+				motive: "수천 개 에이전트를 동시에 굴릴 전용 대규모 실행 인프라가 필요.",
 				action: [
-					"EKS 기반 self-hosted Daytona를 구축·운영하고, 관측 스택(Prometheus·Tempo·Loki → Grafana)을 선구축해 운영 가시성을 확보 (w. 용우님)",
-					"Daytona 스케줄러 가중치를 sandbox 분포 기준으로 재설계해 노드 간 부하 분산"
+					"EKS 기반 self-hosted Daytona 구축·운영 + 관측 스택(Grafana 등)·Control Plane 대시보드 선구축, 안정성 체크리스트·모니터링 지표 합의 (w. 용우님)",
+					"스케줄러 가중치 재설계로 노드 간 sandbox 부하 분산",
+					"대규모 운영 이슈 직접 디버깅 — 노드 unresponsive, ingress-nginx, Daytona(OSS) 버그 등",
+					"외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여 (kubeip)",
+					"샌드박스가 서버(노드) 권한에 닿지 못하도록 접근 차단 (보안)"
 				],
-				result: ["최대 8,000+ 동시 실행 기반 마련", "병목·이상 실시간 관측 + 노드 간 sandbox 부하 분산 개선"]
+				result: ["최대 8,000+ 동시 실행 기반 마련 + 대규모 운영 안정화", "노드 고정 IP 자동화(NAT 비용↓), 샌드박스 권한 접근 100% 차단"]
 			},
 			{
 				title: "빌드·이미지 파이프라인 최적화 (빌드 서비스 분리 + Harbor S3)",
@@ -106,18 +109,6 @@ const phases = [
 					"일 비용 1,500만 → 200만원 (~7.5배↓), 노드 256 → 32, 클러스터 전체 다운 1회/일 → 0건",
 					"동시 푸시 병목 해소, 레지스트리 ~133TB / 약 46만 이미지 안정 운영"
 				]
-			},
-			{
-				title: "외부 연동용 고정 IP 자동화 (EIP)",
-				motive: "",
-				action: "외부 화이트리스트 통과용 고정 IP를 노드 기동 시 자동 부여(kubeip), 스케일 인/아웃 시 부여·반납 자동화.",
-				result: "33개 노드 ~25초 내 고정 IP 자동 부여 (NAT 비용 절감)."
-			},
-			{
-				title: "샌드박스의 노드 권한 접근 차단",
-				motive: "AWS 보안 알림으로, 에이전트 샌드박스가 서버(노드)의 AWS 권한을 가져갈 수 있는 경로 발견 (실제 침해는 없었음).",
-				action: "샌드박스가 서버 권한에 닿지 못하도록 접근을 막고, 전체 노드에 적용·코드로 고정해 재발 방지.",
-				result: "패치 전 권한 탈취 가능 → 패치 후 100개 동시 테스트 100/100 차단."
 			}
 		]
 	}
