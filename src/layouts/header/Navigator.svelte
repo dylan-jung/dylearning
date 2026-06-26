@@ -5,7 +5,6 @@ import i18nit from "$i18n";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { onMount } from "svelte";
 import Menu from "./Menu.svelte";
-import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
 let { locale, route }: { locale: string; route: string } = $props();
 
@@ -79,8 +78,6 @@ onMount(() => {
 	</header>
 
 	<footer class="flex flex-col gap-2 sm:flex-row sm:gap-7">
-		<ThemeSwitcher />
-
 		<a href={getRelativeLocaleUrl(locale, "/feed.xml")} target="_blank" aria-label="Subscription" class="inline-flex"><Icon name="lucide--rss" /></a>
 
 		{#if !monolocale}

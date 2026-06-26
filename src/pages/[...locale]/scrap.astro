@@ -32,7 +32,7 @@ const list = scraps.sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp
 							<article class="flex flex-col gap-1 transition-colors hover:text-primary">
 								<h2 class="text-lg font-medium group-hover:underline underline-offset-4 decoration-2">{item.data.title}</h2>
 								<div class="flex items-center gap-2 text-sm text-secondary">
-									<time datetime={item.data.timestamp.toISOString()}>{Time(item.data.timestamp)}</time>
+									<time datetime={item.data.timestamp.toISOString()}>{Time.date(item.data.timestamp)}</time>
 									<span>•</span>
 									<span class="truncate max-w-[300px]">{new URL(item.data.source).hostname}</span>
 								</div>

@@ -8,36 +8,37 @@ import Time from "$utils/time";
 import Icon from "$components/Icon.svelte";
 import i18nit from "$i18n";
 
-let { locale, notes, series: seriesList, tags: tagList }: { locale: string; notes: any[]; series: string[]; tags: string[] } = $props();
+let {
+	locale,
+	notes,
+	series: seriesList,
+	categories: categoryList
+}: { locale: string; notes: any[]; series: string[]; categories: string[] } = $props();
 
 const t = i18nit(locale);
 
 let initial = $state(false); // Track initial load to prevent unexpected effects
 let series: string | null = $state(null);
-let tags: string[] = $state([]);
+let categories: string[] = $state([]); // Selected category filters (OR within facet)
 let filtered: any[] = $derived.by(() => {
 	let list: any[] = notes
-		// Apply series and tag filtering
+		// Apply series and category filtering
 		.filter(note => {
-			// Check if note matches the specified series
 			let matchSeries = !series || note.data.series === series;
-
-			// Check if note contains all specified tags
-			let matchTags = tags.every(tag => note.data.tags?.includes(tag));
-
-			return matchSeries && matchTags;
+			let matchCategory = categories.length === 0 || categories.some(category => note.data.categories?.includes(category));
+			return matchSeries && matchCategory;
 		})
 		// Sort by timestamp (newest first)
 		.sort((a, b) => b.data.top - a.data.top || b.data.timestamp.getTime() - a.data.timestamp.getTime());
 
 	if (!initial) return list;
 
-	// Build URL with current page, series, and tag filters using URLSearchParams
+	// Build URL with current page, series, and category filters using URLSearchParams
 	let params = new URLSearchParams();
 
 	params.set("page", String(page));
 	if (series) params.set("series", series);
-	for (const tag of tags) params.append("tag", tag);
+	for (const category of categories) params.append("category", category);
 
 	let url = `${location.pathname}?${params.toString()}`;
 
@@ -46,6 +47,11 @@ let filtered: any[] = $derived.by(() => {
 
 	return list;
 });
+
+// Count notes per category for the facet list
+let counts: Record<string, number> = $derived(
+	Object.fromEntries(categoryList.map(category => [category, notes.filter(note => note.data.categories?.includes(category)).length]))
+);
 
 // Calculate pagination
 const size: number = 20;
@@ -61,19 +67,6 @@ $effect(() => {
 let list: any[] = $derived(filtered.slice((page - 1) * size, page * size));
 
 /**
- * Toggle tag inclusion/exclusion in the filter list
- * @param tag Tag to toggle
- * @param turn whether to include or exclude the tag
- */
-function switchTag(tag: string, turn?: boolean) {
-	let included = tags.includes(tag);
-	if (turn === undefined) turn = !included;
-
-	// Add tag if turning on and not included, or remove if turning off
-	tags = turn ? (included ? tags : [...tags, tag]) : tags.filter(item => item !== tag);
-}
-
-/**
  * Select or deselect a series filter (only one series can be active at a time)
  * @param seriesChoice the series to select or deselect
  * @param turn whether to include or exclude the series
@@ -84,12 +77,20 @@ function chooseSeries(seriesChoice: string, turn?: boolean) {
 	series = turn ? seriesChoice : null;
 }
 
+/**
+ * Toggle a category filter (multiple categories can be active at once)
+ * @param category the category to toggle
+ */
+function toggleCategory(category: string) {
+	categories = categories.includes(category) ? categories.filter(item => item !== category) : [...categories, category];
+}
+
 onMount(() => {
 	const params = new URLSearchParams(window.location.search);
 
 	page = Number(params.get("page")) || 1;
 	series = params.get("series");
-	tags = params.getAll("tag");
+	categories = params.getAll("category");
 
 	initial = true;
 });
@@ -98,23 +99,17 @@ onMount(() => {
 <main class="flex flex-col-reverse sm:flex-row gap-10 grow">
 	<article class="flex flex-col gap-4 grow">
 		{#each list as note (note.id)}
-			<section animate:flip={{ duration: 150 }} class="flex flex-col">
-				<div class="flex max-sm:flex-col">
-					<div class="leading-[1.55] *:inline *:align-middle">
-						{#if note.data.top > 0}<Icon name="lucide--flag-triangle-right" class="rtl:-scale-x-100" />{/if}
-						{#if note.data.sensitive}<Icon name="lucide--siren" title={t("sensitive.icon")} />{/if}
-						<a href={getRelativeLocaleUrl(locale, `/note/${monolocale ? note.id : note.id.split("/").slice(1).join("/")}`)} class="link">{note.data.title}</a>
-					</div>
-					<span class="inline-flex items-center sm:justify-end gap-1 flex-wrap content-start sm:ms-auto">
-						{#each note.data.tags as tag}
-							<button onclick={() => switchTag(tag, true)} class="text-[0.875rem] text-remark sm:text-sm">#{tag}</button>
-						{/each}
-					</span>
+			<section animate:flip={{ duration: 150 }} class="flex flex-col gap-1">
+				<div class="leading-[1.5] *:inline *:align-middle">
+					{#if note.data.top > 0}<Icon name="lucide--flag-triangle-right" class="rtl:-scale-x-100 text-remark" />{/if}
+					{#if note.data.sensitive}<Icon name="lucide--siren" title={t("sensitive.icon")} class="text-remark" />{/if}
+					<a href={getRelativeLocaleUrl(locale, `/note/${monolocale ? note.id : note.id.split("/").slice(1).join("/")}`)} class="link font-medium">{note.data.title}</a>
 				</div>
-				<div class="flex items-center gap-2">
-					<time datetime={note.data.timestamp.toISOString()} class="font-mono text-[0.65rem] text-remark">{Time(note.data.timestamp)}</time>
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-remark">
+					<time datetime={note.data.timestamp.toISOString()}>{Time.date(note.data.timestamp)}</time>
 					{#if note.data.series}
-						<button onclick={() => chooseSeries(note.data.series, true)} class="text-[0.65rem] font-mono px-1.5 rounded border border-weak text-remark hover:text-primary hover:border-primary transition-colors">{note.data.series}</button>
+						<span aria-hidden="true" class="text-weak">·</span>
+						<button onclick={() => chooseSeries(note.data.series, true)} class="hover:text-primary transition-colors">{note.data.series}</button>
 					{/if}
 				</div>
 			</section>
@@ -141,24 +136,36 @@ onMount(() => {
 		{/if}
 	</article>
 
-	<aside class="sm:basis-50 shrink-0 flex flex-col gap-5">
-		<section>
-			<h4>{t("note.series")}</h4>
-			<p>
-				{#each seriesList as seriesItem (seriesItem)}
-					<button class:selected={seriesItem == series} onclick={() => chooseSeries(seriesItem)}>{seriesItem}</button>
-				{/each}
-			</p>
-		</section>
+	<aside class="sm:basis-52 shrink-0 flex flex-col gap-6">
+		{#if categoryList.length}
+			<section class="flex flex-col gap-2">
+				<h4 class="text-xs font-semibold uppercase tracking-wider text-remark">{t("note.category")}</h4>
+				<ul class="flex flex-col gap-0.5 text-[0.85rem]">
+					{#each categoryList as category (category)}
+						<li>
+							<button class="facet" class:selected={categories.includes(category)} onclick={() => toggleCategory(category)}>
+								<span class="facet-box" aria-hidden="true"></span>
+								<span class="facet-label">{category}</span>
+								<span class="facet-count">{counts[category]}</span>
+							</button>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
 
-		<section>
-			<h4>{t("note.tag")}</h4>
-			<p>
-				{#each tagList as tag (tag)}
-					<button class:selected={tags.includes(tag)} onclick={() => switchTag(tag)}>{tag}</button>
-				{/each}
-			</p>
-		</section>
+		{#if seriesList.length}
+			<section class="flex flex-col gap-2">
+				<h4 class="text-xs font-semibold uppercase tracking-wider text-remark">{t("note.series")}</h4>
+				<ul class="flex flex-col gap-1 text-[0.85rem]">
+					{#each seriesList as seriesItem (seriesItem)}
+						<li>
+							<button class="series-item" class:selected={seriesItem == series} onclick={() => chooseSeries(seriesItem)}>{seriesItem}</button>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
 	</aside>
 </main>
 
@@ -189,39 +196,65 @@ onMount(() => {
 		}
 	}
 
-	aside {
-		section {
-			display: flex;
-			flex-direction: column;
-			gap: 5px;
+	.facet {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		width: 100%;
+		color: var(--secondary-color);
+		transition: color 0.15s ease-in-out;
 
-			p {
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				gap: 5px;
+		.facet-box {
+			flex-shrink: 0;
+			width: 0.85em;
+			height: 0.85em;
+			border: 1.5px solid var(--shadow-color);
+			border-radius: 0.2em;
+			transition:
+				background-color 0.15s ease-in-out,
+				border-color 0.15s ease-in-out;
+		}
 
-				button {
-					border-bottom: 1px solid var(--primary-color);
-					padding: 0rem 0.35rem;
-					font-size: 0.9rem;
-					transition:
-						color 0.1s ease-in-out,
-						background-color 0.1s ease-in-out;
+		.facet-label {
+			flex-grow: 1;
+			text-align: start;
+		}
 
-					&.selected {
-						color: var(--background-color);
-						background-color: var(--primary-color);
-					}
+		.facet-count {
+			color: var(--weak-color);
+			font-size: 0.85em;
+			font-variant-numeric: tabular-nums;
+		}
 
-					@media (min-width: 640px) {
-						&:hover {
-							color: var(--background-color);
-							background-color: var(--primary-color);
-						}
-					}
-				}
+		&:hover {
+			color: var(--primary-color);
+		}
+
+		&.selected {
+			color: var(--primary-color);
+
+			.facet-box {
+				background-color: var(--primary-color);
+				border-color: var(--primary-color);
 			}
 		}
 	}
+
+	.series-item {
+		display: block;
+		width: 100%;
+		text-align: start;
+		color: var(--secondary-color);
+		transition: color 0.15s ease-in-out;
+
+		&:hover {
+			color: var(--primary-color);
+		}
+
+		&.selected {
+			color: var(--primary-color);
+			font-weight: 500;
+		}
+	}
+
 </style>

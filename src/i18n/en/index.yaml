@@ -41,6 +41,7 @@ note:
   contents: Contents
   empty: No notes available
   series: Series
+  category: Category
   tag: Tag
   top: To Top
 read:

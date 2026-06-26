@@ -1,7 +1,10 @@
 @layer components {
 	.markdown {
-		line-height: 1.75;
+		font-size: 0.9375rem; /* 본문 크기 (15px) — 더 작게 하려면 줄이기 */
+		line-height: 1.8;
 		word-wrap: break-word;
+		word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
+		font-family: var(--font-serif), "Pretendard Variable", Pretendard, sans-serif, var(--font-mono);
 
 		&,
 		section {
@@ -9,6 +12,7 @@
 			flex-direction: column;
 			gap: 0.8em;
 			width: 100%;
+			max-width: 44rem; /* 읽기 폭 ~704px */
 		}
 
 		* {
@@ -21,11 +25,43 @@
 		}
 
 		h1 {
-			border-bottom: 4px solid;
+			font-size: 1.5em;
 		}
 
 		h2 {
-			border-bottom: 2px solid;
+			font-size: 1.3em;
+		}
+
+		h3 {
+			font-size: 1.15em;
+		}
+
+		h4 {
+			font-size: 1.05em;
+		}
+
+		h5,
+		h6 {
+			font-size: 1em;
+		}
+
+		/* 제목·헤딩은 고딕 (본문 문단만 세리프), 굵기는 semibold로 */
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			font-family: "Pretendard Variable", Pretendard, sans-serif, var(--font-mono);
+			font-weight: 600;
+		}
+
+		/* 하위 헤딩은 더 가볍게 */
+		h3,
+		h4,
+		h5,
+		h6 {
+			font-weight: 500;
 		}
 
 		hr {
@@ -33,33 +69,14 @@
 		}
 
 		a {
-			text-decoration: underline transparent 0.05em;
-			text-underline-offset: 0.15em;
+			text-decoration: underline;
+			text-decoration-thickness: 0.07em;
+			text-decoration-color: var(--remark-color);
+			text-underline-offset: 0.2em;
 			transition: text-decoration-color 0.15s ease-in-out;
 
 			&:hover {
 				text-decoration-color: currentColor;
-			}
-
-			&[target="_blank"]::after {
-				content: "\202F \202F";
-				white-space: pre;
-				font-size: 0.8em;
-				vertical-align: 0.05em;
-			}
-
-			&:not([target="_blank"], [data-footnote-ref], [data-footnote-backref])::after {
-				content: "\202F \202F";
-				white-space: pre;
-				font-size: 0.85em;
-				vertical-align: 0.05em;
-			}
-
-			&[href^="mailto:"]::after {
-				content: "\202F󱃝 \202F";
-				white-space: pre;
-				font-size: 0.9em;
-				vertical-align: -0.1em;
 			}
 		}
 
@@ -135,7 +152,7 @@
 			padding: 0.25em 0.5em;
 			font-size: 0.8em;
 			-webkit-user-drag: none;
-			font-family: var(--font-mono);
+			font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
 		}
 
 		:not(pre) > code {
@@ -225,21 +242,27 @@
 
 		table {
 			border-collapse: collapse;
-			border-top: 3px solid var(--primary-color);
-			border-bottom: 3px solid var(--primary-color);
-			text-align: center;
+			width: 100%;
+			font-size: 0.95em;
 
 			th,
 			td {
-				padding: 5px 10px;
+				padding: 0.55em 0.9em;
+				text-align: start;
+				border-bottom: 1px solid var(--block-color);
+			}
+
+			thead th {
+				font-weight: 600;
+				border-bottom: 2px solid var(--shadow-color);
+			}
+
+			tbody tr:last-child td {
+				border-bottom: none;
 			}
 
 			th[colspan] {
-				border-bottom: 2px solid var(--primary-color);
-			}
-
-			thead tr:last-child {
-				border-bottom: 2px solid var(--primary-color);
+				text-align: center;
 			}
 		}
 

@@ -22,6 +22,18 @@ const notes = await getCollection("note", note => {
 	return published && localed;
 });
 
+// Map hierarchical tag prefixes (e.g. "tech/backend") to a small set of reader-facing categories
+const CATEGORY: Record<string, string> = {
+	tech: "기술",
+	learn: "학습",
+	essay: "에세이",
+	short: "에세이", // short/idea → 에세이로 합침
+	book: "책",
+	retrospective: "회고"
+};
+const CATEGORY_ORDER = ["기술", "학습", "에세이", "책", "회고"];
+const categoriesOf = (tags?: string[]) => Array.from(new Set((tags ?? []).map(tag => CATEGORY[tag.split("/")[0]]).filter(Boolean)));
+
 // Standardize note structure
 let list = notes.map(note => ({
 	id: note.id,
@@ -29,19 +41,19 @@ let list = notes.map(note => ({
 		title: note.data.title,
 		timestamp: note.data.timestamp,
 		series: note.data.series,
-		tags: note.data.tags,
+		categories: categoriesOf(note.data.tags),
 		sensitive: note.data.sensitive,
 		top: note.data.top
 	}
 }));
 
-// Extract all unique series and tags from the filtered notes
+// Extract all unique series and categories from the filtered notes
 const series = Array.from(new Set(notes.map(note => note.data.series).filter((series): series is string => Boolean(series)))).sort();
-const tags = Array.from(new Set(notes.flatMap(note => note.data.tags).filter((tag): tag is string => Boolean(tag)))).sort();
+const categories = CATEGORY_ORDER.filter(category => list.some(note => note.data.categories.includes(category)));
 ---
 
 <Base title={t("navigation.note")} {locale}>
 	<main class="flex flex-col grow">
-		<Note client:load {locale} notes={list} {series} {tags} />
+		<Note client:load {locale} notes={list} {series} {categories} />
 	</main>
 </Base>

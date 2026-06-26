@@ -33,6 +33,7 @@ import reading from "./src/utils/remark/reading";
 import ruby from "./src/utils/remark/ruby";
 import spoiler from "./src/utils/remark/spoiler";
 import wrapper from "./src/utils/remark/table-wrapper";
+import wikilink from "./src/utils/remark/wikilink";
 
 import siteConfig from "./site.config";
 import { ZeoSevenFonts } from "./src/fonts/config";
@@ -51,6 +52,7 @@ export default defineConfig({
 	markdown: {
 		remarkPlugins: [
 			[GFM, { singleTilde: false }],
+			wikilink,
 			ins,
 			mark,
 			spoiler,
@@ -87,14 +89,11 @@ export default defineConfig({
 		],
 		smartypants: false,
 		shikiConfig: {
-			themes: {
-				light: {
-					...githubLight,
-					colorReplacements: {
-						"#fff": "var(--block-color)"
-					}
-				},
-				dark: "dark-plus"
+			theme: {
+				...githubLight,
+				colorReplacements: {
+					"#fff": "var(--block-color)"
+				}
 			},
 			transformers: [
 				copy({

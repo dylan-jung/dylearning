@@ -7,6 +7,9 @@ interface Props {
 
 const { headings } = Astro.props;
 
+// 최상위 제목 깊이를 기준선으로 — 단계별 들여쓰기 정규화
+const minDepth = headings.length ? Math.min(...headings.map(h => h.depth)) : 0;
+
 // Extended heading type with additional properties for tree rendering
 // - last: indicates if this heading is the last child in its parent group
 // - lines: array of booleans indicating which vertical connector lines should be drawn
@@ -43,25 +46,17 @@ headings.forEach(heading => {
 });
 ---
 
-<ul class="flex flex-col text-base list-none">
+<ul class="flex flex-col text-[0.8125rem] list-none border-s border-block">
 	{
 		headings.map((heading: Heading) => (
-			<li id={`indicator-${heading.slug}`} class="group relative flex items-stretch h-6 [&.indicate>a]:font-bold [&.indicate>a]:text-primary">
-				<div class="flex select-none" aria-hidden="true">
-					{heading.lines?.map(line => (
-						<div class="w-4 relative flex justify-center">{line && <span class="absolute top-0 bottom-0 border-s border-remark" />}</div>
-					))}
-
-					{heading.depth > 1 && (
-						<div class="w-4 relative flex justify-center">
-							<span class:list={["absolute top-0 border-s border-remark", heading.last ? "h-[calc(50%+1px)]" : "h-full"]} />
-							<span class="absolute top-1/2 start-1/2 w-2 border-b border-remark" />
-						</div>
-					)}
-				</div>
-
-				<a href={`#${heading.slug}`} title={heading.text} class="grow min-w-0 inline-flex items-center ps-1 text-weak hover:font-bold hover:text-primary transition-[color,font-weight]">
-					<span class="truncate">{heading.text}</span>
+			<li id={`indicator-${heading.slug}`} class="-ms-px border-s border-transparent [&.indicate]:border-primary [&.indicate>a]:text-primary [&.indicate>a]:font-medium">
+				<a
+					href={`#${heading.slug}`}
+					title={heading.text}
+					class="block truncate py-1 pe-1 text-secondary hover:text-primary transition-colors"
+					style={`padding-inline-start: ${0.75 + (heading.depth - minDepth) * 0.9}rem`}
+				>
+					{heading.text}
 				</a>
 			</li>
 		))

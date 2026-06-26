@@ -37,6 +37,7 @@ note:
   contents: 목차
   empty: 문서가 없습니다
   series: 시리즈
+  category: 분류
   tag: 태그
   top: 맨 위로
 read:

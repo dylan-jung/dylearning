@@ -5,7 +5,6 @@ import config, { monolocale } from "$config";
 import Time from "$utils/time";
 import Base from "$layouts/Base.astro";
 import TOC from "$components/TOC.astro";
-import Position from "$components/Position.astro";
 import Icon from "$components/Icon.svelte";
 import Sensitive from "$components/Sensitive.svelte";
 import i18nit from "$i18n";
@@ -46,9 +45,9 @@ const t = i18nit(locale);
 <Base title={note.data.title} {locale} description={note.data.description} article={{ timestamp: note.data.timestamp, section: note.data.series, tags: note.data.tags }}>
 	<main class="flex flex-col gap-6">
 		<header class="flex flex-col gap-4">
-			<h1>{note.data.title}</h1>
+			<h1 class="text-[1.75rem]">{note.data.title}</h1>
 			<div class="flex flex-col gap-3 sm:flex-row *:flex *:items-center *:gap-1 *:text-[0.875rem] *:text-secondary">
-				<time datetime={note.data.timestamp.toISOString()}><Icon name="lucide--calendar" />{Time(note.data.timestamp)}</time>
+				<time datetime={note.data.timestamp.toISOString()}><Icon name="lucide--calendar" />{Time.date(note.data.timestamp)}</time>
 				{
 					note.data.series && (
 						<span>
@@ -77,7 +76,7 @@ const t = i18nit(locale);
 					note.data.toc && (
 						<aside class="hidden sm:block sm:shrink-0 sm:w-50">
 							<div class="sticky top-3 flex flex-col gap-1 max-h-[calc(100vh-1.5rem)]">
-								<h4>{t("note.contents")}</h4>
+								<h4 class="text-xs font-semibold uppercase tracking-wider text-remark mb-1">{t("note.contents")}</h4>
 								<nav class="overflow-y-auto">
 									<TOC {headings} />
 								</nav>
@@ -87,7 +86,5 @@ const t = i18nit(locale);
 				}
 			</div>
 		</Sensitive>
-
-		<Position {locale} />
 	</main>
 </Base>
