@@ -1,122 +1,19 @@
 ---
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import ResumeLayout from "../../layouts/ResumeLayout.astro";
-import ResumeHeader from "../../components/resume/ResumeHeader.astro";
-import ResumeExperienceItem from "../../components/resume/ResumeExperienceItem.astro";
-import ResumeItem from "../../components/resume/ResumeItem.astro";
-import ResumeSection from "../../components/resume/ResumeSection.astro";
-import ResumeSkills from "../../components/resume/ResumeSkills.astro";
-import ResumeTimeline from "../../components/resume/ResumeTimeline.astro";
+import CvBody from "../../components/resume/CvBody.astro";
 
 export async function getStaticPaths() {
-	const resumes = await getCollection("resume");
-	return resumes.map(entry => ({
+	const entries = await getCollection("cv");
+	return entries.map(entry => ({
 		params: { id: entry.id },
-		props: { resumeData: entry.data }
+		props: { cv: entry.data }
 	}));
 }
 
-const { resumeData } = Astro.props;
-
-if (!resumeData) {
-	return Astro.redirect("/404");
-}
+const { cv } = Astro.props;
 ---
 
-<ResumeLayout title={`${resumeData.header.name} - CV`} description={resumeData.introLines?.join(" ") || "CV"}>
-  <div class="flex justify-end mb-4 no-print">
-    <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
-      Print to PDF
-    </button>
-  </div>
-  
-  <ResumeHeader {...resumeData.header} />
-
-  {resumeData.introLines && (
-    <ResumeSection title="Introduction">
-        <ul class="list-disc list-outside ml-5 space-y-2 text-gray-700 leading-relaxed font-medium">
-        {resumeData.introLines.map(line => <li>{line}</li>)}
-        </ul>
-    </ResumeSection>
-  )}
-
-  {resumeData.careers && (
-    <ResumeSection title="Career Timeline">
-      <ResumeTimeline items={resumeData.careers} />
-    </ResumeSection>
-  )}
-
-  <ResumeSection title="Education">
-    {resumeData.education.map((edu) => (
-      <ResumeItem
-        title={edu.school}
-        subtitle={edu.degree}
-        date={edu.date}
-      />
-    ))}
-  </ResumeSection>
-
-  <ResumeSection title="Experience">
-    {resumeData.experience.map((exp) => (
-      <ResumeExperienceItem
-        company={exp.company}
-        role={exp.role}
-        date={exp.date}
-        intro={exp.intro}
-        activities={exp.activities}
-        techStack={exp.techStack}
-        relatedLinks={exp.relatedLinks}
-        forcePageBreak={true}
-      />
-    ))}
-  </ResumeSection>
-
-  {resumeData.activities_list && (
-    <ResumeSection title="Activities">
-        {resumeData.activities_list.map((act) => (
-        <ResumeItem
-            title={act.name}
-            subtitle={act.role}
-            date={act.date}
-        >
-            <p class="mt-1 text-gray-700" set:html={act.description}></p>
-        </ResumeItem>
-        ))}
-    </ResumeSection>
-  )}
-
-  {resumeData.projects && (
-    <ResumeSection title="Projects">
-      {resumeData.projects.map((project) => (
-        <ResumeExperienceItem
-          company={project.company}
-          role={project.role}
-          date={project.date}
-          intro={project.intro}
-          activities={project.activities}
-          techStack={project.techStack}
-          relatedLinks={project.relatedLinks}
-        />
-      ))}
-    </ResumeSection>
-  )}
-
-  {resumeData.awards && (
-    <ResumeSection title="Awards">
-        {resumeData.awards.map((award) => (
-        <ResumeItem
-            title={award.name}
-            subtitle={award.role}
-            date={award.date}
-        />
-        ))}
-    </ResumeSection>
-  )}
-  
-  {resumeData.certifications && (
-    <ResumeSection title="Certifications">
-        <ResumeSkills items={resumeData.certifications} />
-    </ResumeSection>
-  )}
-
+<ResumeLayout title={`${cv.header.name} - CV`} description={cv.introLines?.join(" ") || "CV"}>
+  <CvBody cv={cv} />
 </ResumeLayout>

@@ -1,0 +1,109 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ResumeHeader from "./ResumeHeader.astro";
+import ResumeExperienceItem from "./ResumeExperienceItem.astro";
+import ResumeItem from "./ResumeItem.astro";
+import ResumeSection from "./ResumeSection.astro";
+import ResumeSkills from "./ResumeSkills.astro";
+import ResumeTimeline from "./ResumeTimeline.astro";
+
+interface Props {
+	cv: CollectionEntry<"cv">["data"];
+}
+const { cv } = Astro.props;
+---
+
+<div class="flex justify-end mb-4 no-print">
+  <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
+    Print to PDF
+  </button>
+</div>
+
+<ResumeHeader {...cv.header} />
+
+{cv.introLines && (
+  <ResumeSection title="Introduction">
+      <ul class="list-disc list-outside ml-5 space-y-2 text-gray-700 leading-relaxed font-medium">
+      {cv.introLines.map(line => <li>{line}</li>)}
+      </ul>
+  </ResumeSection>
+)}
+
+{cv.careers && (
+  <ResumeSection title="Career Timeline">
+    <ResumeTimeline items={cv.careers} />
+  </ResumeSection>
+)}
+
+<ResumeSection title="Education">
+  {cv.education.map((edu) => (
+    <ResumeItem
+      title={edu.school}
+      subtitle={edu.degree}
+      date={edu.date}
+    />
+  ))}
+</ResumeSection>
+
+<ResumeSection title="Experience">
+  {cv.experience.map((exp) => (
+    <ResumeExperienceItem
+      company={exp.company}
+      role={exp.role}
+      date={exp.date}
+      intro={exp.intro}
+      activities={exp.activities}
+      techStack={exp.techStack}
+      relatedLinks={exp.relatedLinks}
+      forcePageBreak={true}
+    />
+  ))}
+</ResumeSection>
+
+{cv.activities_list && (
+  <ResumeSection title="Activities">
+      {cv.activities_list.map((act) => (
+      <ResumeItem
+          title={act.name}
+          subtitle={act.role}
+          date={act.date}
+      >
+          <p class="mt-1 text-gray-700" set:html={act.description}></p>
+      </ResumeItem>
+      ))}
+  </ResumeSection>
+)}
+
+{cv.projects && (
+  <ResumeSection title="Projects">
+    {cv.projects.map((project) => (
+      <ResumeExperienceItem
+        company={project.company}
+        role={project.role}
+        date={project.date}
+        intro={project.intro}
+        activities={project.activities}
+        techStack={project.techStack}
+        relatedLinks={project.relatedLinks}
+      />
+    ))}
+  </ResumeSection>
+)}
+
+{cv.awards && (
+  <ResumeSection title="Awards">
+      {cv.awards.map((award) => (
+      <ResumeItem
+          title={award.name}
+          subtitle={award.role}
+          date={award.date}
+      />
+      ))}
+  </ResumeSection>
+)}
+
+{cv.certifications && (
+  <ResumeSection title="Certifications">
+      <ResumeSkills items={cv.certifications} />
+  </ResumeSection>
+)}

@@ -225,6 +225,12 @@
 					"name": "vLLM",
 					"description": "에이전트 롤아웃을 위한 LLM 추론 서빙"
 				}
+			],
+			"relatedLinks": [
+				{
+					"text": "상세 이력 보기",
+					"url": "https://blog.dylearning.com/cv/detail/lg-ai/"
+				}
 			]
 		},
 		{

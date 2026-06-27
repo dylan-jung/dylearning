@@ -2,7 +2,7 @@
 interface Props {
 	name: string;
 	role?: string;
-	email: string;
+	email?: string;
 	website?: string;
 	github?: string;
 	linkedin?: string;
@@ -18,7 +18,7 @@ const { name, role, email, website, github, linkedin, phone } = Astro.props;
   </div>
   <div class="text-sm text-gray-600 flex flex-col items-start md:items-end print:items-end gap-1">
     {phone && <a href={`tel:${phone}`} class="hover:text-gray-900 transition-colors">{phone}</a>}
-    <a href={`mailto:${email}`} class="hover:text-gray-900 transition-colors">{email}</a>
+    {email && <a href={`mailto:${email}`} class="hover:text-gray-900 transition-colors">{email}</a>}
     {website && <a href={website} target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 transition-colors">{website.replace(/^https?:\/\//, '')}</a>}
     <div class="flex gap-3 mt-1">
         {github && <a href={github} target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 font-medium">GitHub</a>}

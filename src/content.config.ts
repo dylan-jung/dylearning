@@ -61,11 +61,11 @@ const information = defineCollection({
 });
 
 /**
- * Resume collection configuration
- * Represents different versions of the resume
+ * CV collection configuration
+ * Career data behind /cv (and the header used by /resume); one entry per variant (default, public)
  */
-const resume = defineCollection({
-	loader: glob({ pattern: "**/*.json", base: "./src/content/resume" }),
+const cv = defineCollection({
+	loader: glob({ pattern: "**/*.json", base: "./src/content/cv" }),
 	schema: z.object({
 		header: z.object({
 			name: z.string(),
@@ -210,4 +210,4 @@ const scrap = defineCollection({
 	})
 });
 
-export const collections = { note, jotting, preface, information, resume, scrap };
+export const collections = { note, jotting, preface, information, cv, scrap };
