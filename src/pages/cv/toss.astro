@@ -1,0 +1,913 @@
+---
+// 토스증권 ML Engineer(LLM) 지원용 이력서 — 문서형 레이아웃 + 기여 맵.
+// JD 작성 가이드 4항목을 각각 레이아웃 장치로 대응:
+//   ① 문제→방법→결과(지표): 항목의 라벨 칩 구조
+//   ② 운영 개선 포함: 주황 "운영 개선" 배지
+//   ③ 영역·역할 표기: 항목 제목 옆 영역 칩 + 역할 칩
+//   ④ 전체 구조와 핵심 기여: 회사별 기여 맵(파이프라인)
+// 서사 축: 제품(사용 로그·VOC) → 데이터 → 학습 → 검증 → 서빙·운영, 프로덕트 감각 강조.
+// 사실관계 주의: gold 1,400건은 ChatEXAONE 과제, 44k는 K-EXAONE 과제 (별개).
+// 지미 리텐션은 25.3→30.6 표기 유지 (CV 기준).
+// ⚠️⚠️ 플레이스홀더 경고 (실측값 교체 전 절대 제출 금지) ⚠️⚠️
+//   1) VOC 항목 "성공률 46.9% → 84.4% (시나리오 32건)" — 측정 전 가짜 숫자
+//   2) 44k 항목 "담당 4개 도메인 11.2 → 43.5" — 측정 전 가짜 숫자
+//   3) 44k 항목 "배합 실험 8회 재학습, 4회 채택" — 실제 횟수로 교체 필요
+//   4) 44k 항목 "SFT 재학습을 직접 실행, 체크포인트 선택" — 아직 안 한 일.
+//      실제로 학습 잡을 본인이 돌린 뒤에만 유지 가능. 안 하면 이 문장 삭제.
+
+const header = {
+	name: "정민혁",
+	role: "ML Engineer · LLM",
+	email: "dylanjungko@gmail.com",
+	phone: "010-4536-6741",
+	github: "https://github.com/dylan-jung",
+	blog: "https://blog.dylearning.com"
+};
+
+const summary = [
+	"사내 개발자들이 실제로 쓰는 **코딩 에이전트(Exaone 기반)를 만들고 운영**. 사용 로그·VOC에서 문제를 정의해 **학습 데이터로 반영하는 개선 사이클**을 담당.",
+	"학습 데이터 정의·구축·품질 검증(**2단 LLM Judge·Agent Judge 직접 설계**)과 데이터 배합 조정·재생성 이터레이션을 담당. **Terminal-Bench 14.3 → 39.3** 기여, 담당 도메인은 **11.2 → 43.5**.",
+	"성능 저하는 실측으로 원인을 규명해 구조를 고침. 256K 서빙 **디코드 3.2배** 회복, 대규모 실행 에러율 **16.3% → 0.47%**.",
+	"창업 2년, 개선의 판단 기준은 제품 지표. 검색 이탈률 **21% → 6%**, D+1 리텐션 **+5.3%p**.",
+	"주식을 직접 투자하는 **토스증권 사용자**. 흩어진 공시·뉴스에서 판단에 필요한 것만 골라내는 문제를 투자자로서 매일 겪고 있어, 이 문제를 만드는 쪽에서 풀고 싶어 지원."
+];
+
+const guide = [
+	"① 모든 항목을 문제 → 방법 → 결과(지표)로 서술",
+	"② 운영 개선은 배지로 표기",
+	"③ 항목마다 영역·역할 태그",
+	"④ 회사마다 전체 구조·담당 구간 맵"
+];
+
+// pipeline: o = mine(담당) | joint(공동) | team(팀)
+const careers = [
+	{
+		company: "LG AI Research",
+		role: "Language Lab · Internship",
+		date: "2026.02 – 2026.08 (예정)",
+		intro: "Exaone을 사내 개발자들이 실제로 쓰는 코딩·터미널 에이전트로 고도화하는 과제.",
+		link: { label: "상세 이력", url: "https://blog.dylearning.com/cv/detail/lg-ai/" },
+		pipeline: [
+			{ t: "태스크 정의", o: "team" },
+			{ t: "데이터 생산", o: "mine" },
+			{ t: "품질 검증", o: "mine" },
+			{ t: "SFT 학습", o: "joint" },
+			{ t: "평가·결과 분석", o: "joint" },
+			{ t: "서빙·제품 운영", o: "mine" }
+		],
+		items: [
+			{
+				title: "독자 파운데이션 모델의 SFT 데이터셋 구축·학습 이터레이션",
+				area: "LLM",
+				stage: "담당 도메인 데이터 전담",
+				problem:
+					"독자 파운데이션 모델 학습에 넓은 도메인 커버리지가 필요했지만 공개셋만으로는 부족했고, 어떤 데이터가 부족한지 모른 채 생성하면 비용만 낭비되는 상황.",
+				method: [
+					"태스크 생성 → trajectory 분석으로 데이터의 사용 가능성과 부족분을 먼저 진단 (담당 도메인: 수학·최적화·과학연산·게임)",
+					"생성 → 학습(SFT/RL) → 결과 분석 → 재생성 이터레이션 담당: **배합 설계·재학습 잡 실행·체크포인트 판독은 본인**, 학습 코드·인프라는 학습팀과 공동. 배합 실험 8회 중 4회를 담당 도메인 점수로 채택",
+					"Terminal-Bench·SWE-Bench·인하우스 벤치마크 **평가 체계를 구축**해 학습 성능을 검증"
+				],
+				result: "**44k 규모 SFT/RL 데이터셋** 구축, **Terminal-Bench 14.3 → 39.3** 기여 (담당 4개 도메인 분리 시 **11.2 → 43.5**, RL 진행 중)."
+			},
+			{
+				title: "사내 실사용 코딩 에이전트의 VOC 기반 모델 개선",
+				area: "LLM · 제품",
+				stage: "데이터 생산·검증 전담",
+				ops: true,
+				problem:
+					"사내 개발자들이 실제로 쓰는 코딩 에이전트에서 Skill·MCP 활용이 막히는 지점이 사용 로그·VOC로 반복 확인됐고, 에이전트 대량 실행으로 만든 학습 데이터에는 저품질 풀이가 섞여 수작업 검증으로는 확보할 수 없었음.",
+				method: [
+					"에이전트 하네스(opencode)의 내부 구조(서브에이전트·컨텍스트 압축·Skill/MCP)를 분석하고 **Exaone에 맞게 직접 수정**해 데이터 생성 기반을 정립",
+					"사용 로그·VOC를 분석해 막히는 문제 유형을 정의하고, 해당 유형의 타겟 학습 데이터를 생산해 학습에 반영. 인하우스 벤치마크에서 해당 유형만 분리해 학습 전후를 같은 시나리오로 측정",
+					"품질 검증은 **2단 LLM Judge**로 설계: 약한 모델이 전수 검증하고 의심 건만 강한 모델로 보내, 비용과 판정 편향을 함께 잡음",
+					"코드만 읽는 채점의 한계는 실제 빌드·테스트로 채점하는 **Agent Judge**로 보완, 생성 → 검증 → 재시도를 무중단 파이프라인(Dagster)으로 자동화",
+					"운영 중 긴 세션이 깨지는 장애를 스트리밍 응답의 usage 누락으로 자동 압축(compaction)이 걸리지 않던 문제로 진단·해결"
+				],
+				result: "학습 반영 후 막히던 활용 유형 성공률 **46.9% → 84.4%** (시나리오 32건 기준). gold 데이터 **1,400건을 5일 · ~$500 · 1인 자동화 체계**로 생산, 재시도 루프로 확보율 **68.5% → 93.2%**."
+			},
+			{
+				title: "256K 롱컨텍스트 모델 서빙",
+				area: "LLM 서빙",
+				stage: "설계·튜닝 전담",
+				ops: true,
+				problem:
+					"세션 1개의 KV 캐시만 8.6GB인 256K 컨텍스트 모델을 A100-40GB×4 한 노드에 서빙해야 했고, 신규 아키텍처라 벤더 레시피가 없었음.",
+				method: [
+					"KV 캐시 공식으로 GPU별 토큰 예산을 계산해 동시 세션 상한부터 설계",
+					"코딩 워크로드라 weight 양자화는 배제하고 **KV 캐시만 fp8** 적용. KLD 검증으로 무손실을 입증한 뒤 반영 (bf16 대비 0.009 nats, greedy top-1 100% 일치)",
+					"spec decoding을 켜면 오히려 느려지는 문제를 발견, **CUDA graph 강등이 원인**임을 실측으로 규명해 off 결정"
+				],
+				result: "256K 동시 세션 **5.4 → 10.4개 (2배)**, decode TPOT **48ms → 14ms (3.2배)**."
+			},
+			{
+				title: "대규모 실행·서빙 인프라의 에러율·비용 개선",
+				area: "인프라·서빙",
+				stage: "원인 분석·재설계",
+				ops: true,
+				problem: "에이전트를 수천 개씩 동시 실행하자 생성 에러율 16.3%, 일 비용 1,500만원으로 데이터 생산 전체의 병목이 됨.",
+				method: [
+					"수만 건의 실패 로그를 분석해 원인이 도커 빌드·레지스트리임을 특정, **빌드를 실행 경로에서 분리한 전용 서비스**로 재설계",
+					"롤아웃 서빙은 vLLM 수평 확장에 **세션 affinity 라우팅**을 더해 prefix 캐시 적중률을 높여 처리량 ~10% 확보",
+					"Grafana·Loki 관측 체계를 사전 구축해 원인 분석이 가능한 상태를 먼저 확보"
+				],
+				result: "빌드 대기 **P95 93분 → 4.4분**, 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원 (7.5배↓)**. 최대 8,000+ 동시 실행."
+			}
+		]
+	},
+	{
+		company: "씨그로",
+		role: "데이터 엔지니어 & 서버 개발자",
+		date: "2024.05 – 2024.09",
+		intro: "50+ 채널의 이커머스 판매·광고 데이터를 수집(일 500+ job)·분석하는 B2B 대시보드.",
+		pipeline: [
+			{ t: "수집 파이프라인", o: "mine" },
+			{ t: "정합성·집계", o: "mine" },
+			{ t: "조회 API", o: "mine" },
+			{ t: "대시보드 UI", o: "team" },
+			{ t: "운영·관측", o: "mine" }
+		],
+		items: [
+			{
+				title: "데이터 급증으로 인한 조회 성능 저하 개선",
+				area: "서비스",
+				stage: "집계·조회 API 전담",
+				problem:
+					"고객사 판매 데이터가 일 10만+건으로 급증하며 대시보드 집계 조회 p99가 10초를 넘었고, CS 증가로 대형 고객사가 이탈 직전이었음.",
+				method: [
+					"Materialized View는 refresh 비용이 새 병목이 되고, OLAP은 운영 복잡도가 커 배제",
+					"**사전 집계 테이블 + 증분 갱신**(변경분만 비동기 재계산)을 선택해 실시간 집계 쿼리를 제거"
+				],
+				result: "집계 조회 **p99 10초+ → 1초 이내**, 이탈 직전 **대형 고객사 2곳 유지**. 추가 인프라 도입 없이 해결."
+			},
+			{
+				title: "수집 데이터의 정합성·장애 운영",
+				area: "데이터",
+				stage: "운영·개선 전담",
+				ops: true,
+				problem:
+					"새벽 OOM 무한 재시도가 클러스터를 고갈시켜 당일 수집이 통째로 중단되는 장애가 반복됐고, 잘못된 join 키로 어긋난 집계가 고객 신뢰를 깎고 있었음.",
+				method: [
+					"장애 확산을 즉시 차단한 뒤, 메모리 계측으로 컨테이너 limit을 재산정해 근본 원인 제거",
+					"어긋난 데이터를 진단·복구해 채널별 **집계 정합성 확보**, 스키마 밸리데이션으로 채널 응답 변경을 즉시 감지",
+					"로그가 없어 원인 분석이 어려웠던 환경에 **Loki·Grafana 관측·알림 체계** 구축"
+				],
+				result: "반복되던 OOM 장애 해소, 크롤링 실패 티켓 **30건+ → 5건 미만**, 장애 인지를 **알림 기반 체계로 전환**."
+			}
+		]
+	},
+	{
+		company: "리베이스",
+		role: "Founder · 풀스택 개발",
+		date: "2022.06 – 2024.02",
+		intro: "환경 리워드 앱 '지미'(다운로드 27,000+, DAU 1,000+)와 광고 레퍼런스 검색 툴 '모인나'를 창업해 개발·운영.",
+		pipeline: [
+			{ t: "문제 발굴·기획", o: "mine" },
+			{ t: "개발", o: "mine" },
+			{ t: "배포·운영", o: "mine" },
+			{ t: "지표 검증", o: "mine" }
+		],
+		items: [
+			{
+				title: "모인나 · 사용자 이탈을 데이터로 읽고 검색을 재설계",
+				area: "검색",
+				stage: "설계·구현 전담",
+				problem:
+					"마케터들이 광고 레퍼런스를 수작업으로 모으는 걸 관찰·인터뷰해 검색 서비스로 만들었지만, 베타 200+명 운영 중 검색이 3초를 넘으면 사용자가 말없이 떠나는 것을 확인. **검색 과정 이탈률 21%**.",
+				method: [
+					"광고 이미지를 **gpt-4-vision으로 캡션·설명 생성 후 임베딩**하는 인덱싱 파이프라인 구축 (에셋 20,000+), 키워드+벡터 **하이브리드 검색**으로 품질 확보",
+					"GPU는 규모 대비 비용이 커 배제, 검색을 DB(pgvector)에서 분리한 **Faiss 인메모리 서버 + CPU 수평 확장**으로 재설계 (무중단 인덱스 교체)"
+				],
+				result: "검색 응답 **3.2초 → 0.9초**, 검색 이탈률 **21% → 6%**."
+			},
+			{
+				title: "지미 · 제품 지표 기준의 반복 개선",
+				area: "서비스",
+				stage: "기획·개발·운영 (팀 리드)",
+				problem:
+					"광고 수익 모델이라 반복 방문과 체류가 수익과 직결. **핵심 KPI를 DAU와 D+1 리텐션으로 설정**하고 개선을 반복했지만 리텐션이 정체, 피드는 ORDER BY RAND() 풀스캔으로 성능도 저하되고 있었음.",
+				method: [
+					"세션 Seed 기반 랜덤 페이지네이션으로 재설계해, 인덱스 Range Scan만으로 랜덤성과 성능을 동시에 확보",
+					"커뮤니티 상호평가로 미션 검수를 자동화하고 어뷰징 방어, 6개월간 26회 배포로 개선을 반복"
+				],
+				result: "**D+1 리텐션 25.3% → 30.6% (+5.3%p)**, 평균 체류 시간 3분 → 6분, 스토어 평점 4.7."
+			}
+		]
+	}
+];
+
+const education = {
+	school: "서울시립대학교 컴퓨터과학전공",
+	detail: "GPA 4.12 / 4.5 · 2026.08 졸업 예정"
+};
+
+const etc = [
+	"과학기술정보통신부 장관상 2회 (마이데이터 공모전 · SW마에스트로 13기 우수자, 2023)",
+	"Spring AI 오픈소스 기여 (PR 제출, 리뷰 진행 중, 2026)",
+	"소프트웨어 마에스트로 13기 팀 리더 (팀 전원 상위 8% 우수자 선정, 2022)"
+];
+
+// 화면에서만 보이는 TODO (인쇄 제외). 전부 완료되면 배열을 비울 것 — 배너가 사라짐.
+const todos = [
+	"⚠️ 플레이스홀더(가짜 숫자) 4개 — 실측 교체 전 제출 금지",
+	"① Skill 활용 유형 성공률 46.9→84.4%(32건): 인하우스 벤치에서 해당 유형 슬라이스로 학습 전/후 실측",
+	"② 담당 4개 도메인 TB 11.2→43.5: 도메인 분리 before/after 수치 확보",
+	"③ 배합 실험 8회 중 4회 채택: 실제 횟수로 교체",
+	"④ '재학습 잡 실행·체크포인트 판독은 본인': 실제로 잡을 직접 돌린 뒤에만 유지, 안 하면 이 구절 삭제 — 38점의 최대 지분",
+	"⑤ CLI 운영 정량 지표(사용자·VOC) 하나 확보해 VOC 항목 보강",
+	"⑥ 지원 동기 한 줄: 공시·뉴스에서 실제 겪은 답답함으로 교체 (본인 언어)",
+	"⑦ 수치 통일: 지미 리텐션 25.3 vs 자소서 10.3 / 모인나 0.9초 vs 400ms"
+];
+
+const md = s => String(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const pipeStat = p => {
+	const m = p.filter(n => n.o === "mine").length;
+	const j = p.filter(n => n.o === "joint").length;
+	if (m === p.length) return "전 구간 담당";
+	return `${p.length}구간 중 ${m} 담당${j ? ` · ${j} 공동` : ""}`;
+};
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="robots" content="noindex" />
+		<title>정민혁 — ML Engineer (LLM)</title>
+		<link
+			rel="stylesheet"
+			as="style"
+			crossorigin
+			href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+		/>
+		<style is:global>
+			:root {
+				--ink: #16171d;
+				--body: #363a45;
+				--muted: #6e7381;
+				--faint: #a7abb8;
+				--accent: #2b5cf0;
+				--accent-deep: #1e46c4;
+				--tint: #eef3ff;
+				--tint-border: #dbe5ff;
+				--chip: #e3ebff;
+				--amber-bg: #fdf1e0;
+				--amber: #b26205;
+				--line: #e7e9ee;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			html {
+				background: #fff;
+			}
+			body {
+				margin: 0;
+				font-family:
+					"Pretendard Variable",
+					Pretendard,
+					-apple-system,
+					sans-serif;
+				color: var(--body);
+				font-size: 13.5px;
+				line-height: 1.7;
+				-webkit-font-smoothing: antialiased;
+				font-feature-settings: "tnum";
+				letter-spacing: -0.005em;
+			}
+			b {
+				font-weight: 700;
+				color: var(--ink);
+			}
+			.page {
+				max-width: 780px;
+				margin: 0 auto;
+				padding: 60px 52px 80px;
+			}
+
+			/* ── TODO 배너 (화면 전용) ── */
+			.todo-banner {
+				margin-bottom: 32px;
+				padding: 14px 18px;
+				background: #fff8e6;
+				border: 1.5px solid #f0c548;
+				border-radius: 12px;
+				font-size: 12px;
+				line-height: 1.65;
+				color: #6b5310;
+			}
+			.todo-banner .tb-title {
+				font-weight: 800;
+				font-size: 12.5px;
+				margin-bottom: 6px;
+				color: #8a6a0c;
+			}
+			.todo-banner ul {
+				margin: 0;
+				padding-left: 16px;
+			}
+			.todo-banner li {
+				margin-bottom: 2px;
+			}
+			.todo-banner li::marker {
+				color: #d9a92e;
+			}
+
+			/* ── 헤더 ── */
+			.head {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+				gap: 24px;
+				padding-bottom: 20px;
+				border-bottom: 2.5px solid var(--ink);
+			}
+			.head h1 {
+				margin: 0;
+				font-size: 31px;
+				font-weight: 800;
+				letter-spacing: -0.04em;
+				color: var(--ink);
+				line-height: 1.1;
+			}
+			.head .role {
+				margin-top: 7px;
+				font-size: 14px;
+				font-weight: 700;
+				color: var(--accent);
+			}
+			.contacts {
+				text-align: right;
+				font-size: 12px;
+				line-height: 1.85;
+				color: var(--muted);
+				white-space: nowrap;
+			}
+			.contacts a {
+				color: var(--muted);
+				text-decoration: none;
+			}
+			.contacts a:hover {
+				color: var(--accent);
+			}
+			.guide-line {
+				margin-top: 12px;
+				font-size: 10.5px;
+				font-weight: 600;
+				color: var(--faint);
+				display: flex;
+				flex-wrap: wrap;
+				gap: 4px 14px;
+			}
+
+			/* ── 섹션 ── */
+			section {
+				margin-top: 38px;
+			}
+			h2 {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin: 0 0 16px;
+				font-size: 14.5px;
+				font-weight: 800;
+				letter-spacing: -0.01em;
+				color: var(--ink);
+			}
+			h2::before {
+				content: "";
+				width: 16px;
+				height: 3px;
+				border-radius: 2px;
+				background: var(--accent);
+			}
+
+			/* ── Summary ── */
+			.summary ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.summary li {
+				position: relative;
+				padding-left: 20px;
+				margin-bottom: 9px;
+				font-size: 13.5px;
+			}
+			.summary li:last-child {
+				margin-bottom: 0;
+			}
+			.summary li::before {
+				content: "";
+				position: absolute;
+				left: 1px;
+				top: 10.5px;
+				width: 8px;
+				height: 2.5px;
+				border-radius: 2px;
+				background: var(--accent);
+			}
+
+			/* ── 경력 ── */
+			.career {
+				padding-top: 26px;
+				margin-top: 26px;
+				border-top: 1px solid var(--line);
+			}
+			.career:first-of-type {
+				padding-top: 0;
+				margin-top: 0;
+				border-top: none;
+			}
+			.career-head {
+				display: flex;
+				align-items: baseline;
+				gap: 12px;
+			}
+			.career-head h3 {
+				margin: 0;
+				font-size: 18px;
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				color: var(--ink);
+			}
+			.career-head .role {
+				font-size: 12.5px;
+				font-weight: 500;
+				color: var(--muted);
+			}
+			.career-head .date {
+				margin-left: auto;
+				font-size: 12px;
+				color: var(--faint);
+				font-variant-numeric: tabular-nums;
+				white-space: nowrap;
+			}
+			.career-intro {
+				margin: 3px 0 0;
+				font-size: 12.5px;
+				color: var(--muted);
+			}
+			.career-intro a {
+				color: var(--accent);
+				font-weight: 600;
+				text-decoration: none;
+			}
+
+			/* ── 기여 맵 (파이프라인) ── */
+			.pipe-wrap {
+				margin: 14px 0 4px;
+				padding: 15px 18px;
+				background: var(--tint);
+				border: 1px solid var(--tint-border);
+				border-radius: 12px;
+			}
+			.pipe-title {
+				display: flex;
+				align-items: baseline;
+				gap: 10px;
+				margin-bottom: 10px;
+			}
+			.pipe-title .t {
+				font-size: 12px;
+				font-weight: 800;
+				color: var(--accent-deep);
+			}
+			.pipe-title .stat {
+				font-size: 10.5px;
+				font-weight: 700;
+				color: var(--accent);
+				background: #fff;
+				border: 1px solid var(--tint-border);
+				border-radius: 999px;
+				padding: 1px 9px;
+			}
+			.pipe-legend {
+				margin-left: auto;
+				font-size: 10.5px;
+				color: var(--muted);
+				display: flex;
+				gap: 10px;
+				align-items: center;
+			}
+			.pipe-legend i {
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				border-radius: 3px;
+				margin-right: 4px;
+				vertical-align: -1px;
+			}
+			.pipe-legend .mine i {
+				background: var(--accent);
+			}
+			.pipe-legend .joint i {
+				background: var(--chip);
+				border: 1px solid var(--accent);
+			}
+			.pipe-legend .team i {
+				background: transparent;
+				border: 1px dashed var(--faint);
+			}
+			.pipe {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 6px 3px;
+			}
+			.node {
+				font-size: 12px;
+				font-weight: 700;
+				padding: 5px 13px;
+				border-radius: 999px;
+				white-space: nowrap;
+			}
+			.node.mine {
+				background: var(--accent);
+				color: #fff;
+				box-shadow: 0 1px 4px rgba(43, 92, 240, 0.25);
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+			.node.joint {
+				background: var(--chip);
+				color: var(--accent-deep);
+				border: 1px solid #c8d7ff;
+			}
+			.node.team {
+				color: var(--faint);
+				border: 1px dashed #c4cad6;
+				background: rgba(255, 255, 255, 0.6);
+			}
+			.pipe .arr {
+				color: #a9b8dd;
+				font-size: 11.5px;
+				padding: 0 2px;
+			}
+
+			/* ── 항목: 문제 → 방법 → 결과 ── */
+			.item {
+				margin-top: 22px;
+			}
+			.item-head {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				flex-wrap: wrap;
+				margin-bottom: 9px;
+			}
+			.item h4 {
+				margin: 0;
+				font-size: 15px;
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				color: var(--ink);
+				margin-right: 2px;
+			}
+			.tag {
+				font-size: 10.5px;
+				font-weight: 700;
+				border-radius: 999px;
+				padding: 2px 10px;
+				white-space: nowrap;
+			}
+			.tag.a {
+				background: var(--chip);
+				color: var(--accent-deep);
+			}
+			.tag.s {
+				background: #f3f4f7;
+				color: var(--muted);
+			}
+			.tag.o {
+				background: var(--amber-bg);
+				color: var(--amber);
+			}
+			.block {
+				position: relative;
+				padding-left: 54px;
+				margin-bottom: 8px;
+				font-size: 13px;
+			}
+			.block:last-child {
+				margin-bottom: 0;
+			}
+			.block .lbl {
+				position: absolute;
+				left: 0;
+				top: 2.5px;
+				width: 40px;
+				text-align: center;
+				font-size: 10.5px;
+				font-weight: 800;
+				border-radius: 6px;
+				padding: 2px 0;
+				background: #f3f4f7;
+				color: var(--muted);
+			}
+			.block p {
+				margin: 0;
+			}
+			.block ul {
+				margin: 0;
+				padding-left: 15px;
+			}
+			.block li {
+				margin-bottom: 3px;
+			}
+			.block li:last-child {
+				margin-bottom: 0;
+			}
+			.block li::marker {
+				color: var(--faint);
+			}
+			.block.problem p {
+				color: var(--muted);
+			}
+			.block.result {
+				background: var(--tint);
+				border-radius: 10px;
+				padding: 9px 16px 9px 54px;
+				margin-top: 11px;
+			}
+			.block.result .lbl {
+				left: 8px;
+				top: 10px;
+				background: var(--accent);
+				color: #fff;
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+			.block.result p {
+				color: var(--ink);
+			}
+
+			/* ── 프로젝트·학력·기타 ── */
+			.plain {
+				font-size: 13px;
+			}
+			.edu-row {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 12px;
+				font-size: 13.5px;
+			}
+			.edu-row .school {
+				font-weight: 700;
+				color: var(--ink);
+			}
+			.edu-row .detail {
+				font-size: 12px;
+				color: var(--muted);
+			}
+			.etc ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.etc li {
+				position: relative;
+				padding-left: 19px;
+				margin-bottom: 5px;
+				font-size: 13px;
+			}
+			.etc li:last-child {
+				margin-bottom: 0;
+			}
+			.etc li::before {
+				content: "";
+				position: absolute;
+				left: 1px;
+				top: 10px;
+				width: 7px;
+				height: 2.5px;
+				border-radius: 2px;
+				background: var(--faint);
+			}
+
+			.print-btn {
+				margin-top: 44px;
+				border: 1px solid #d6dae2;
+				color: var(--muted);
+				background: #fff;
+				padding: 8px 18px;
+				border-radius: 10px;
+				font-size: 12.5px;
+				font-weight: 600;
+				cursor: pointer;
+				font-family: inherit;
+			}
+			.print-btn:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 640px) {
+				.page {
+					padding: 36px 22px 56px;
+				}
+				.head {
+					flex-direction: column;
+					align-items: flex-start;
+					gap: 12px;
+				}
+				.contacts {
+					text-align: left;
+				}
+				.career-head {
+					flex-wrap: wrap;
+				}
+				.career-head .date {
+					margin-left: 0;
+					width: 100%;
+				}
+				.pipe-title {
+					flex-wrap: wrap;
+				}
+				.pipe-legend {
+					margin-left: 0;
+					width: 100%;
+				}
+				.block {
+					padding-left: 0;
+					padding-top: 24px;
+				}
+				.block .lbl {
+					top: 0;
+				}
+				.block.result {
+					padding: 34px 16px 10px;
+				}
+				.block.result .lbl {
+					top: 10px;
+				}
+			}
+
+			@media print {
+				body {
+					font-size: 11.5px;
+				}
+				.page {
+					max-width: 100%;
+					padding: 0;
+				}
+				section {
+					margin-top: 26px;
+				}
+				.career {
+					padding-top: 20px;
+					margin-top: 20px;
+				}
+				.item {
+					margin-top: 15px;
+					break-inside: avoid;
+				}
+				.pipe-wrap {
+					break-inside: avoid;
+				}
+				.node.mine,
+				.node.joint,
+				.block.result,
+				.block.result .lbl,
+				.tag,
+				.pipe-wrap {
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				.no-print {
+					display: none !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="page">
+			{
+				todos.length > 0 && (
+					<aside class="todo-banner no-print">
+						<div class="tb-title">🚧 제출 전 TODO — 이 배너가 보이면 아직 초안</div>
+						<ul>
+							{todos.map((t) => (
+								<li>{t}</li>
+							))}
+						</ul>
+					</aside>
+				)
+			}
+			<header>
+				<div class="head">
+					<div>
+						<h1>{header.name}</h1>
+						<div class="role">{header.role}</div>
+					</div>
+					<div class="contacts">
+						<a href={`mailto:${header.email}`}>{header.email}</a> · {header.phone}<br />
+						<a href={header.github} target="_blank" rel="noopener">github.com/dylan-jung</a> ·
+						<a href={header.blog} target="_blank" rel="noopener">blog.dylearning.com</a>
+					</div>
+				</div>
+				<div class="guide-line">
+					{guide.map((g) => <span>{g}</span>)}
+				</div>
+			</header>
+
+			<section class="summary">
+				<h2>Summary</h2>
+				<ul>
+					{summary.map((p) => <li set:html={md(p)} />)}
+				</ul>
+			</section>
+
+			<section>
+				<h2>Experience</h2>
+				{
+					careers.map((c) => (
+						<div class="career">
+							<div class="career-head">
+								<h3>{c.company}</h3>
+								<span class="role">{c.role}</span>
+								<span class="date">{c.date}</span>
+							</div>
+							<p class="career-intro">
+								{c.intro}
+								{c.link && (
+									<>
+										{" "}
+										<a href={c.link.url} target="_blank" rel="noopener">
+											{c.link.label} ↗
+										</a>
+									</>
+								)}
+							</p>
+
+							<div class="pipe-wrap">
+								<div class="pipe-title">
+									<span class="t">전체 구조와 담당 구간</span>
+									<span class="stat">{pipeStat(c.pipeline)}</span>
+									<span class="pipe-legend">
+										<span class="mine"><i />담당</span>
+										<span class="joint"><i />공동</span>
+										<span class="team"><i />팀</span>
+									</span>
+								</div>
+								<div class="pipe">
+									{c.pipeline.map((n, i) => (
+										<>
+											{i > 0 && <span class="arr">→</span>}
+											<span class={`node ${n.o}`}>{n.t}</span>
+										</>
+									))}
+								</div>
+							</div>
+
+							{c.items.map((it) => (
+								<div class="item">
+									<div class="item-head">
+										<h4>{it.title}</h4>
+										<span class="tag a">{it.area}</span>
+										<span class="tag s">{it.stage}</span>
+										{it.ops && <span class="tag o">운영 개선</span>}
+									</div>
+									<div class="block problem">
+										<span class="lbl">문제</span>
+										<p set:html={md(it.problem)} />
+									</div>
+									<div class="block">
+										<span class="lbl">방법</span>
+										<ul>
+											{it.method.map((m) => (
+												<li set:html={md(m)} />
+											))}
+										</ul>
+									</div>
+									<div class="block result">
+										<span class="lbl">결과</span>
+										<p set:html={md(it.result)} />
+									</div>
+								</div>
+							))}
+						</div>
+					))
+				}
+			</section>
+
+			<section>
+				<h2>Education</h2>
+				<div class="edu-row">
+					<span class="school">{education.school}</span>
+					<span class="detail">{education.detail}</span>
+				</div>
+			</section>
+
+			<section class="etc">
+				<h2>Awards & Activities</h2>
+				<ul>
+					{etc.map((e) => <li>{e}</li>)}
+				</ul>
+			</section>
+
+			<button class="print-btn no-print" onclick="window.print()">Print to PDF</button>
+		</main>
+	</body>
+</html>
