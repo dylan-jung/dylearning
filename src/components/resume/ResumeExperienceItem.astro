@@ -7,6 +7,10 @@ interface ActivityDetail {
 interface Activity {
 	summary: string;
 	details?: ActivityDetail[];
+	group?: string;
+	groupDesc?: string;
+	groupIntro?: string;
+	featured?: boolean;
 }
 
 interface Props {
@@ -42,6 +46,19 @@ const parseListItems = (text: string): string[] | null => {
 
 // content may be a plain string (optionally a "1. ... \n2. ..." list) or a string[].
 const getListItems = (content: string | string[]): string[] | null => (Array.isArray(content) ? content.map(parseInline) : parseListItems(content));
+
+// Consecutive activities sharing a `group` render under one project heading;
+// activities without `group` fall into an unnamed group (no heading).
+type ActivityGroup = { name?: string; desc?: string; intro?: string; items: Activity[] };
+const activityGroups: ActivityGroup[] = [];
+for (const activity of activities ?? []) {
+	const current = activityGroups[activityGroups.length - 1];
+	if (!current || (activity.group && activity.group !== current.name)) {
+		activityGroups.push({ name: activity.group, desc: activity.groupDesc, intro: activity.groupIntro, items: [activity] });
+	} else {
+		current.items.push(activity);
+	}
+}
 ---
 <div class:list={["mb-8", { "print:break-inside-avoid print:break-after-page": forcePageBreak }]}>
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-baseline mb-2 border-b border-gray-200 pb-2 break-inside-avoid">
@@ -62,31 +79,55 @@ const getListItems = (content: string | string[]): string[] | null => (Array.isA
   {activities && activities.length > 0 && (
     <div class="mb-4">
       <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 break-inside-avoid">Key Activities</h4>
-      <div class="space-y-4">
-        {activities.map(activity => (
-          <div class="text-gray-700 text-sm leading-relaxed break-inside-avoid">
-            <div class="font-bold mb-1" set:html={activity.summary}></div>
-            {activity.details && (
-                <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
-                    {activity.details.map(detail => {
-                        const listItems = getListItems(detail.content);
-                        return (
-                            <li class="pl-1 -indent-5 ml-5">
-                                {detail.label && <strong class="text-gray-700 mr-1">{detail.label}:</strong>}
-                                {listItems ? (
-                                    <ol class="list-decimal list-outside mt-1.5 ml-5 space-y-1 indent-0 marker:text-gray-400 marker:font-medium">
-                                        {listItems.map(item => (
-                                            <li class="pl-1" set:html={item}></li>
-                                        ))}
-                                    </ol>
-                                ) : (
-                                    <span set:html={parseContent(detail.content as string)}></span>
-                                )}
-                            </li>
-                        );
-                    })}
-                </ul>
+      <div class="space-y-6">
+        {activityGroups.map(group => (
+          <div>
+            {group.name && (
+              <div class="mb-3 break-inside-avoid">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline border-b border-gray-200 pb-1.5">
+                  <div class="text-sm font-bold text-gray-900">{group.name}</div>
+                  {group.desc && <div class="text-xs font-medium text-gray-500 mt-0.5 sm:mt-0">{group.desc}</div>}
+                </div>
+                {group.intro && (
+                  <div class="mt-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                    <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line" set:html={parseContent(group.intro)}></p>
+                  </div>
+                )}
+              </div>
             )}
+            <div class="space-y-4">
+              {group.items.map(activity => (
+                <div class="text-gray-700 text-sm leading-relaxed break-inside-avoid">
+                  <div class="font-bold mb-1">
+                    {activity.featured && (
+                      <span class="inline-block align-middle mr-1.5 -mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-white bg-gray-900 rounded-sm px-1.5 py-0.5 whitespace-nowrap">Featured</span>
+                    )}
+                    <span set:html={activity.summary}></span>
+                  </div>
+                  {activity.details && (
+                      <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
+                          {activity.details.map(detail => {
+                              const listItems = getListItems(detail.content);
+                              return (
+                                  <li class="pl-1 -indent-5 ml-5">
+                                      {detail.label && <strong class="text-gray-700 mr-1">{detail.label}:</strong>}
+                                      {listItems ? (
+                                          <ol class="list-decimal list-outside mt-1.5 ml-5 space-y-1 indent-0 marker:text-gray-400 marker:font-medium">
+                                              {listItems.map(item => (
+                                                  <li class="pl-1" set:html={item}></li>
+                                              ))}
+                                          </ol>
+                                      ) : (
+                                          <span set:html={parseContent(detail.content as string)}></span>
+                                      )}
+                                  </li>
+                              );
+                          })}
+                      </ul>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

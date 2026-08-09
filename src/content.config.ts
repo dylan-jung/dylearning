@@ -77,6 +77,7 @@ const cv = defineCollection({
 			linkedin: z.string()
 		}),
 		introLines: z.array(z.string()).optional(),
+		educationAtBottom: z.boolean().optional(),
 		experience: z.array(
 			z.object({
 				company: z.string(),
@@ -86,6 +87,10 @@ const cv = defineCollection({
 				activities: z
 					.array(
 						z.object({
+							group: z.string().optional(),
+							groupDesc: z.string().optional(),
+							groupIntro: z.string().optional(),
+							featured: z.boolean().optional(),
 							summary: z.string(),
 							details: z
 								.array(

@@ -35,15 +35,17 @@ const { cv } = Astro.props;
   </ResumeSection>
 )}
 
-<ResumeSection title="Education">
-  {cv.education.map((edu) => (
-    <ResumeItem
-      title={edu.school}
-      subtitle={edu.degree}
-      date={edu.date}
-    />
-  ))}
-</ResumeSection>
+{!cv.educationAtBottom && (
+  <ResumeSection title="Education">
+    {cv.education.map((edu) => (
+      <ResumeItem
+        title={edu.school}
+        subtitle={edu.degree}
+        date={edu.date}
+      />
+    ))}
+  </ResumeSection>
+)}
 
 <ResumeSection title="Experience">
   {cv.experience.map((exp) => (
@@ -60,20 +62,6 @@ const { cv } = Astro.props;
   ))}
 </ResumeSection>
 
-{cv.activities_list && (
-  <ResumeSection title="Activities">
-      {cv.activities_list.map((act) => (
-      <ResumeItem
-          title={act.name}
-          subtitle={act.role}
-          date={act.date}
-      >
-          <p class="mt-1 text-gray-700" set:html={act.description}></p>
-      </ResumeItem>
-      ))}
-  </ResumeSection>
-)}
-
 {cv.projects && (
   <ResumeSection title="Projects">
     {cv.projects.map((project) => (
@@ -87,6 +75,20 @@ const { cv } = Astro.props;
         relatedLinks={project.relatedLinks}
       />
     ))}
+  </ResumeSection>
+)}
+
+{cv.activities_list && (
+  <ResumeSection title="Activities">
+      {cv.activities_list.map((act) => (
+      <ResumeItem
+          title={act.name}
+          subtitle={act.role}
+          date={act.date}
+      >
+          <p class="mt-1 text-gray-700" set:html={act.description}></p>
+      </ResumeItem>
+      ))}
   </ResumeSection>
 )}
 
@@ -105,5 +107,17 @@ const { cv } = Astro.props;
 {cv.certifications && (
   <ResumeSection title="Certifications">
       <ResumeSkills items={cv.certifications} />
+  </ResumeSection>
+)}
+
+{cv.educationAtBottom && (
+  <ResumeSection title="Education">
+    {cv.education.map((edu) => (
+      <ResumeItem
+        title={edu.school}
+        subtitle={edu.degree}
+        date={edu.date}
+      />
+    ))}
   </ResumeSection>
 )}
