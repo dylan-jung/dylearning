@@ -80,27 +80,52 @@ const { cv } = Astro.props;
 
 {cv.activities_list && (
   <ResumeSection title="Activities">
-      {cv.activities_list.map((act) => (
-      <ResumeItem
-          title={act.name}
-          subtitle={act.role}
-          date={act.date}
-      >
-          <p class="mt-1 text-gray-700" set:html={act.description}></p>
-      </ResumeItem>
-      ))}
+    {cv.compactLists ? (
+      <ul class="list-disc list-outside ml-5 space-y-1.5 text-sm text-gray-700">
+        {cv.activities_list.map((act) => (
+          <li class="pl-1">
+            <span class="font-semibold text-gray-900">{act.name}</span>
+            {act.role && <span class="text-gray-600"> · {act.role}</span>}
+            <span class="text-gray-400"> ({act.date})</span>
+            {act.description && <span class="text-gray-600"> · <span set:html={act.description}></span></span>}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      cv.activities_list.map((act) => (
+        <ResumeItem
+            title={act.name}
+            subtitle={act.role}
+            date={act.date}
+        >
+            <p class="mt-1 text-gray-700" set:html={act.description}></p>
+        </ResumeItem>
+      ))
+    )}
   </ResumeSection>
 )}
 
 {cv.awards && (
   <ResumeSection title="Awards">
-      {cv.awards.map((award) => (
-      <ResumeItem
-          title={award.name}
-          subtitle={award.role}
-          date={award.date}
-      />
-      ))}
+    {cv.compactLists ? (
+      <ul class="list-disc list-outside ml-5 space-y-1.5 text-sm text-gray-700">
+        {cv.awards.map((award) => (
+          <li class="pl-1">
+            <span class="font-semibold text-gray-900">{award.name}</span>
+            {award.role && <span class="text-gray-600"> · {award.role}</span>}
+            <span class="text-gray-400"> ({award.date})</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      cv.awards.map((award) => (
+        <ResumeItem
+            title={award.name}
+            subtitle={award.role}
+            date={award.date}
+        />
+      ))
+    )}
   </ResumeSection>
 )}
 

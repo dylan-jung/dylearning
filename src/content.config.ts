@@ -78,6 +78,7 @@ const cv = defineCollection({
 		}),
 		introLines: z.array(z.string()).optional(),
 		educationAtBottom: z.boolean().optional(),
+		compactLists: z.boolean().optional(),
 		experience: z.array(
 			z.object({
 				company: z.string(),
