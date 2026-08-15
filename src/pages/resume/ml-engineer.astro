@@ -8,7 +8,7 @@ import ResumeItem from "../../components/resume/ResumeItem.astro";
 
 const header = {
 	name: "정민혁",
-	role: "ML Engineer (LLM)",
+	role: "NLP Research Engineer",
 	email: "dylanjungko@gmail.com",
 	phone: "010-4536-6741",
 	github: "https://github.com/dylan-jung",
@@ -125,7 +125,7 @@ const md = (s: string) =>
 		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 ---
 
-<ResumeLayout title={`${header.name} | ML Engineer (LLM)`} description={`${header.name} 경력기술서 ML Engineer (LLM)`}>
+<ResumeLayout title={`${header.name} | NLP Research Engineer`} description={`${header.name} 경력기술서 NLP Research Engineer`}>
   <div class="flex justify-end mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
