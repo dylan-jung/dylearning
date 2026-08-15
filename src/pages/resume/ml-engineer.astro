@@ -36,7 +36,7 @@ const experience = [
 						p: "대형 모델(K-EXAONE-236B-A23B)을 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙 중이었는데, KV 캐시 한계로 context length가 65K로 고정돼 긴 세션이 잘리는 **VOC 30건+** 발생.",
 						a: [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
-							"후보 3종(236B-A23B MoE / 30B-A3B MoE / 33B dense)을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)해, 256K 멀티세션 서빙이 가능한 유일 모델인 **K-EXAONE 2 small 채택** (활성 3B + sliding window 덕에 248K에서도 디코드 8ms 유지)",
+							"후보 3종을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s), 256K 멀티세션이 가능한 유일 모델인 **K-EXAONE 2 small 채택**",
 							"A100에서 막혀 있던 **MTP(spec decoding)를 FA3 sm_80 패치로 활성화**, 학습 후 accept률 확인 실험으로 검증",
 							"프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중"
 						],
