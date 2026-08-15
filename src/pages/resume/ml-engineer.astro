@@ -1,0 +1,338 @@
+---
+// ML Engineer(LLM) 지원용. /cv 기본 레이아웃 포크.
+// 핵심 경험 2개만 스포트라이트하고, 항목마다 "어떤 문제 → 어떻게 해결" 두 줄로만.
+import ResumeLayout from "../../layouts/ResumeLayout.astro";
+import ResumeHeader from "../../components/resume/ResumeHeader.astro";
+import ResumeSection from "../../components/resume/ResumeSection.astro";
+import ResumeItem from "../../components/resume/ResumeItem.astro";
+
+const header = {
+	name: "정민혁",
+	role: "ML Engineer (LLM)",
+	email: "dylanjungko@gmail.com",
+	phone: "010-4536-6741",
+	github: "https://github.com/dylan-jung",
+	linkedin: "https://www.linkedin.com/in/dylan-jung-ko/"
+};
+
+const experience = [
+	{
+		company: "LG AI Research",
+		role: "NLP Research Engineer · Language Lab · Code & Analysis Tech Cell (Internship)",
+		date: "2026.02 ~ 2026.11 (예정)",
+		intro: "EXAONE을 코딩·터미널 에이전트로 고도화하는 과제. 계열사에 제공하는 **EXAONE CLI**와 독자 파운데이션 모델 **K-EXAONE 2차수의 Agentic Workflow post-training** 담당.",
+		link: { text: "상세 이력", url: "https://blog.dylearning.com/cv/detail/lg-ai/" },
+		groups: [
+			{
+				title: "EXAONE CLI (사내·계열사 제공)",
+				date: "2026.02 ~",
+				items: [
+					{
+						title: "로그 기반 인하우스 벤치마크 구성",
+						p: "공개 벤치 점수로는 사용자가 실제로 어디서 막히는지 알 수 없어, 실패가 로그·VOC에만 남고 개선으로 이어지지 않음.",
+						a: "사용 로그·VOC에서 반복 실패 유형을 정의해 재현 시나리오로 구성. 유형별 슬라이스를 분리해 학습 전후를 같은 조건에서 비교하고, 확인된 약점을 타겟 데이터 생산으로 연결."
+					},
+					{
+						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
+						p: "대형 모델(K-EXAONE-236B-A23B)을 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙 중이었는데, KV 캐시 한계로 context length가 65K로 고정돼 긴 세션이 잘리는 **VOC 30건+** 발생.",
+						a: "CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**. 후보 3종(236B-A23B MoE / 30B-A3B MoE / 33B dense)을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)해, 256K 멀티세션 서빙이 가능한 유일 모델인 **K-EXAONE 2 small 채택** (활성 3B + sliding window 덕에 248K에서도 디코드 8ms 유지). A100에서 막혀 있던 MTP(spec decoding)를 FA3 sm_80 패치로 켜고, 수락률 15% 미만 시 플래그 제거로 즉시 롤백하는 운영 규칙 정착. 프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중.",
+						r: "긴 세션이 잘리던 VOC 해소: context **65K → 256K**. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준의 응답 속도 확보."
+					},
+					{
+						title: "평가 파이프라인 제작",
+						p: "학습 이터레이션마다 여러 벤치마크를 제각각 돌리면 조건이 흔들려 체크포인트 간 비교가 안 되고, 점수 하나로는 무엇이 좋아졌는지 알 수 없음.",
+						a: "SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치마크를 **하나의 파이프라인에서 동일 조건으로 실행**하는 평가 체계 구축. pass@k, pass^k, trajectory 길이 분포까지 **정량 분석**하고, 서빙(vLLM)에 올린 weight가 의도대로 추론하는지도 함께 검증. 결과는 **UI로 제공**해 팀 전체가 체크포인트를 바로 비교."
+					},
+					{
+						title: "학습 데이터 생산·품질 검증 자동화",
+						p: "수작업 실행·검증으로는 양과 품질을 동시에 확보할 수 없고, 실패 재실행을 사람이 도는 동안 GPU가 놀았음.",
+						a: "생성 → 검증 → 재시도가 무중단으로 도는 Data Flywheel 구축. 품질 검증은 **2단 LLM Judge**(약한 모델 전수 → 의심 건만 강한 모델)와 코드를 실제로 빌드·테스트해 채점하는 **Agent Judge**로 자동화. 하네스(opencode) 내부를 분석·개조해 Compaction·Skill 같은 동작을 타겟팅한 데이터를 만들 수 있게 하고, 멀티턴은 턴별 이미지·trajectory 저장으로 상태 복원.",
+						r: "gold **1,400건 / 5일 / ~$500**(기존 ~$1,500), pass@k **68.5% → 93.2%**, 생산을 **1인 자동화 체계**로 전환."
+					}
+				]
+			},
+			{
+				title: "K-EXAONE 2차수 개발",
+				date: "2026.05 ~ 2026.06",
+				links: [
+					{
+						text: "Technical Report",
+						url: "https://huggingface.co/LGAI-EXAONE/K-EXAONE-2.0-750B-A37B/blob/main/assets/K-EXAONE-2.0-Technical-Report.pdf"
+					},
+					{ text: "Hugging Face", url: "https://huggingface.co/LGAI-EXAONE/EXAONE-4.5-33B" }
+				],
+				items: [
+					{
+						title: "Agentic Workflow post-training 담당",
+						p: "넓은 도메인 커버리지가 필요했지만 공개 데이터셋만으로는 부족했고, 무엇이 비었는지 모른 채 생성하면 비용만 소모됨.",
+						a: "태스크 생성 후 trajectory를 분석해 사용 가능성·부족분을 먼저 진단하고, 생성 → 학습 → 분석 → 재생성 사이클을 반복 (담당 도메인: 수학·최적화·과학연산·게임).",
+						r: "담당 도메인 SFT/RL 데이터셋 **44k** 구축·전달."
+					},
+					{
+						title: "Terminal-Bench 평가·결과 분석",
+						p: "단일 점수로는 어느 도메인이 올렸고 어디가 발목을 잡는지 알 수 없어 다음 생산의 우선순위를 정할 수 없었음.",
+						a: "학습 전후를 동일 조건으로 실행해 결과를 담당 도메인 단위로 분해하고, 실패 trajectory를 유형별로 분류해 비어 있는 축을 재생성 대상으로 연결.",
+						r: "담당 도메인 기준 **Terminal-Bench 2.1 점수 14.3 → 39.3**."
+					},
+					{
+						title: "에이전트 대용량 롤아웃 데이터 생성",
+						p: "에이전트를 수천 개씩 동시에 굴려야 했지만 격리·확장·보안을 만족하는 실행 기반이 없었고, 실제로 돌리자 에러율 16.3%·일 비용 1,500만원으로 데이터 생산 전체의 병목이 됨.",
+						a: "EKS 기반 self-hosted Daytona를 구축하고 관측 스택을 먼저 세워 원인 분석이 가능한 상태부터 확보. 실패 로그 수만 건을 분석해 원인을 도커 빌드·레지스트리로 특정하고, 빌드를 실행 경로에서 분리 + Harbor S3 전환.",
+						r: "**8,000+ 동시 실행**, 빌드 대기 **P95 93분 → 4.4분**, 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원**."
+					}
+				]
+			}
+		]
+	},
+	{
+		company: "씨그로",
+		role: "데이터 엔지니어 & 서버 개발",
+		date: "2024.05 ~ 2024.09",
+		intro: "50+ 채널 이커머스 데이터를 수집(일 500+ job)·분석하는 B2B 대시보드. 수집 파이프라인·집계·조회 API·운영 전담.",
+		etc: [
+			"일 10만+건 급증으로 집계 조회 p99가 10초를 넘자, MV·OLAP을 배제하고 **사전 집계 + 증분 갱신**으로 재설계 → **p99 1초 이내**, 이탈 직전 대형 고객사 2곳 유지",
+			"새벽 OOM 무한 재시도로 당일 수집이 중단되던 장애를 메모리 계측·limit 재산정으로 근본 해결, Loki·Grafana 관측 구축 → 크롤링 실패 티켓 **30건+ → 5건 미만**"
+		]
+	},
+	{
+		company: "리베이스",
+		role: "Founder · 풀스택 개발",
+		date: "2022.06 ~ 2024.02",
+		intro: "환경 리워드 앱 '지미'(다운로드 27,000+, DAU 1,000+)와 광고 레퍼런스 검색 '모인나'를 창업해 전 구간 담당.",
+		etc: [
+			"**모인나**: 검색이 3초를 넘으면 이탈하는 것을 확인, gpt-4-vision 캡션 임베딩 인덱싱 + 벡터 검색을 구축하고 검색을 pgvector에서 Faiss 인메모리 서버로 분리 → 응답 **3.2초 → 0.9초**, 이탈률 **21% → 6%**",
+			"**지미**: DAU·D+1 리텐션을 KPI로 6개월 26회 배포, ORDER BY RAND() 풀스캔 피드를 세션 Seed 기반 페이지네이션으로 재설계 → 리텐션 **25.3% → 30.6%**, 체류 3분 → 6분"
+		]
+	}
+];
+
+const education = [{ school: "서울시립대학교", degree: "컴퓨터과학전공 학사 (GPA 4.12 / 4.5)", date: "2019.03 ~ 2026.08 (졸업 예정)" }];
+
+const awards = [
+	{ name: "마이데이터 아이디어 공모전", role: "과학기술정보통신부 장관상", date: "2023.08" },
+	{ name: "소프트웨어 마에스트로 13기 우수자", role: "과학기술정보통신부 장관상 · 팀 리더 (팀 전원 상위 8%)", date: "2023.06" }
+];
+
+const etcLines = [
+	"**오픈소스**: Spring AI 기여 (PR 제출, 리뷰 진행 중)",
+	"**창업**: 예비창업패키지 선정·정부지원금 수령, 한양대 캠퍼스타운 입주",
+	"**병역**: 공군 사이버작전센터 정보보호상황병 만기 전역"
+];
+
+const md = (s: string) =>
+	s
+		.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:underline">$1</a>')
+		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+---
+
+<ResumeLayout title={`${header.name} | ML Engineer (LLM)`} description={`${header.name} 경력기술서 ML Engineer (LLM)`}>
+  <div class="flex justify-end mb-4 no-print">
+    <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
+      Print to PDF
+    </button>
+  </div>
+
+  <ResumeHeader {...header} />
+
+  <ResumeSection title="Experience">
+    {experience.map((exp) => (
+      <div class="exp">
+        <div class="exp-head">
+          <div>
+            <h3 class="exp-co">{exp.company}</h3>
+            <div class="exp-role">{exp.role}</div>
+          </div>
+          <span class="exp-date">{exp.date}</span>
+        </div>
+
+        <p class="exp-intro">
+          <span set:html={md(exp.intro)} />
+          {exp.link && <a href={exp.link.url} target="_blank" rel="noopener">{exp.link.text} ↗</a>}
+        </p>
+
+        {exp.groups?.map((g, gi) => (
+          <div class="grp">
+            <div class="grp-head">
+              <span class="grp-t">{String(gi + 1).padStart(2, "0")}. {g.title}</span>
+              {g.links?.map((l) => <a class="grp-l" href={l.url} target="_blank" rel="noopener">{l.text} ↗</a>)}
+              <span class="grp-d">{g.date}</span>
+            </div>
+            {g.items.map((it) => (
+              <div class="it">
+                <div class="it-t">{it.title}</div>
+                <ul class="star">
+                  <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
+                  <li class="it-a"><span class="k">행동.</span> <span set:html={md(it.a)} /></li>
+                  {it.r && <li class="it-r"><span class="k">결과.</span> <span set:html={md(it.r)} /></li>}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ))}
+
+        {exp.etc && (
+          <ul class="bul">
+            {exp.etc.map((e) => <li set:html={md(e)} />)}
+          </ul>
+        )}
+      </div>
+    ))}
+  </ResumeSection>
+
+  <ResumeSection title="Education">
+    {education.map((edu) => <ResumeItem title={edu.school} subtitle={edu.degree} date={edu.date} />)}
+  </ResumeSection>
+
+  <ResumeSection title="Awards">
+    {awards.map((a) => <ResumeItem title={a.name} subtitle={a.role} date={a.date} />)}
+  </ResumeSection>
+
+  <ResumeSection title="Etc.">
+    <ul class="bul">
+      {etcLines.map((e) => <li set:html={md(e)} />)}
+    </ul>
+  </ResumeSection>
+</ResumeLayout>
+
+<style>
+	/* ponytail: 유틸리티 클래스 조합보다 이 페이지 전용 CSS가 짧고 인쇄까지 예측 가능해서 직접 씀 */
+	.exp {
+		margin-bottom: 26px;
+	}
+	.exp-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		border-bottom: 1px solid #e5e7eb;
+		padding-bottom: 7px;
+		margin-bottom: 8px;
+	}
+	.exp-co {
+		margin: 0;
+		font-size: 22px;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: #3b3f46;
+	}
+	.exp-role {
+		font-size: 14px;
+		font-weight: 600;
+		color: #666b74;
+	}
+	.exp-date {
+		flex: none;
+		font-size: 13px;
+		color: #7d828c;
+	}
+	.exp-intro {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.65;
+		color: #666b74;
+	}
+	.exp-intro a {
+		margin-left: 4px;
+		color: #2563eb;
+		white-space: nowrap;
+	}
+
+	.grp {
+		margin-top: 16px;
+		break-inside: avoid;
+	}
+	.grp-head {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		border-left: 3px solid #c6cad1;
+		padding-left: 9px;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.grp-t {
+		font-size: 15px;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: #3b3f46;
+	}
+	.grp-l {
+		font-size: 11.5px;
+		color: #2563eb;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.grp-l:hover {
+		text-decoration: underline;
+	}
+	.grp-d {
+		margin-left: auto;
+		flex: none;
+		font-size: 12px;
+		color: #9ca3af;
+	}
+
+	.it {
+		margin-top: 11px;
+		padding-left: 12px;
+		break-inside: avoid;
+	}
+	.it-t {
+		font-size: 13.5px;
+		font-weight: 700;
+		color: #3f434b;
+		margin-bottom: 3px;
+	}
+	ul.star {
+		margin: 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	ul.star > li {
+		margin: 0 0 2px;
+		font-size: 13px;
+		line-height: 1.6;
+	}
+	ul.star > li::marker {
+		color: #c6cad1;
+	}
+	.it-p {
+		color: #7d828c;
+	}
+	.it-a {
+		color: #555a63;
+	}
+	.it-r {
+		color: #3b3f46;
+	}
+	.k {
+		font-weight: 700;
+		text-indent: 0;
+		color: #3b3f46;
+	}
+
+	ul.bul {
+		margin: 12px 0 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	ul.bul > li {
+		margin-bottom: 4px;
+		font-size: 13px;
+		line-height: 1.65;
+		color: #555a63;
+	}
+	ul.bul > li::marker {
+		color: #9ca3af;
+	}
+
+	@media print {
+		.exp {
+			margin-bottom: 18px;
+		}
+		.it,
+		.grp {
+			break-inside: avoid;
+		}
+	}
+</style>

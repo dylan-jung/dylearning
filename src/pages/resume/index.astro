@@ -13,16 +13,33 @@ const cv = entry.data;
 const experience = [
 	{
 		company: "LG AI Research",
-		role: "AI Infrastructure Engineer (Language Lab · Internship)",
+		role: "NLP Research Engineer (Language Lab · Internship)",
 		date: "2026.02 ~ 현재",
-		summary:
-			"AI 에이전트를 대규모로 실행해 독자 파운데이션 모델(K-EXAONE)·제품 모델(ChatEXAONE)의 학습·평가용 trajectory를 생산하는 데이터·인프라 구축·운영 (확장성·비용·안정성·보안 책임)",
-		bullets: [
-			"**AI 에이전트 학습데이터 생산·평가 인프라(EKS)**: 샌드박스 격리·KEDA 오토스케일링·고정 IP 자동화(kubeip)로 **최대 8,000+ 동시 안정 실행**해 학습·평가용 trajectory(실행 궤적)를 대량 수집, vLLM 추론 서빙 최적화",
-			"**비용·성능 최적화**: 빌드를 실행 경로에서 분리(BuildKit 캐시·Harbor S3 전환)해 빌드 대기 P95 **93분→4.4분**·실패율 **16%→0.5%**·운영비 **일 1,500만→200만원(약 7.5배↓)**",
-			"**데이터 파이프라인 자동화**: 생성·검증·재시도 무인 파이프라인(Dagster)으로 **4.4만 건** 자동 생산, 생성 비용 **~$1,500→~$500**",
-			"**모델 성능·평가**: SFT·RL 데이터셋으로 담당 도메인 **Terminal Bench 2.1 점수 14.3%→39.3%** 기여, 코드를 실제 저장소에 적용·빌드·테스트해 채점하는 실행 기반 평가자(Agent Judge) 설계",
-			"오픈소스 에이전트 도구(Opencode) 내부 분석·수정 및 프로세스 누수 버그 진단·해결"
+		summary: "계열사에 제공하는 코딩 에이전트 **EXAONE CLI**와 독자 파운데이션 모델 **K-EXAONE 2차수의 Agentic Workflow post-training** 담당",
+		groups: [
+			{
+				title: "1. EXAONE CLI (사내·계열사 제공)",
+				bullets: [
+					"**Long Context 개선**: 대형 모델 통합 서빙의 65K 제한(VOC 30건+)을 소형 모델 분리 서빙으로 직접 제안·주도, 후보 3종을 서빙 벤치마크(TTFT·TPOT·tok/s)로 비교해 채택. context **65K→256K**, 체감 출력 **~176 tok/s** 확보",
+					"**평가 파이프라인 제작**: SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치를 동일 조건으로 실행하고 pass@k, pass^k, trajectory 길이 분포까지 정량 분석, 결과 UI 제공",
+					"**학습 데이터 생산·검증 자동화**: 생성→검증(2단 LLM Judge·실행 기반 Agent Judge)→재시도 무중단 파이프라인(Dagster)으로 gold **1,400건/5일/~$500**(기존 ~$1,500), pass@k **68.5%→93.2%**",
+					"**서비스 운영·개선**: 사용 로그·VOC에서 실패 유형을 정의해 인하우스 벤치마크로 재현, 확인된 약점을 타겟 학습 데이터 생산으로 연결하는 사이클 운영"
+				]
+			},
+			{
+				title: "2. K-EXAONE 2차수 개발",
+				links: [
+					{
+						text: "Technical Report",
+						url: "https://huggingface.co/LGAI-EXAONE/K-EXAONE-2.0-750B-A37B/blob/main/assets/K-EXAONE-2.0-Technical-Report.pdf"
+					},
+					{ text: "Hugging Face", url: "https://huggingface.co/LGAI-EXAONE/EXAONE-4.5-33B" }
+				],
+				bullets: [
+					"**Agentic Workflow post-training**: 담당 도메인(수학·최적화·과학연산·게임) SFT/RL 데이터셋 **44k** 구축, 담당 도메인 기준 **Terminal-Bench 2.1 점수 14.3→39.3**",
+					"**대규모 에이전트 인프라**: 최대 **8,000+ 동시 실행**, 빌드 분리·Harbor S3 전환으로 빌드 대기 P95 **93분→4.4분**·에러율 **16.3%→0.47%**·일 비용 **1,500만→200만원**"
+				]
+			}
 		]
 	},
 	{
@@ -44,8 +61,8 @@ const experience = [
 		date: "2023.11 ~ 2024.02",
 		summary: "창업 프로젝트로 기획·개발·배포까지 직접 만든 퍼포먼스 마케터용 광고 레퍼런스(텍스트-이미지) 검색 서비스 (DAU 100+)",
 		bullets: [
-			"광고 레퍼런스 검색 서비스의 백엔드·프론트엔드를 단독 개발",
-			"광고 레퍼런스(이미지·카피) 검색을 위해 키워드 검색과 벡터 검색을 결합한 하이브리드 검색 개발",
+			"광고 레퍼런스 검색 서비스의 백엔드 시스템 개발",
+			"광고 레퍼런스(이미지·카피) 검색을 위한 벡터 검색 개발",
 			"30K+ 이미지·텍스트 임베딩 생성·인덱싱 파이프라인 구축",
 			"벡터 검색을 단일 DB(pgvector)에서 전용 Faiss IVFFLAT 인메모리 서버로 분리, 검색 응답 **3.2초→0.9초** 및 이탈률 **21%→6%** 개선",
 			"GCP Cloud Run 기반 CPU 수평 확장 및 무중단 인덱스 교체 구조 구현"
@@ -105,12 +122,30 @@ const parseInline = (text: string) =>
             </div>
             <span class="text-sm text-gray-500 shrink-0">{exp.date}</span>
           </div>
-          {exp.summary && <p class="text-sm text-gray-800 font-medium mt-0.5">{exp.summary}</p>}
-          <ul class="list-disc list-outside ml-5 mt-1.5 space-y-1 text-sm text-gray-700 leading-relaxed">
-            {exp.bullets.map((bullet) => (
-              <li set:html={parseInline(bullet)}></li>
-            ))}
-          </ul>
+          {exp.summary && <p class="text-sm text-gray-800 font-medium mt-0.5" set:html={parseInline(exp.summary)}></p>}
+          {exp.groups ? (
+            exp.groups.map((g) => (
+              <div class="mt-2">
+                <div class="text-sm font-bold text-gray-900">
+                  {g.title}
+                  {g.links?.map((l) => (
+                    <a href={l.url} target="_blank" rel="noopener" class="ml-2 text-xs font-medium text-blue-600 hover:underline">{l.text} ↗</a>
+                  ))}
+                </div>
+                <ul class="list-disc list-outside ml-5 mt-1 space-y-1 text-sm text-gray-700 leading-relaxed">
+                  {g.bullets.map((bullet) => (
+                    <li set:html={parseInline(bullet)}></li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <ul class="list-disc list-outside ml-5 mt-1.5 space-y-1 text-sm text-gray-700 leading-relaxed">
+              {exp.bullets.map((bullet) => (
+                <li set:html={parseInline(bullet)}></li>
+              ))}
+            </ul>
+          )}
         </div>
       ))}
     </ResumeSection>
