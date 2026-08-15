@@ -21,7 +21,6 @@ const experience = [
 		role: "NLP Research Engineer · Language Lab · Code & Analysis Tech Cell (Internship)",
 		date: "2026.02 ~ 2026.11 (예정)",
 		intro: "EXAONE을 코딩·터미널 에이전트로 고도화하는 과제. 계열사에 제공하는 **EXAONE CLI**와 독자 파운데이션 모델 **K-EXAONE 2.0의 Agentic Workflow post-training** 담당.",
-		link: { text: "상세 이력", url: "https://blog.dylearning.com/cv/detail/lg-ai/" },
 		groups: [
 			{
 				title: "EXAONE CLI (사내·계열사 제공)",
@@ -35,7 +34,12 @@ const experience = [
 					{
 						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
 						p: "대형 모델(K-EXAONE-236B-A23B)을 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙 중이었는데, KV 캐시 한계로 context length가 65K로 고정돼 긴 세션이 잘리는 **VOC 30건+** 발생.",
-						a: "CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**. 후보 3종(236B-A23B MoE / 30B-A3B MoE / 33B dense)을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)해, 256K 멀티세션 서빙이 가능한 유일 모델인 **K-EXAONE 2 small 채택** (활성 3B + sliding window 덕에 248K에서도 디코드 8ms 유지). A100에서 막혀 있던 MTP(spec decoding)를 FA3 sm_80 패치로 켜고, 수락률 15% 미만 시 플래그 제거로 즉시 롤백하는 운영 규칙 정착. 프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중.",
+						a: [
+							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
+							"후보 3종(236B-A23B MoE / 30B-A3B MoE / 33B dense)을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)해, 256K 멀티세션 서빙이 가능한 유일 모델인 **K-EXAONE 2 small 채택** (활성 3B + sliding window 덕에 248K에서도 디코드 8ms 유지)",
+							"A100에서 막혀 있던 MTP(spec decoding)를 FA3 sm_80 패치로 활성화, 수락률 15% 미만 시 플래그 제거로 즉시 롤백하는 운영 규칙 정착",
+							"프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중"
+						],
 						r: "긴 세션이 잘리던 VOC 해소: context **65K → 256K**. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준의 응답 속도 확보."
 					},
 					{
@@ -162,7 +166,16 @@ const md = (s: string) =>
                 <div class="it-t">{it.title}</div>
                 <ul class="star">
                   <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
-                  <li class="it-a"><span class="k">행동.</span> <span set:html={md(it.a)} /></li>
+                  <li class="it-a">
+                    <span class="k">행동.</span>
+                    {Array.isArray(it.a) ? (
+                      <ul class="sub">
+                        {it.a.map((t) => <li set:html={md(t)} />)}
+                      </ul>
+                    ) : (
+                      <span set:html={md(it.a)} />
+                    )}
+                  </li>
                   {it.r && <li class="it-r"><span class="k">결과.</span> <span set:html={md(it.r)} /></li>}
                 </ul>
               </div>
@@ -294,6 +307,17 @@ const md = (s: string) =>
 		line-height: 1.6;
 	}
 	ul.star > li::marker {
+		color: #c6cad1;
+	}
+	ul.sub {
+		margin: 2px 0 0;
+		padding-left: 16px;
+		list-style: circle;
+	}
+	ul.sub > li {
+		margin-bottom: 2px;
+	}
+	ul.sub > li::marker {
 		color: #c6cad1;
 	}
 	.it-p {
