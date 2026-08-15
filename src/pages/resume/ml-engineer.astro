@@ -37,7 +37,7 @@ const experience = [
 						a: [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
 							"후보 3종(236B-A23B MoE / 30B-A3B MoE / 33B dense)을 컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)해, 256K 멀티세션 서빙이 가능한 유일 모델인 **K-EXAONE 2 small 채택** (활성 3B + sliding window 덕에 248K에서도 디코드 8ms 유지)",
-							"A100에서 막혀 있던 MTP(spec decoding)를 FA3 sm_80 패치로 활성화, 학습 후 accept률 확인 실험으로 검증",
+							"A100에서 막혀 있던 **MTP(spec decoding)를 FA3 sm_80 패치로 활성화**, 학습 후 accept률 확인 실험으로 검증",
 							"프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중"
 						],
 						r: "긴 세션이 잘리던 VOC 해소: context **65K → 256K**. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준의 응답 속도 확보."
