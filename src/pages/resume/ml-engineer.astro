@@ -38,9 +38,9 @@ const experience = [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
 							"후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)**, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택",
 							"A100에서 막혀 있던 **MTP(spec decoding)를 FA3 sm_80 패치로 활성화**, 학습 후 accept률 확인 실험으로 검증",
-							"프로덕션은 TP4 단일 노드를 넘어 replica 수평 확장 + vLLM production stack(KV cache 인지 라우팅) 구조로 확장 진행 중"
+							"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + vLLM production stack**(KV cache 인지 라우팅) 구조로 확장"
 						],
-						r: "긴 세션이 잘리던 VOC 해소: context **65K → 256K**. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준의 응답 속도 확보."
+						r: "context **65K → 256K**, Long Context에서 발생하던 **Compaction Error 0%**로 해소되어 VOC 개선. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준 확보."
 					},
 					{
 						title: "평가 파이프라인 제작",
