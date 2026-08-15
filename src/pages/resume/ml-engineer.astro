@@ -33,14 +33,15 @@ const experience = [
 					},
 					{
 						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
-						p: "대형 모델(K-EXAONE-236B-A23B)을 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙 중이었는데, KV 캐시 한계로 context length가 65K로 고정돼 긴 세션이 잘리는 **VOC 30건+** 발생.",
+						bg: "기존에는 대형 모델(K-EXAONE-236B-A23B) 하나를 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙했고, KV 캐시 한계로 context length는 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였음.",
+						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수.",
 						a: [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
 							"후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)**, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택",
 							"A100에서 막혀 있던 **MTP(spec decoding)를 FA3 sm_80 패치로 활성화**, 학습 후 accept률 확인 실험으로 검증",
 							"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + vLLM production stack**(KV cache 인지 라우팅) 구조로 확장"
 						],
-						r: "context **65K → 256K**, Long Context에서 발생하던 **Length Error 0%**로 해소되어 VOC 개선. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준 확보."
+						r: "context **65K → 256K**, **Compaction 시 발생하던 context length 에러 0%**, 관련 VOC 해소. 사용자 체감 출력 속도 **~176 tok/s**로 상용 API 수준 확보."
 					},
 					{
 						title: "평가 파이프라인 제작",
@@ -165,6 +166,7 @@ const md = (s: string) =>
               <div class="it">
                 <div class="it-t">{it.title}</div>
                 <ul class="star">
+                  {it.bg && <li class="it-bg"><span class="k">배경.</span> <span set:html={md(it.bg)} /></li>}
                   <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
                   <li class="it-a">
                     <span class="k">행동.</span>
@@ -319,6 +321,9 @@ const md = (s: string) =>
 	}
 	ul.sub > li::marker {
 		color: #c6cad1;
+	}
+	.it-bg {
+		color: #9a9ea7;
 	}
 	.it-p {
 		color: #7d828c;
