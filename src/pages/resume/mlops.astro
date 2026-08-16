@@ -1,6 +1,7 @@
 ---
 // 토스뱅크 ML Engineer(ML/LLM Ops) 지원용. /resume/ml-engineer 포크.
-// 같은 경력을 플랫폼·운영 축으로 재배치: 인프라·서빙이 앞, post-training은 한 줄 요약.
+// 작성 가이드 대응: 임팩트 큰 프로젝트 중심, 배경(왜) → 고민(무엇을 배제했나) → 결과(수치).
+// 고민·배제 이유는 실제 있었던 것만 기재 (MV/OLAP 배제, GPU 배제, 소형 모델 주장 등).
 import ResumeLayout from "../../layouts/ResumeLayout.astro";
 import ResumeHeader from "../../components/resume/ResumeHeader.astro";
 import ResumeSection from "../../components/resume/ResumeSection.astro";
@@ -8,7 +9,7 @@ import ResumeItem from "../../components/resume/ResumeItem.astro";
 
 const header = {
 	name: "정민혁",
-	role: "NLP Research Engineer",
+	role: "ML Engineer (LLM)",
 	email: "dylanjungko@gmail.com",
 	phone: "010-4536-6741",
 	github: "https://github.com/dylan-jung",
@@ -27,24 +28,30 @@ const experience = [
 				date: "2026.05 ~",
 				items: [
 					{
-						title: "self-hosted 샌드박스 인프라 구축·운영",
-						p: "학습 데이터 생산을 위해 에이전트를 수천 개씩 동시에 실행해야 했지만, 격리·확장·보안을 만족하는 실행 기반이 없었음.",
+						title: "8,000+ 동시 샌드박스 실행 인프라 구축·운영",
+						bg: "K-EXAONE 2.0의 에이전트 학습 데이터는 에이전트가 샌드박스 안에서 실제로 코드를 실행하며 만든 trajectory라, 생산량이 곧 동시 실행 규모였음. 에이전트 수천 개를 격리 상태로 동시에 실행할 기반이 사내에 없었음.",
+						p: "에이전트가 실행하는 코드는 신뢰할 수 없으니 노드와 완전히 격리해야 하고, 외부 API 호출은 화이트리스트를 통과해야 함. 이 인프라를 1개월 안에 구축해야 했음",
 						a: [
-							"EKS 위에 **self-hosted Daytona** 샌드박스 인프라를 구축, **관측 스택(Grafana·Prometheus·Loki·Tempo)을 먼저 세워** 원인 분석이 가능한 상태부터 확보",
-							"**스케줄러 가중치 재설계**로 노드 간 샌드박스 부하 분산, 외부 화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**",
-							"샌드박스가 노드 권한에 닿지 못하도록 접근 차단, 노드 unresponsive·ingress-nginx·Daytona(OSS) 자체 버그 등 운영 이슈를 직접 디버깅"
+							"팀에서 사용하는 데이터 생산 파이프라인이 Daytona를 지원해, 샌드박스 서비스로 **self-hosted Daytona**를 선택하고 EKS 위에 구축",
+							"Daytona 서비스는 내부적으로 dockerd 서비스를 사용하고 있기 때문에 해당 부분에 병목이 발생하지 않는 노드 선택",
+							"가동 전에 **관측 스택(Grafana·Prometheus·Loki·Tempo)을 먼저 세우고 안정성 체크리스트·모니터링 지표를 팀과 합의**후 스모크 테스트",
+							"외부 화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**",
+							"샌드박스가 노드의 AWS 자격증명 발급 경로(IMDS)에 닿는 것을 확인, **IMDSv2 강제 + hop limit 1**로 노드 자신만 접근하도록 차단",
+							"노드 unresponsive, ingress-nginx, Daytona(OSS) 자체 버그 등 대규모에서만 드러나는 운영 이슈를 직접 디버깅"
 						],
-						r: "최대 **8,000+ 동시 실행** 안정 운영, 샌드박스의 노드 권한 접근 **100% 차단**."
+						r: "최대 **8,000+ 동시 실행** 안정 운영."
 					},
 					{
 						title: "빌드·레지스트리 병목 제거",
-						p: "실제 운영에 들어가자 생성 에러율 16.3%·일 비용 1,500만원으로 데이터 생산 전체의 병목이 됨. 실패 로그 수만 건을 분석해 원인이 실행마다 끼는 도커 빌드와 레지스트리(이미지 pull 거부)임을 특정.",
+						bg: "인프라를 가동하자 생성 에러율 16.3%, 일 비용 1,500만원. 데이터 생산 전체가 여기에 막혔음.",
+						p: "실패 로그 수만 건을 유형별로 분석해 원인이 도커 빌드와 레지스트리임을 특정. 실행마다 무거운 빌드가 끼어 **빌드 대기 P95가 93분**까지 밀렸고, 단일 볼륨에 묶인 레지스트리는 동시 푸시가 몰리면 이미지 pull을 거부하고 있었음.",
 						a: [
-							"**빌드를 실행 경로에서 분리한 전용 서비스**로 재설계: 환경 사전 빌드, 워커가 작업을 가져가는 pull 기반 큐(Redis/RQ), **KEDA로 빌드 노드 0↔50 오토스케일링** (유휴 시 비용 0)",
-							"**BuildKit S3 공유 캐시**로 한 번 빌드한 베이스 레이어를 전 노드가 재사용, content-hash로 동일 환경은 빌드 skip",
-							"Harbor 레지스트리를 **단일 볼륨(MinIO)에서 S3로 전환**하고 replica를 확장해 동시 푸시 병목 해소, 전환 중 내부 트래픽 경로·인증 이슈까지 직접 해결"
+							"실행할 때마다 빌드하는 구조 자체가 원인이므로, **빌드를 실행 경로에서 떼어낸 전용 서비스**로 재설계. 수만 개 환경을 미리 빌드해 레지스트리에 올려두고 실행 측은 pull만 하도록 변경",
+							"빌드 시간 편차가 커 푸시 분배로는 균등 처리가 안 되므로 워커가 작업을 가져가는 **pull 기반 큐(Redis/RQ)** 를 선택, **KEDA로 빌드 노드를 0↔50 오토스케일링**해 유휴 시 비용을 0으로",
+							"**BuildKit S3 공유 캐시**로 한 번 빌드한 베이스 레이어를 전 노드가 재사용, content-hash가 같은 환경은 빌드 자체를 skip",
+							"레지스트리(Harbor)를 **단일 볼륨(MinIO)에서 S3로 전환**하고 replica를 확장해 동시 푸시 병목을 해소, 전환 중 생긴 내부 트래픽 경로·인증 이슈까지 직접 해결"
 						],
-						r: "빌드 대기 **P95 93분 → 4.4분**, 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원**, 노드 **256 → 32**, 클러스터 전체 다운 **1회/일 → 0건**. 레지스트리 **~133TB / 약 46만 이미지** 안정 운영."
+						r: "빌드 대기 **P95 93분 → 4.4분**, 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원**, 노드 **256 → 32**. 클러스터 전체 다운 **1회/일 → 0건**, 레지스트리 **~133TB / 약 46만 이미지** 안정 운영."
 					}
 				]
 			},
@@ -55,7 +62,7 @@ const experience = [
 					{
 						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
 						bg: "기존에는 대형 모델(K-EXAONE-236B-A23B) 하나를 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙했고, KV 캐시 한계로 context length는 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였음.",
-						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수.",
+						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수. 통합 서빙을 유지하는 한 근본 해결이 불가능하다고 판단.",
 						a: [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
 							"후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)**, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택",
@@ -66,7 +73,8 @@ const experience = [
 					},
 					{
 						title: "평가 파이프라인 제작",
-						p: "학습 이터레이션마다 여러 벤치마크를 제각각 돌리면 조건이 흔들려 체크포인트 간 비교가 안 되고, 점수 하나로는 무엇이 좋아졌는지 알 수 없음.",
+						bg: "모델 학습 이터레이션이 돌기 시작하면서 체크포인트마다 여러 벤치마크를 돌려야 했음.",
+						p: "벤치마크를 제각각 실행하면 조건이 흔들려 체크포인트 간 비교가 성립하지 않고, 점수 하나로는 무엇이 좋아졌는지 알 수 없었음.",
 						a: "SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치마크를 **하나의 파이프라인에서 동일 조건으로 실행**하는 평가 체계 구축. pass@k, pass^k, trajectory 길이 분포까지 **정량 분석**하고, 서빙(vLLM)에 올린 weight가 의도대로 추론하는지도 함께 검증. 결과는 **UI로 제공**해 팀 전체가 체크포인트를 바로 비교."
 					},
 					{
@@ -86,20 +94,47 @@ const experience = [
 		company: "씨그로",
 		role: "데이터 엔지니어 & 서버 개발",
 		date: "2024.05 ~ 2024.09",
-		intro: "50+ 채널 이커머스 데이터를 수집(일 500+ job)·분석하는 B2B 대시보드. 수집 파이프라인·집계·조회 API·운영 전담.",
-		etc: [
-			"일 10만+건 급증으로 집계 조회 p99가 10초를 넘자, MV·OLAP을 배제하고 **사전 집계 + 증분 갱신**으로 재설계 → **p99 1초 이내**, 이탈 직전 대형 고객사 2곳 유지",
-			"새벽 OOM 무한 재시도가 Kubernetes 클러스터를 고갈시켜 당일 수집이 중단되던 장애를 메모리 계측·limit 재산정으로 근본 해결, **Loki·Grafana 관측·알림 체계** 구축 → 크롤링 실패 티켓 **30건+ → 5건 미만**"
+		intro: "50+ 채널의 이커머스 판매·광고 데이터를 수집(일 500+ job)·분석하는 B2B 대시보드. 수집 파이프라인·정합성·집계 조회 API·운영을 전담.",
+		groups: [
+			{
+				items: [
+					{
+						title: "집계 조회 성능 개선",
+						bg: "고객사가 늘면서 판매 데이터가 일 10만 건 이상으로 급증하던 시기.",
+						p: "대시보드 집계 조회 p99가 10초를 넘어가며 CS가 늘었고, 대형 고객사 두 곳이 이탈 직전까지 갔음.",
+						a: "Materialized View는 refresh 비용이 새 병목이 되고, OLAP 도입은 팀 규모 대비 운영 복잡도가 커서 배제. **사전 집계 테이블 + 증분 갱신**(변경분만 비동기 재계산)을 선택해 조회 시점의 실시간 집계 쿼리를 제거.",
+						r: "집계 조회 **p99 10초+ → 1초 이내**, 이탈 직전이던 **대형 고객사 2곳 유지**. 추가 인프라 도입 없이 해결."
+					},
+					{
+						title: "수집 파이프라인 장애·정합성 운영",
+						p: "새벽 OOM 무한 재시도가 Kubernetes 클러스터 자원을 고갈시켜 당일 수집이 통째로 중단되는 장애가 반복됐고, 잘못된 join 키로 어긋난 집계가 고객 신뢰를 깎고 있었음.",
+						a: "장애 확산을 먼저 차단한 뒤 **메모리 계측으로 컨테이너 limit을 재산정**해 원인을 제거. 어긋난 데이터는 진단·복구하고 스키마 밸리데이션으로 채널 응답 변경을 즉시 감지하도록 했으며, 로그가 없어 원인 분석이 안 되던 환경에 **Loki·Grafana 관측·알림 체계**를 구축.",
+						r: "반복되던 OOM 장애 해소, 크롤링 실패 티켓 **30건+ → 5건 미만**, 장애 인지를 사후 발견에서 **알림 기반으로 전환**."
+					}
+				]
+			}
 		]
 	},
 	{
 		company: "리베이스",
 		role: "Founder · 풀스택 개발",
 		date: "2022.06 ~ 2024.02",
-		intro: "환경 리워드 앱 '지미'(다운로드 27,000+, DAU 1,000+)와 광고 레퍼런스 검색 '모인나'를 창업해 전 구간 담당.",
+		intro: "환경 리워드 앱 '지미'(다운로드 27,000+, DAU 1,000+)와 광고 레퍼런스 검색 '모인나'를 창업해 기획부터 운영까지 전 구간 담당.",
+		groups: [
+			{
+				items: [
+					{
+						title: "모인나: 벡터 검색 서빙 재설계",
+						bg: "마케터들이 광고 레퍼런스를 수작업으로 모으는 것을 관찰해 검색 서비스로 만든 프로젝트. 광고 이미지를 gpt-4-vision으로 캡션 생성 후 임베딩하는 인덱싱 파이프라인(에셋 20,000+)과 벡터 검색을 구축해 베타 200+명 운영.",
+						p: "검색이 3초를 넘으면 사용자가 말없이 떠나는 것을 지표로 확인. 검색 과정 이탈률 21%.",
+						a: "GPU 서빙은 규모 대비 비용이 커서 배제. 검색을 DB(pgvector)에서 분리한 **Faiss IVFFlat 인메모리 서버**로 재설계하고 **Cloud Run 기반 CPU 수평 확장**과 무중단 인덱스 교체 구조를 구현.",
+						r: "검색 응답 **3.2초 → 0.9초**, 검색 이탈률 **21% → 6%**."
+					}
+				]
+			}
+		],
 		etc: [
-			"**모인나**: 벡터 검색을 DB(pgvector)에서 분리한 **Faiss 인메모리 서버 + CPU 수평 확장**(Cloud Run)으로 재설계, 무중단 인덱스 교체 구조 구현 → 응답 **3.2초 → 0.9초**, 이탈률 **21% → 6%**",
-			"**지미**: Docker·Cloud Run 무중단 배포 CI/CD를 구축하고 6개월 26회 배포, ORDER BY RAND() 풀스캔 피드를 세션 Seed 기반 페이지네이션으로 재설계 → 리텐션 **25.3% → 30.6%**"
+			"**지미**: Docker·Cloud Run 무중단 배포 CI/CD를 구축하고 6개월간 26회 배포, ORDER BY RAND() 풀스캔 피드를 세션 Seed 기반 페이지네이션으로 재설계 → D+1 리텐션 **25.3% → 30.6%**"
 		]
 	}
 ];
@@ -119,7 +154,7 @@ const md = (s: string) =>
 		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 ---
 
-<ResumeLayout title={`${header.name} | NLP Research Engineer`} description={`${header.name} 경력기술서 NLP Research Engineer`}>
+<ResumeLayout title={`${header.name} | ML Engineer (LLM)`} description={`${header.name} 경력기술서 ML Engineer (LLM)`}>
   <div class="flex justify-end mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
@@ -146,11 +181,13 @@ const md = (s: string) =>
 
         {exp.groups?.map((g, gi) => (
           <div class="grp">
-            <div class="grp-head">
-              <span class="grp-t">{String(gi + 1).padStart(2, "0")}. {g.title}</span>
-              {g.links?.map((l) => <a class="grp-l" href={l.url} target="_blank" rel="noopener">{l.text} ↗</a>)}
-              <span class="grp-d">{g.date}</span>
-            </div>
+            {g.title && (
+              <div class="grp-head">
+                <span class="grp-t">{String(gi + 1).padStart(2, "0")}. {g.title}</span>
+                {g.links?.map((l) => <a class="grp-l" href={l.url} target="_blank" rel="noopener">{l.text} ↗</a>)}
+                <span class="grp-d">{g.date}</span>
+              </div>
+            )}
             {g.items.map((it) => (
               <div class="it">
                 <div class="it-t">{it.title}</div>
@@ -158,7 +195,7 @@ const md = (s: string) =>
                   {it.bg && <li class="it-bg"><span class="k">배경.</span> <span set:html={md(it.bg)} /></li>}
                   <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
                   <li class="it-a">
-                    <span class="k">행동.</span>
+                    <span class="k">해결.</span>
                     {Array.isArray(it.a) ? (
                       <ul class="sub">
                         {it.a.map((t) => <li set:html={md(t)} />)}
@@ -217,23 +254,23 @@ const md = (s: string) =>
 		font-size: 22px;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		color: #24272c;
+		color: #111318;
 	}
 	.exp-role {
 		font-size: 14px;
 		font-weight: 600;
-		color: #4b5058;
+		color: #24272c;
 	}
 	.exp-date {
 		flex: none;
 		font-size: 13px;
-		color: #5f646d;
+		color: #3f444c;
 	}
 	.exp-intro {
 		margin: 0;
 		font-size: 13px;
 		line-height: 1.65;
-		color: #4b5058;
+		color: #33363d;
 	}
 	.exp-intro a {
 		margin-left: 4px;
@@ -258,7 +295,7 @@ const md = (s: string) =>
 		font-size: 15px;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		color: #24272c;
+		color: #111318;
 	}
 	.grp-l {
 		font-size: 11.5px;
@@ -273,7 +310,7 @@ const md = (s: string) =>
 		margin-left: auto;
 		flex: none;
 		font-size: 12px;
-		color: #9ca3af;
+		color: #565b64;
 	}
 
 	.it {
@@ -284,7 +321,7 @@ const md = (s: string) =>
 	.it-t {
 		font-size: 13.5px;
 		font-weight: 700;
-		color: #2b2f35;
+		color: #111318;
 		margin-bottom: 3px;
 	}
 	ul.star {
@@ -312,21 +349,21 @@ const md = (s: string) =>
 		color: #c6cad1;
 	}
 	.it-bg {
-		color: #7d828c;
+		color: #565b64;
 	}
 	.it-p {
-		color: #5f646d;
+		color: #33363d;
 	}
 	.it-a {
-		color: #3f444c;
+		color: #1a1d22;
 	}
 	.it-r {
-		color: #24272c;
+		color: #111318;
 	}
 	.k {
 		font-weight: 700;
 		text-indent: 0;
-		color: #24272c;
+		color: #111318;
 	}
 
 	ul.bul {
@@ -338,7 +375,7 @@ const md = (s: string) =>
 		margin-bottom: 4px;
 		font-size: 13px;
 		line-height: 1.65;
-		color: #3f444c;
+		color: #1a1d22;
 	}
 	ul.bul > li::marker {
 		color: #9ca3af;

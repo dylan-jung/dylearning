@@ -165,7 +165,7 @@ const md = (s: string) =>
                   {it.bg && <li class="it-bg"><span class="k">배경.</span> <span set:html={md(it.bg)} /></li>}
                   <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
                   <li class="it-a">
-                    <span class="k">행동.</span>
+                    <span class="k">해결.</span>
                     {Array.isArray(it.a) ? (
                       <ul class="sub">
                         {it.a.map((t) => <li set:html={md(t)} />)}
@@ -224,23 +224,23 @@ const md = (s: string) =>
 		font-size: 22px;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		color: #24272c;
+		color: #111318;
 	}
 	.exp-role {
 		font-size: 14px;
 		font-weight: 600;
-		color: #4b5058;
+		color: #24272c;
 	}
 	.exp-date {
 		flex: none;
 		font-size: 13px;
-		color: #5f646d;
+		color: #3f444c;
 	}
 	.exp-intro {
 		margin: 0;
 		font-size: 13px;
 		line-height: 1.65;
-		color: #4b5058;
+		color: #33363d;
 	}
 	.exp-intro a {
 		margin-left: 4px;
@@ -265,7 +265,7 @@ const md = (s: string) =>
 		font-size: 15px;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		color: #24272c;
+		color: #111318;
 	}
 	.grp-l {
 		font-size: 11.5px;
@@ -280,7 +280,7 @@ const md = (s: string) =>
 		margin-left: auto;
 		flex: none;
 		font-size: 12px;
-		color: #9ca3af;
+		color: #565b64;
 	}
 
 	.it {
@@ -291,7 +291,7 @@ const md = (s: string) =>
 	.it-t {
 		font-size: 13.5px;
 		font-weight: 700;
-		color: #2b2f35;
+		color: #111318;
 		margin-bottom: 3px;
 	}
 	ul.star {
@@ -319,21 +319,21 @@ const md = (s: string) =>
 		color: #c6cad1;
 	}
 	.it-bg {
-		color: #7d828c;
+		color: #565b64;
 	}
 	.it-p {
-		color: #5f646d;
+		color: #33363d;
 	}
 	.it-a {
-		color: #3f444c;
+		color: #1a1d22;
 	}
 	.it-r {
-		color: #24272c;
+		color: #111318;
 	}
 	.k {
 		font-weight: 700;
 		text-indent: 0;
-		color: #24272c;
+		color: #111318;
 	}
 
 	ul.bul {
@@ -345,7 +345,7 @@ const md = (s: string) =>
 		margin-bottom: 4px;
 		font-size: 13px;
 		line-height: 1.65;
-		color: #3f444c;
+		color: #1a1d22;
 	}
 	ul.bul > li::marker {
 		color: #9ca3af;
