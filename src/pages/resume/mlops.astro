@@ -80,7 +80,10 @@ const experience = [
 								k: "기존",
 								v: "여러 서비스가 대형 모델(236B) 통합 서빙 공유 → **context 65K 고정** → Compaction 요약도 초과 → 세션 에러"
 							},
-							{ k: "개선", v: "CLI 전용 소형 모델(K-EXAONE 2 small) 분리 서빙 → **context 256K** + MTP 가속(**~176 tok/s**) → 에러 0%" }
+							{
+								k: "개선",
+								v: "CLI 전용 소형 모델(K-EXAONE 2 small) 분리 서빙 → **context 256K**, MTP 가속으로 **~176 tok/s** → 에러 0%"
+							}
 						],
 						bg: "기존에는 대형 모델(K-EXAONE-236B-A23B) 하나를 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙했고, KV 캐시 한계로 context length는 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였음.",
 						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수. 통합 서빙을 유지하는 한 근본 해결이 불가능하다고 판단.",
