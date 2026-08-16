@@ -43,15 +43,15 @@ const experience = [
 						title: "구축: 8,000+ 동시 샌드박스 실행 인프라",
 						jd: "대규모 시스템 설계·운영, Kubernetes(EKS) 운영 능력",
 						bg: "K-EXAONE 2.0의 대규모 에이전트 학습 데이터(SFT/RL)를 만들기 위해서는 에이전트가 샌드박스 안에서 실제로 코드를 실행하며 만든 궤적(trajectory) 데이터가 필요해, 이를 대량으로 실행할 인프라를 새로 구축해야 했음.",
-						p: "궤적이 서로 간섭하면 학습 데이터로 쓸 수 없으니 실행 환경을 완전히 격리한 채 수천 개를 병렬 실행해야 하고, 외부 API 호출은 화이트리스트를 통과해야 함. 이 인프라를 1개월 안에 구축해야 했음.",
+						p: "궤적이 서로 간섭하면 학습 데이터로 쓸 수 없으니 컨테이너 등의 격리 환경에서 수천 개를 병렬 실행해야 하고, 내부 LLM은 IP 화이트리스트에 등록된 고정 IP로만 호출할 수 있었음. 이 인프라를 1개월 안에 구축해야 했음.",
 						a: [
 							"샌드박스 SaaS를 사용하면 감당하지 못할 비용이 발생하기 때문에 Self-hosted로 오픈소스 서비스를 띄워 사용",
 							"팀에서 사용하는 데이터 생산 파이프라인이 Daytona를 지원해, 샌드박스로 **Self-hosted Daytona**를 선택하고 EKS 위에 구축 (구성 요소 배포는 **Helm 차트**로 관리)",
 							"Daytona는 Runner 노드의 dockerd로 샌드박스를 실행하므로, dockerd I/O가 병목이 되지 않도록 Runner 전용 노드의 인스턴스 타입을 선정",
 							"가동 전에 **관측 스택(Grafana·Prometheus·Loki·Tempo)을 먼저 구축하고 안정성 체크리스트·모니터링 지표를 정의**한 뒤 스모크 테스트로 검증",
-							"외부 화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**",
+							"화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**",
 							"샌드박스가 노드의 AWS 자격증명 발급 경로(IMDS)에 닿는 것을 확인, **IMDSv2 강제 + hop limit 1**로 노드 자신만 접근하도록 차단",
-							"노드 unresponsive, ingress-nginx, Daytona(OSS) 자체 버그 등 대규모에서만 드러나는 운영 이슈를 직접 디버깅"
+							"도커 이미지 같은 대용량 전송에 ingress-nginx가 디스크 버퍼링으로 묶이는 병목을 **메모리 버퍼링으로 전환** 등 대규모에서만 드러나는 운영 이슈를 직접 디버깅 후 패치"
 						],
 						r: "최대 **8,000+ 동시 실행**을 안정 운영, 에이전트 SFT/RL 데이터 생산 환경 확보."
 					},
@@ -340,7 +340,6 @@ const md = (s: string) =>
 
 	.grp {
 		margin-top: 16px;
-		break-inside: avoid;
 	}
 	.grp-head {
 		display: flex;
@@ -376,7 +375,6 @@ const md = (s: string) =>
 	.it {
 		margin-top: 11px;
 		padding-left: 12px;
-		break-inside: avoid;
 	}
 	.it-t {
 		font-size: 13.5px;
@@ -481,12 +479,31 @@ const md = (s: string) =>
 	}
 
 	@media print {
+		/* ResumeLayout의 * { color: black !important } 를 되돌리는 색 복원 */
+		.it-jd {
+			color: #3757c4 !important;
+		}
+		.grp-l,
+		li.it-link a,
+		.exp-intro a {
+			color: #2563eb !important;
+		}
+		.flow {
+			background: #f4f5f7 !important;
+			-webkit-print-color-adjust: exact;
+			print-color-adjust: exact;
+		}
+		.it-bg,
+		.it-p {
+			color: #565b64 !important;
+		}
+		.grp-d,
+		.exp-date {
+			color: #565b64 !important;
+		}
+
 		.exp {
 			margin-bottom: 18px;
-		}
-		.it,
-		.grp {
-			break-inside: avoid;
 		}
 	}
 </style>
