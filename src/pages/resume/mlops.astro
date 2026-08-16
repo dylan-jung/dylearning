@@ -198,8 +198,6 @@ const md = (s: string) =>
     <ResumeTimeline items={careers} />
   </ResumeSection>
 
-  <p class="guide-note">각 항목은 공고의 작성 가이드를 따라 배경 → 문제 → 해결 → 결과(수치)로 정리했고, 항목마다 대응하는 공고 요건을 함께 표기했습니다.</p>
-
   <ResumeSection title="Experience">
     {experience.map((exp) => (
       <div class="exp">
@@ -368,11 +366,6 @@ const md = (s: string) =>
 		font-weight: 700;
 		color: #111318;
 		margin-bottom: 3px;
-	}
-	.guide-note {
-		margin: 0 0 22px;
-		font-size: 12.5px;
-		color: #565b64;
 	}
 	.it-jd {
 		margin: 0 0 4px;
