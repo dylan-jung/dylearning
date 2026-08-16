@@ -10,11 +10,9 @@ import ResumeTimeline from "../../components/resume/ResumeTimeline.astro";
 
 const header = {
 	name: "정민혁",
-	role: "ML Engineer (LLM)",
+	role: "ML Engineer",
 	email: "dylanjungko@gmail.com",
-	phone: "010-4536-6741",
-	github: "https://github.com/dylan-jung",
-	linkedin: "https://www.linkedin.com/in/dylan-jung-ko/"
+	phone: "010-4536-6741"
 };
 
 const careers = [
@@ -37,7 +35,7 @@ const experience = [
 				items: [
 					{
 						title: "구축: 8,000+ 동시 샌드박스 실행 인프라",
-						jd: "Kubernetes 위에서 서비스 개발·배포·운영 / 대규모 ML·LLM 워크로드의 확장성·가용성 설계",
+						jd: "대규모 시스템 설계·운영, Kubernetes(EKS) 운영 능력",
 						bg: "K-EXAONE 2.0의 대규모 에이전트 학습 데이터(SFT/RL)를 만들기 위해서는 에이전트가 샌드박스 안에서 실제로 코드를 실행하며 만든 궤적(trajectory)데이터가 필요해, 이를 대량으로 실행할 인프라를 새로 구축해야 했음.",
 						p: "궤적이 서로 간섭하면 학습 데이터로 쓸 수 없으니 실행 환경을 완전히 격리한 채 수천 개를 병렬 실행해야 하고, 외부 API 호출은 화이트리스트를 통과해야 함. 이 인프라를 1개월 안에 구축해야 했음.",
 						a: [
@@ -53,7 +51,7 @@ const experience = [
 					},
 					{
 						title: "운영 개선: 샌드박스 이미지 빌드·레지스트리 병목 제거",
-						jd: "GPU 기반 워크로드의 성능·비용 최적화 / 운영 중 마주한 장애·성능 문제 해결",
+						jd: "병목의 근본 원인 분석과 구조적 해결, 비용 최적화",
 						flow: [
 							{ k: "기존", v: "태스크 실행 요청 → **이미지 빌드 (대기 P95 93분)** → 샌드박스 실행 → 에이전트 실행 수집" },
 							{ k: "개선", v: "수만 개 환경 **사전 빌드** → 레지스트리(Harbor·S3) → 실행 시 **pull만 (4.4분)** → 에이전트 실행 수집" }
@@ -76,7 +74,7 @@ const experience = [
 				items: [
 					{
 						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
-						jd: "vLLM 등 모델 서빙 프레임워크 활용 / 운영 과정에서 시도한 개선",
+						jd: "GPU와 LLM 서빙 워크로드에 대한 이해, 실측 기반 의사결정",
 						bg: "기존에는 대형 모델(K-EXAONE-236B-A23B) 하나를 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙했고, KV 캐시 한계로 context length는 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였음.",
 						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수. 통합 서빙을 유지하는 한 근본 해결이 불가능하다고 판단.",
 						a: [
@@ -89,14 +87,14 @@ const experience = [
 					},
 					{
 						title: "평가 파이프라인 제작",
-						jd: "팀이 함께 쓰는 공통 플랫폼·표준 구축",
+						jd: "팀 공용 도구와 평가 표준 구축",
 						bg: "모델 학습 이터레이션이 돌기 시작하면서 체크포인트마다 여러 벤치마크를 돌려야 했음.",
 						p: "벤치마크를 제각각 실행하면 조건이 흔들려 체크포인트 간 비교가 성립하지 않고, 점수 하나로는 무엇이 좋아졌는지 알 수 없었음.",
 						a: "SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치마크를 **하나의 파이프라인에서 동일 조건으로 실행**하는 평가 체계 구축. pass@k, pass^k, trajectory 길이 분포까지 **정량 분석**하고, 서빙(vLLM)에 올린 weight가 의도대로 추론하는지도 함께 검증. 결과는 **UI로 제공**해 팀 전체가 체크포인트를 바로 비교."
 					},
 					{
 						title: "학습 데이터 생산 파이프라인 (Dagster)",
-						jd: "Workflow 플랫폼 구축·운영 / 배포·운영 자동화",
+						jd: "파이프라인 설계와 운영 자동화",
 						p: "수작업 실행·검증으로는 양과 품질을 동시에 확보할 수 없고, 실패 재실행을 사람이 도는 동안 GPU가 놀았음.",
 						a: "생성 → 검증 → 재시도가 무중단으로 도는 파이프라인 구축. 품질 검증(2단 LLM Judge·실행 기반 Agent Judge)을 인라인 자동화하고, 멀티턴은 턴별 도커 이미지·trajectory를 **Docker Registry + GCS에 저장해 상태 복원**으로 이어서 실행.",
 						r: "gold **1,400건 / 5일 / ~$500**(기존 ~$1,500), pass@k **68.5% → 93.2%**, 생산을 **1인 자동화 체계**로 전환해 GPU 풀가동 유지."
@@ -118,7 +116,7 @@ const experience = [
 				items: [
 					{
 						title: "집계 조회 응답 시간 10초 수준에서 1초 이내로 개선",
-						jd: "대규모 트래픽을 안정적으로 처리하는 확장성 설계",
+						jd: "데이터 급증에 대응하는 시스템 설계",
 						bg: "특정 고객사의 판매 데이터가 일간 10만 건 이상으로 급증하면서, 주간·월간 집계 조회 시 실시간 Group By 기반 집계 쿼리가 병목이 됨.",
 						p: "p99 지연이 **10초 이상** 발생, 고객 CS 문의가 늘며 이탈로 이어질 수 있는 비즈니스 크리티컬 상황.",
 						a: [
@@ -129,7 +127,7 @@ const experience = [
 					},
 					{
 						title: "Kubernetes 기반 대규모 ETL 인프라 장애 대응·안정화",
-						jd: "Kubernetes 운영·트러블슈팅 / Grafana 등으로 서비스 상태 관측·개선",
+						jd: "Kubernetes 장애 대응, 관측 체계 구축",
 						p: "특정 채널 Job들이 OOMKilled 후 무한 재시도되며 클러스터 리소스를 고갈시켜 전체 파이프라인이 중단, 당일 데이터 수집이 불가능해지는 장애 발생.",
 						a: [
 							"문제 Job이 무한 재생성되지 않도록 **restartPolicy를 수정해 장애 확산을 즉시 차단**하고 수동 파이프라인으로 당일 수집 복구, 이후 구조적 안정화를 최우선 과제로 제안",
@@ -152,7 +150,7 @@ const experience = [
 				items: [
 					{
 						title: "모인나: 검색 인프라 구조 재설계 및 성능 최적화",
-						jd: "Vector Database 구축·운영",
+						jd: "벡터 검색 시스템 설계, 비용 효율적 서빙",
 						bg: "퍼포먼스 마케터들이 여러 플랫폼을 오가며 광고 레퍼런스(이미지·카피)를 수작업으로 수집하는 비효율을 해결하려 만든 텍스트-이미지 검색 툴. 베타 200+명 운영.",
 						p: "검색 응답이 평균 3초 이상 걸리며 **검색 과정에서 21%가 이탈**. 이미지+텍스트 30K+ 임베딩을 단일 DB(pgvector)에서 처리하는 구조라 **CPU 병목**이 발생했고, 검색 트래픽이 다른 트랜잭션성 API 성능까지 끌어내리고 있었음.",
 						a: [
@@ -185,7 +183,7 @@ const md = (s: string) =>
 		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 ---
 
-<ResumeLayout title={`${header.name} | ML Engineer (LLM)`} description={`${header.name} 경력기술서 ML Engineer (LLM)`}>
+<ResumeLayout title={`${header.name} | ML Engineer`} description={`${header.name} 경력기술서 ML Engineer`}>
   <div class="flex justify-end mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
@@ -226,7 +224,7 @@ const md = (s: string) =>
             {g.items.map((it) => (
               <div class="it">
                 <div class="it-t">{it.title}</div>
-                {it.jd && <p class="it-jd">공고 요건 · {it.jd}</p>}
+                {it.jd && <p class="it-jd">↳ {it.jd}</p>}
                 {it.flow && (
                   <div class="flow">
                     {it.flow.map((f) => (
@@ -370,7 +368,7 @@ const md = (s: string) =>
 	.it-jd {
 		margin: 0 0 4px;
 		font-size: 11.5px;
-		color: #565b64;
+		color: #3757c4;
 	}
 
 	.flow {
