@@ -291,7 +291,9 @@ const md = (s: string) =>
   </ResumeSection>
 
   <ResumeSection title="Awards">
-    {awards.map((a) => <ResumeItem title={a.name} subtitle={a.role} date={a.date} />)}
+    <ul class="award-list">
+      {awards.map((a) => <li>{a.name} · {a.role} ({a.date})</li>)}
+    </ul>
   </ResumeSection>
 
   <ResumeSection title="Etc.">
@@ -311,26 +313,23 @@ const md = (s: string) =>
 		justify-content: space-between;
 		align-items: baseline;
 		gap: 12px;
-		border-bottom: 1px solid #e5e7eb;
-		padding-bottom: 7px;
-		margin-bottom: 8px;
+		margin-bottom: 4px;
 	}
 	.exp-co {
 		margin: 0;
-		font-size: 22px;
-		font-weight: 800;
-		letter-spacing: -0.02em;
+		font-size: 16px;
+		font-weight: 700;
 		color: #111318;
 	}
 	.exp-role {
-		font-size: 14px;
-		font-weight: 600;
-		color: #24272c;
+		font-size: 13px;
+		font-weight: 400;
+		color: #3f444c;
 	}
 	.exp-date {
 		flex: none;
 		font-size: 13px;
-		color: #3f444c;
+		color: #565b64;
 	}
 	.exp-intro {
 		margin: 0;
@@ -481,6 +480,21 @@ const md = (s: string) =>
 		color: #1a1d22;
 	}
 	ul.bul > li::marker {
+		color: #9ca3af;
+	}
+
+	.award-list {
+		margin: 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	.award-list li {
+		font-size: 13px;
+		line-height: 1.65;
+		color: #1a1d22;
+		margin-bottom: 3px;
+	}
+	.award-list li::marker {
 		color: #9ca3af;
 	}
 
