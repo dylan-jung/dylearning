@@ -97,7 +97,7 @@ const experience = [
 						a: [
 							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
 							"후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)**, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택",
-							"A100에서 막혀 있던 MTP(spec decoding)를 **FA3 sm_80 패치가 적용된 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
+							"A100에서 막혀 있던 MTP(spec decoding)를 **FA3 sm_80 패치가 적용된 이미지로 활성화**, 학습 후 실험에서 **accept rate 30%대**로 유의미한 가속임을 검증",
 							"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + KV cache aware routing** 구조로 확장하는 방안 제안 (적용 예정)"
 						],
 						r: "context **65K → 256K** 확장. 벤치마크 실험에서 사용자 체감 출력 속도 **~100 → ~176 tok/s** (4K 컨텍스트 기준) 확인."
