@@ -9,9 +9,9 @@
 	},
 	"careers": [
 		{
-			"term": "26.02 ~ 26.08(예정)",
+			"term": "26.02 ~ 26.11 (예정)",
 			"title": "LG AI Research Language Lab, 인턴십",
-			"description": "Exaone 에이전트 파인튜닝 + 제품화 및 운영"
+			"description": "NLP Research Engineer"
 		},
 		{
 			"term": "24.06 ~ 26.08 (예정)",
@@ -127,112 +127,169 @@
 	"experience": [
 		{
 			"company": "LG AI Research",
-			"role": "Language Lab · Internship",
-			"date": "2026.02 ~ 2026.08 (예정)",
-			"intro": "Exaone을 opencode 같은 코딩·터미널 에이전트로 만들기 위한 파인튜닝 중 **데이터·인프라를 담당**. 에이전트를 대규모로 실행해 학습 데이터를 만들고, 이를 **8,000+ 동시**로 굴리는 실행·빌드·서빙 인프라를 직접 구축·운영.",
+			"role": "NLP Research Engineer (Language Lab · Internship)",
+			"date": "2026.02 ~ 2026.11 (예정)",
+			"intro": "EXAONE을 코딩·터미널 에이전트로 고도화하는 과제에서 **대규모 에이전트 실행 인프라(EKS)와 LLM 서빙·운영을 담당**. 계열사에 제공하는 EXAONE CLI의 서빙과 독자 파운데이션 모델 K-EXAONE 2.0의 학습 데이터 생산을 받치는 플랫폼을 구축·운영.",
 			"activities": [
 				{
-					"summary": "주요활동 1. Exaone 4.0 Agentic 데이터셋 생산 → 에이전트 실행 데이터부터 품질 검증까지 자동화",
+					"summary": "주요활동 1. Long Context 개선 — 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로 (단독 수행)",
 					"details": [
 						{
 							"label": "배경 및 원인",
-							"content": "AI 에이전트를 대량으로 돌려 SFT용 학습 데이터(trajectory)를 만드는 일을 담당. 실행 결과엔 실패하거나 품질 낮은 풀이가 섞여, 믿을 만한 자동 검증 없이는 그대로 학습에 쓸 수 없었음."
+							"content": "대형 모델(K-EXAONE-236B-A23B)을 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙해 KV 캐시 한계로 context length가 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였는데, 65K에서는 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수."
 						},
 						{
 							"label": "솔루션 검토",
-							"content": "품질은 비용·편향 균형을 위해 2단(강한 모델 → Claude) 검증으로, 생성·처리는 깨져도 복구되는 멱등 파이프라인으로 결정."
+							"content": "통합 서빙을 유지하는 한 근본 해결이 불가능하다고 판단해 **CLI 전용 소형 모델 분리 서빙을 직접 제안**. 후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)** 하고, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택."
 						},
 						{
 							"label": "솔루션 구현",
 							"content": [
-								"**실행 워크플로우 정립**: 팀원이 태스크(문제)를 작성하고, **이를 대량 실행해 trajectory를 수집하는 실행 파트를 전담**해 분업 구조로 전환",
-								"**Data Flywheel 자동화 (Dagster)**: 실행 → 전처리 → trajectory 추출 → sanity 체크 → 2단 검증(강한 모델 전수 → 의심 건만 Claude)을 한 사이클로 오케스트레이션. 통과분은 gold 확정, 실패분은 재시도. 끊김없이 돌려 GPU 풀가동",
-								"**실행·서빙 인프라**: 에이전트 롤아웃을 Docker 샌드박스로 격리 실행, 결과는 GCS에 영속화. 서빙 자원과 모델 특성에 맞춰 vLLM 서빙 최적화"
+								"A100에서 막혀 있던 MTP(spec decoding)를 **FA3 sm_80 패치가 적용된 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
+								"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + KV cache aware routing** 구조로 확장하는 방안 제안 (적용 예정)"
 							]
 						},
 						{
 							"label": "결과",
-							"content": "수동 작업을 엔지니어 1명 자동화 체계로 전환. 한정된 자원(동시 50~100)에서도 재시도 루프로 문제당 확보율 1회 68.5% → 3회 93.2%, **5일간 gold ~1,400건 / ~$500** 생산."
+							"content": "context **65K → 256K** 확장. 벤치마크 실험에서 사용자 체감 출력 속도 **~100 → ~176 tok/s** (4K 컨텍스트 기준) 확인."
 						}
 					]
 				},
 				{
-					"summary": "주요활동 2. 독자 파운데이션 모델 K Exaone 2차수 대규모 Agentic 실행·평가 인프라 신규 구축",
+					"summary": "주요활동 2. 대규모 에이전트 실행 인프라 신규 구축 (EKS · 8,000+ 동시 · 본인 포함 인턴 2인 운영)",
 					"details": [
 						{
 							"label": "배경 및 원인",
-							"content": "독자 파운데이션 모델 K Exaone 2차수 학습 데이터셋(trajectory)이 대량으로 필요해, 에이전트를 수천 개씩 동시에 실행하는 인프라 요구됨."
+							"content": "K-EXAONE 2.0의 에이전트 학습 데이터(SFT/RL)는 에이전트가 샌드박스 안에서 실제로 코드를 실행하며 만든 궤적(trajectory)이라, 궤적이 서로 간섭하지 않도록 컨테이너 등의 격리 환경에서 수천 개를 병렬 실행할 인프라가 필요했음. 내부 LLM은 IP 화이트리스트에 등록된 고정 IP로만 호출 가능했고, 구축 기한은 1개월."
 						},
 						{
 							"label": "구축",
 							"content": [
-								"EKS 위 Daytona를 직접 운영해 에이전트 샌드박스를 대량 동시 실행하는 인프라 구축 → trajectory 생성·벤치마크 평가를 한 곳에서 처리",
-								"대규모 운영에 대비해 Grafana·Prometheus·Loki·Tempo 관측을 사전 구축"
+								"샌드박스 SaaS는 비용이 감당되지 않아 배제, 팀 데이터 생산 파이프라인이 지원하는 **Self-hosted Daytona**를 선택해 EKS 위에 구축 (구성 요소 배포는 **Helm 차트**로 관리)",
+								"Daytona는 Runner 노드의 dockerd로 샌드박스를 실행하므로, dockerd I/O가 병목이 되지 않도록 Runner 전용 노드의 인스턴스 타입을 선정",
+								"가동 전에 **관측 스택(Grafana·Prometheus·Loki·Tempo)을 먼저 구축하고 안정성 체크리스트·모니터링 지표를 정의**한 뒤 스모크 테스트로 검증",
+								"화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**, 샌드박스가 노드의 AWS 자격증명 발급 경로(IMDS)에 닿는 것을 확인해 **IMDSv2 강제 + hop limit 1**로 차단",
+								"도커 이미지 같은 대용량 전송에 ingress-nginx가 디스크 버퍼링으로 묶이는 병목을 **메모리 버퍼링으로 전환**, Daytona(OSS) 자체 버그를 직접 디버깅 후 패치"
 							]
 						},
 						{
 							"label": "문제 식별",
-							"content": "대규모 롤아웃 시 실행마다 무거운 도커 빌드가 끼어 병목(빌드 대기 P95 93분), 생성 에러율 16%, 일 비용 1,500만원."
+							"content": "가동하자 빌드 에러율 16.3%, 일 비용 1,500만원으로 데이터 생산 전체의 병목이 됨. 실패 로그 수만 건을 유형별로 분석해 **Docker Hub 429(rate limit)**, 노드 부하로 인한 npm install 실패 등 원인이 실행 시점의 도커 빌드에 몰려 있음을 특정 (빌드 대기 P95 93분)."
 						},
 						{
-							"label": "개선 ① 최적화된 빌드 전용 서비스 (직접 설계·구현)",
+							"label": "개선 ① 빌드 전용 서비스 분리 (직접 설계·구현)",
 							"content": [
-								"**빌드를 실행에서 분리**: 빌드를 Daytona에서 떼어내 전담 서버로 분리. 수만 환경을 미리 빌드·레지스트리(Harbor)에 등록해두면 실행 측은 pull만",
-								"워커가 직접 작업을 가져가는(pull) 큐(Redis/RQ)로 부하분산 — 빌드 시간 편차가 커도 균등 처리, KEDA로 노드 0↔50(유휴 시 비용 0), Postgres로 빌드 상태·실패 유형별 재시도 관리",
-								"모든 빌드 워커가 공유하는 S3 캐시 풀(buildkit)로 한 번 빌드한 베이스 레이어를 전 노드가 재사용, content-hash로 같은 환경은 skip·깨져도 재실행만으로 복구"
+								"실행할 때마다 빌드하는 구조 자체가 원인이므로 **빌드를 실행 경로에서 분리**: 수만 개 환경을 미리 빌드해 레지스트리에 올려두고 실행 측은 pull만 하도록 변경",
+								"수만 건의 대량 빌드를 **큐 기반으로 관리(Redis/RQ)** — 워커가 스스로 작업을 가져가 부하를 분산하고 실패는 유형별로 재시도(Postgres), **KEDA로 빌드 노드 0↔50 오토스케일링**해 유휴 시 비용 0",
+								"**BuildKit S3 공유 캐시**로 베이스 레이어를 전 노드가 재사용, content-hash가 같은 환경은 빌드 skip"
 							]
 						},
 						{
-							"label": "개선 ② 트러블슈팅 (대규모 운영)",
-							"content": [
-								"**이미지 저장소 S3 전환**: 레지스트리(Harbor)가 기존 MinIO(단일 디스크)에 묶여 동시 푸시 병목 → S3 전환 + 레플리카 파드 확장으로 처리량 확보. 전환 중 생긴 내부 트래픽 경로 문제도 정리(push는 내부 경유, pull은 S3에서 직접)",
-								"**부하 관리·K8s·네트워크 운영 이슈**: 스케줄러 가중치 보정, 화이트리스트 통과용 EIP 풀(kubeip), ingress-nginx 튜닝, 노드 unresponsive 디버깅 등 다수 이슈와 Daytona(오픈소스) 버그를 직접 진단·해결"
-							]
+							"label": "개선 ② 레지스트리 쓰로풋 해소",
+							"content": "사전 빌드로 push/pull이 한꺼번에 몰리자 레지스트리 저장소(MinIO 단일 디스크)의 쓰로풋이 병목이 되어, **Harbor 백엔드를 S3로 전환**하고 replica를 확장해 동시 푸시를 처리. 전환 중 생긴 내부 트래픽 경로·인증 이슈까지 직접 해결."
 						},
 						{
 							"label": "결과",
-							"content": "빌드 대기 **P95 93분 → 4.4분(-95%)**, 생성 에러율 16.3% → 0.47%, 실행+빌드 합산 **일 비용 1,500만원 → 200만원(~7.5배↓)**, 노드 256 → 32."
+							"content": "최대 **8,000+ 동시 실행** 안정 운영. 빌드 대기 **P95 93분 → 4.4분(-95%)**, 빌드 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원(~7.5배↓)**, 노드 256 → 32, 레지스트리 **~133TB / 약 46만 이미지** 안정 운영."
 						}
 					]
 				},
 				{
-					"summary": "주요활동 3. 독자 파운데이션 모델 K Exaone 2차수 성능 향상",
+					"summary": "주요활동 3. 평가 파이프라인 구축 (단독 수행)",
 					"details": [
 						{
-							"content": "Terminal-Bench 중심 SFT·RL Seed 데이터셋 (44.43k) 생성 기여"
+							"label": "배경 및 원인",
+							"content": "모델 학습 이터레이션마다 여러 벤치마크를 돌려야 하는데, 제각각 실행하면 조건이 흔들려 체크포인트 간 비교가 성립하지 않고 점수 하나로는 무엇이 좋아졌는지 알 수 없었음."
 						},
 						{
-							"content": "운영 중인 Coding Agent CLI의 사용자 로그를 분석해 모델이 취약한 도메인을 발견하고, 학습 데이터 보강으로 개선하는 사이클 수행"
+							"label": "솔루션 구현",
+							"content": [
+								"SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치마크를 **Harbor(에이전트 평가 프레임워크) Task 형식으로 표준화**해 trajectory 추출까지 일관화, 새 벤치마크도 Task 하나 추가로 붙는 구조",
+								"각 평가를 **Dagster로 파이프라인화**해 동일 조건으로 실행, pass@k, pass^k, trajectory 길이 분포까지 정량 분석",
+								"벤치 점수 외에 학습이 의도대로 되었는지도 검증: **MoE diff**(전문가 라우팅 변화), **MTP accept rate**(초안 토큰 적중률) 측정",
+								"결과는 **UI로 제공**해 팀 전체가 체크포인트를 바로 비교"
+							]
+						},
+						{
+							"label": "결과",
+							"content": "**표준화된 평가 환경**을 팀에 제공, 학습 실험에 바로 대응하는 평가 체계 확보 (**20회 이상 평가** 수행)."
+						}
+					]
+				},
+				{
+					"summary": "주요활동 4. 학습 데이터 생산·품질 검증 자동화 (Data Flywheel)",
+					"details": [
+						{
+							"label": "배경 및 원인",
+							"content": "수작업 실행·검증으로는 학습 데이터의 양과 품질을 동시에 확보할 수 없고, 실패 재실행을 사람이 도는 동안 GPU가 유휴 상태였음."
+						},
+						{
+							"label": "솔루션 검토",
+							"content": "품질 검증은 비용·편향 균형을 위해 **2단 LLM Judge**(약한 모델 전수 → 의심 건만 강한 모델)와 코드를 실제로 빌드·테스트해 채점하는 **Agent Judge**로 자동화하기로 결정."
+						},
+						{
+							"label": "솔루션 구현",
+							"content": [
+								"생성 → 검증 → 재시도가 무중단으로 도는 파이프라인 구축 (Dagster), 통과분은 gold 확정·실패분은 자동 재시도",
+								"멀티턴 데이터는 턴별 도커 이미지·trajectory를 **Docker Registry + GCS에 저장해 상태 복원**으로 이어서 실행"
+							]
+						},
+						{
+							"label": "결과",
+							"content": "gold **1,400건 / 5일 / ~$500**(기존 ~$1,500), 재시도 루프로 문제당 확보율 **pass@k 68.5%(k=1) → 93.2%(k=3)**, 생산을 **1인 자동화 체계**로 전환해 GPU 풀가동 유지."
+						}
+					]
+				},
+				{
+					"summary": "그 외 활동",
+					"details": [
+						{
+							"content": "**로그 기반 인하우스 벤치마크**: 보안상 사용 로그를 외부로 보낼 수 없어 내부에 임베딩 모델을 서빙해 1,000+ trajectory를 클러스터링, 실패 유형을 재현하는 **60개 task 벤치마크** 구성"
+						},
+						{
+							"content": "**K-EXAONE 2.0 개발 참여**: Agentic Workflow post-training 담당 도메인 SFT/RL 데이터셋 **44k** 구축, 담당 도메인 기준 Terminal-Bench 2.1 점수 **14.3 → 39.3**"
 						}
 					]
 				}
 			],
 			"techStack": [
 				{
-					"name": "Daytona",
-					"description": "EKS 위 오픈소스 샌드박스 인프라로 에이전트 대량 격리 실행(최대 8,000+)"
+					"name": "vLLM",
+					"description": "256K 롱컨텍스트 분리 서빙, MTP(spec decoding) 가속으로 체감 출력 ~176 tok/s"
 				},
 				{
 					"name": "Kubernetes (EKS)",
-					"description": "대규모 에이전트 실행·빌드 워크로드 오케스트레이션"
+					"description": "대규모 에이전트 실행·빌드 워크로드 오케스트레이션, Helm 차트 배포"
+				},
+				{
+					"name": "Daytona",
+					"description": "EKS 위 오픈소스 샌드박스 인프라로 에이전트 대량 격리 실행 (최대 8,000+)"
 				},
 				{
 					"name": "Docker / BuildKit",
-					"description": "실행 환경 이미지 빌드, S3 공유 캐시로 빌드 대기 단축(P95 93분 → 4.4분)"
+					"description": "실행 환경 이미지 빌드, S3 공유 캐시로 빌드 대기 P95 93분 → 4.4분"
 				},
 				{
 					"name": "Redis (RQ) / KEDA",
 					"description": "빌드 작업 큐 및 큐 깊이 기반 0↔50 오토스케일"
 				},
 				{
-					"name": "vLLM",
-					"description": "에이전트 롤아웃을 위한 LLM 추론 서빙"
+					"name": "Dagster",
+					"description": "평가·데이터 생산 파이프라인 오케스트레이션"
+				},
+				{
+					"name": "Grafana 스택",
+					"description": "Prometheus·Loki·Tempo 기반 관측·알림 체계 선구축"
 				}
 			],
 			"relatedLinks": [
 				{
 					"text": "상세 이력 보기",
 					"url": "https://blog.dylearning.com/cv/detail/lg-ai/"
+				},
+				{
+					"text": "K-EXAONE 2.0 Technical Report",
+					"url": "https://huggingface.co/LGAI-EXAONE/K-EXAONE-2.0-750B-A37B/blob/main/assets/K-EXAONE-2.0-Technical-Report.pdf"
 				}
 			]
 		},

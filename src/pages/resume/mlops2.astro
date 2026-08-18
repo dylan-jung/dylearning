@@ -1,0 +1,529 @@
+---
+// 토스뱅크 ML Engineer(ML/LLM Ops) 지원용. /resume/ml-engineer 포크.
+// 2026-08-19 LG AI MLOps 포지션 제출본. (토스뱅크 제출본은 /resume/mlops에 동결)
+// 작성 가이드 대응: 임팩트 큰 프로젝트 중심, 배경(왜) → 고민(무엇을 배제했나) → 결과(수치).
+// 고민·배제 이유는 실제 있었던 것만 기재 (MV/OLAP 배제, GPU 배제, 소형 모델 주장 등).
+import ResumeLayout from "../../layouts/ResumeLayout.astro";
+import ResumeHeader from "../../components/resume/ResumeHeader.astro";
+import ResumeSection from "../../components/resume/ResumeSection.astro";
+import ResumeItem from "../../components/resume/ResumeItem.astro";
+import ResumeTimeline from "../../components/resume/ResumeTimeline.astro";
+
+const header = {
+	name: "정민혁",
+	role: "ML Engineer",
+	email: "dylanjungko@gmail.com",
+	phone: "010-4536-6741"
+};
+
+const careers = [
+	{ term: "26.02 ~ 26.11 (예정)", title: "LG AI Research Language Lab, 인턴십", description: "NLP Research Engineer" },
+	{ term: "24.05 ~ 24.09", title: "씨그로, 백엔드 엔지니어", description: "데이터 엔지니어 & 서버 개발" },
+	{ term: "22.06 ~ 24.02", title: "리베이스, 지미/모인나 서비스 개발", description: "풀스택 개발 (Founder)" },
+	{ term: "20.07 ~ 22.04", title: "공군 사이버작전센터 정보보호상황병", description: "보안관제 및 침해대응" }
+];
+
+const experience = [
+	{
+		company: "LG AI Research",
+		role: "NLP Research Engineer · Language Lab · Code & Analysis Tech Cell (Internship)",
+		date: "2026.02 ~ 2026.11 (예정)",
+		intro: "EXAONE을 코딩·터미널 에이전트로 고도화하는 과제에서 **대규모 에이전트 실행 인프라(EKS)와 LLM 서빙·운영**을 담당. 계열사에 제공하는 EXAONE CLI의 서빙과 독자 파운데이션 모델 K-EXAONE 2.0의 학습 데이터 생산을 받치는 플랫폼을 구축·운영.",
+		groups: [
+			{
+				title: "대규모 에이전트 실행 인프라 (EKS) · 본인 포함 총 인턴 2인 운영",
+				date: "2026.05 ~",
+				links: [
+					{
+						text: "K-EXAONE 2.0 Technical Report",
+						url: "https://huggingface.co/LGAI-EXAONE/K-EXAONE-2.0-750B-A37B/blob/main/assets/K-EXAONE-2.0-Technical-Report.pdf"
+					}
+				],
+				items: [
+					{
+						title: "구축: 8,000+ 동시 샌드박스 실행 인프라",
+						jd: "대규모 시스템 설계·운영, Kubernetes(EKS) 운영 능력",
+						bg: "K-EXAONE 2.0의 대규모 에이전트 학습 데이터(SFT/RL)를 만들기 위해서는 에이전트가 샌드박스 안에서 실제로 코드를 실행하며 만든 궤적(trajectory) 데이터가 필요해, 이를 대량으로 실행할 인프라를 새로 구축해야 했음.",
+						p: "궤적이 서로 간섭하면 학습 데이터로 쓸 수 없으니 컨테이너 등의 격리 환경에서 수천 개를 병렬 실행해야 하고, 내부 LLM은 IP 화이트리스트에 등록된 고정 IP로만 호출할 수 있었음. 이 인프라를 1개월 안에 구축해야 했음.",
+						a: [
+							"샌드박스 SaaS를 사용하면 감당하지 못할 비용이 발생하기 때문에 Self-hosted로 오픈소스 서비스를 띄워 사용",
+							"팀에서 사용하는 데이터 생산 파이프라인이 Daytona를 지원해, 샌드박스로 **Self-hosted Daytona**를 선택하고 EKS 위에 구축 (구성 요소 배포는 **Helm 차트**로 관리)",
+							"Daytona는 Runner 노드의 dockerd로 샌드박스를 실행하므로, dockerd I/O가 병목이 되지 않도록 Runner 전용 노드의 인스턴스 타입을 선정",
+							"가동 전에 **관측 스택(Grafana·Prometheus·Loki·Tempo)을 먼저 구축하고 안정성 체크리스트·모니터링 지표를 정의**한 뒤 스모크 테스트로 검증",
+							"화이트리스트 통과용 **고정 IP를 노드 기동 시 자동 부여(kubeip)**",
+							"샌드박스가 노드의 AWS 자격증명 발급 경로(IMDS)에 닿는 것을 확인, **IMDSv2 강제 + hop limit 1**로 노드 자신만 접근하도록 차단",
+							"도커 이미지 같은 대용량 전송에 ingress-nginx가 디스크 버퍼링으로 묶이는 병목을 **메모리 버퍼링으로 전환** 등 대규모에서만 드러나는 운영 이슈를 직접 디버깅 후 패치"
+						],
+						r: "최대 **8,000+ 동시 실행**을 안정 운영, 에이전트 SFT/RL 데이터 생산 환경 확보."
+					},
+					{
+						title: "운영 개선: 샌드박스 이미지 빌드·레지스트리 병목 제거",
+						jd: "병목의 근본 원인 분석과 구조적 해결, 비용 최적화",
+						flow: [
+							{ k: "기존", v: "태스크 실행 요청 → **이미지 빌드 (대기 P95 93분)** → 샌드박스 실행 → 에이전트 실행 수집" },
+							{ k: "개선", v: "수만 개 환경 **사전 빌드** → 레지스트리(Harbor·S3) → 실행 시 **pull만 (4.4분)** → 에이전트 실행 수집" }
+						],
+						bg: "구축한 인프라에서 에이전트 궤적은 태스크마다 다른 실행 환경(도커 이미지)이 필요한데, 샌드박스를 실행하는 시점에 그 이미지를 빌드하는 구조였음.",
+						p: "실행 경로가 빌드 시간에 묶이고, 에이전트 실행이 실패하면 빌드 비용까지 통째로 버려짐. 빌드 에러율 16.3%, 일 비용 1,500만원. 실패 로그 수만 건을 유형별로 분석해 **Docker Hub 429(rate limit) pull**, 노드 부하로 인한 npm install 실패 등 원인이 도커 빌드에 몰려 있음을 확인",
+						a: [
+							"실행할 때마다 빌드하는 구조 자체가 원인이므로, **빌드를 실행 경로에서 분리한 전용 서비스**로 재설계. 수만 개 환경을 미리 빌드해 레지스트리에 올려두고 실행 측은 pull만 하도록 변경해 실행 노드의 빌드 부하(npm install 등)를 제거",
+							"수만 건의 대량 빌드를 **큐 기반으로 관리(Redis/RQ)**: 워커가 스스로 작업을 가져가 부하를 분산하고 실패는 유형별로 재시도. 빌드 수요가 몰릴 때만 유연하게 노드가 필요하므로 **KEDA로 0↔50 오토스케일링**해 비용 최적화",
+							"수만 개 환경이 소수의 베이스 레이어를 공유하므로 **BuildKit S3 공유 캐시**로 전 노드가 재사용, content-hash가 같은 환경은 빌드 자체를 skip",
+							"사전 빌드로 push/pull이 한꺼번에 몰리자 이번엔 **레지스트리 저장소(MinIO 단일 디스크)의 쓰로풋**이 병목이 되어, **Harbor의 벡엔드를 S3로 전환**하고 replica를 확장해 동시 푸시를 처리하는 형태로 변경"
+						],
+						r: "빌드 대기 **P95 93분 → 4.4분**, 빌드 에러율 **16.3% → 0.47%**, 일 비용 **1,500만 → 200만원**, 레지스트리 **~133TB / 약 46만 이미지** 안정 운영."
+					}
+				]
+			},
+			{
+				title: "LLM 서빙·운영 (EXAONE CLI) · 단독 수행",
+				date: "2026.02 ~",
+				items: [
+					{
+						title: "Long Context 개선: 대형 모델 통합 서빙에서 소형 모델 분리 서빙으로",
+						jd: "GPU와 LLM 서빙 워크로드에 대한 이해, 실측 기반 의사결정",
+						flow: [
+							{
+								k: "기존",
+								v: "여러 서비스가 대형 모델(236B) 통합 서빙 공유 → **context 65K 고정** → Compaction 요약도 초과 → 세션 에러"
+							},
+							{
+								k: "개선",
+								v: "CLI 전용 소형 모델(K-EXAONE 2 small) 분리 서빙 → **context 256K**, MTP 가속으로 **~176 tok/s**"
+							}
+						],
+						bg: "기존에는 대형 모델(K-EXAONE-236B-A23B) 하나를 여러 서비스가 함께 쓰는 통합 파인튜닝으로 서빙했고, KV 캐시 한계로 context length는 65K로 고정. 에이전트는 세션이 길어지면 요약 후 이어가는 Compaction으로 버티는 구조였음.",
+						p: "65K에서는 Compaction 요약조차 담기지 않아 **전체 에러의 약 80%가 context length 초과**에서 발생, context가 짧다는 **VOC 30건+** 접수. 통합 서빙을 유지하는 한 근본 해결이 불가능하다고 판단.",
+						a: [
+							"CLI 전용 **소형 모델 분리 서빙을 직접 제안·주도**",
+							"후보 3종을 **컨텍스트×동시성 그리드로 직접 벤치마크(TTFT·TPOT·tok/s)**, 실측 근거로 팀을 설득해 256K 멀티세션이 가능한 유일 모델인 K-EXAONE 2 small 채택",
+							"A100에서 막혀 있던 MTP(spec decoding)를 **FA3 sm_80 패치가 적용된 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
+							"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + KV cache aware routing** 구조로 확장하는 방안 제안 (적용 예정)"
+						],
+						r: "context **65K → 256K** 확장. 벤치마크 실험에서 사용자 체감 출력 속도 **~100 → ~176 tok/s** (4K 컨텍스트 기준) 확인."
+					},
+					{
+						title: "평가 파이프라인 제작",
+						jd: "재현 가능한 실험·평가 설계, 정량 분석",
+						bg: "모델 학습 이터레이션이 돌기 시작하면서 체크포인트마다 여러 벤치마크를 돌려야 했음.",
+						p: "벤치마크를 제각각 실행하면 조건이 흔들려 체크포인트 간 비교가 성립하지 않고, 점수 하나로는 무엇이 좋아졌는지 알 수 없었음.",
+						a: [
+							"SWE 패밀리·Terminal-Bench·CanItEdit·인하우스 벤치마크를 **Harbor(에이전트 평가 프레임워크) Task 형식으로 표준화**해 trajectory 추출까지 일관화, 새 벤치마크도 Task 하나 추가로 붙는 구조",
+							"각 평가를 **Dagster로 파이프라인화**해 동일 조건으로 실행, pass@k, pass^k, trajectory 길이 분포까지 **정량 분석**",
+							"벤치 점수 외에 학습이 의도대로 되었는지도 함께 검증: **MoE diff**(전문가 라우팅 변화), **MTP accept rate**(초안 토큰 적중률) 측정",
+							"결과는 **UI로 제공**해 팀 전체가 체크포인트를 바로 비교"
+						],
+						r: "**표준화된 평가 환경**을 팀에 제공, 학습 실험에 바로 대응하는 빠르고 효율적인 평가 체계 확보 (**20회 이상 평가** 수행)."
+					}
+				]
+			}
+		],
+		etc: [
+			"**로그 기반 인하우스 벤치마크**: 보안상 사용 로그를 외부로 보낼 수 없어 **내부에 임베딩 모델을 서빙**해 1,000+ trajectory를 클러스터링, 실패 유형을 재현하는 **60개 task 벤치마크** 구성",
+			"**K-EXAONE 2.0 개발 참여**: Agentic Workflow post-training 담당 도메인 SFT/RL 데이터셋 **44k** 구축, 담당 도메인 기준 Terminal-Bench 2.1 점수 14.3 → 39.3"
+		]
+	},
+	{
+		company: "씨그로",
+		role: "데이터 엔지니어 & 서버 개발",
+		date: "2024.05 ~ 2024.09",
+		intro: "이커머스 셀러들이 다수의 판매·광고 채널(네이버 스마트스토어, 쿠팡, Cafe24, Google Ads, Meta Ads 등)에 분산된 데이터를 한 곳에서 분석하는 B2B 대시보드. **50+ 채널, 하루 500+ 크롤링 job** 규모의 파이프라인과 대시보드 서비스를 운영.",
+		groups: [
+			{
+				items: [
+					{
+						title: "집계 조회 응답 시간 10초 수준에서 1초 이내로 개선",
+						jd: "데이터 급증에 대응하는 시스템 설계",
+						bg: "특정 고객사의 판매 데이터가 일간 10만 건 이상으로 급증하면서, 주간·월간 집계 조회 시 실시간 Group By 기반 집계 쿼리가 병목이 됨.",
+						p: "p99 지연이 **10초 이상** 발생, 고객 CS 문의가 늘며 이탈로 이어질 수 있는 비즈니스 크리티컬 상황.",
+						a: [
+							"Materialized View는 **refresh 비용이 새로운 병목**이 될 수 있어 제외, OLAP은 운영 복잡도가 높고 사용자 값 수정 요청 대응 비용이 커 배제",
+							"일 단위로 사전 집계된 **Aggregate Table**을 별도 구축, 크롤링 완료·사용자 수기 입력 변경 시 **갱신 작업을 DB 큐 테이블에 적재하고 워커가 polling해 해당 기간만 비동기 재계산**하는 증분 갱신 구현. 실시간 집계 쿼리를 제거하고 조회 경로 단순화"
+						],
+						r: "집계 조회 응답 **10초 수준 → 1초 이내**, 이탈 위기의 **대형 고객사 2건 유지**. OLAP 등 추가 인프라 도입 없이 안정성과 수익성을 동시에 확보.",
+						link: { text: "자세한 솔루션 선택 과정", url: "https://blog.dylearning.com/note/optimizing-dashboard/" }
+					},
+					{
+						title: "Kubernetes 기반 대규모 ETL 인프라 장애 대응·안정화",
+						jd: "Kubernetes 장애 대응, 관측 체계 구축",
+						p: "특정 채널 Job들이 OOMKilled 후 무한 재시도되며 클러스터 리소스를 고갈시켜 전체 파이프라인이 중단, 당일 데이터 수집이 불가능해지는 장애 발생.",
+						a: [
+							"문제 Job이 무한 재생성되지 않도록 **restartPolicy를 수정해 장애 확산을 즉시 차단**하고 수동 파이프라인으로 당일 수집 복구, 이후 구조적 안정화를 최우선 과제로 제안",
+							"**cgroup 메모리 계측으로 컨테이너 request/limit를 재산정**하고 Headless Browser의 이미지 렌더링을 비활성화해 근본 원인 제거",
+							"로그 부재로 원인 분석이 어렵던 환경에 **Loki·Grafana 관측 체계를 구축**, 이상 징후는 Grafana 알림으로 즉시 인지되도록 연동"
+						],
+						r: "반복되던 OOM 장애 해소, 장애 인지를 수동 확인에서 **알림 기반 체계로 전환**, 디버깅 효율 대폭 개선."
+					}
+				]
+			}
+		]
+	},
+	{
+		company: "리베이스 (창업)",
+		role: "Founder · 풀스택 개발",
+		date: "2022.06 ~ 2024.02",
+		intro: "환경 리워드 앱 '지미'(다운로드 27,000+, DAU 1,000+)와 광고 레퍼런스 검색 '모인나'를 창업해 기획부터 운영까지 전 구간 담당.",
+		groups: [
+			{
+				items: [
+					{
+						title: "모인나: 검색 인프라 구조 재설계 및 성능 최적화 (백엔드 담당)",
+						jd: "벡터 검색 시스템 설계, 비용 효율적 서빙",
+						bg: "퍼포먼스 마케터들이 여러 플랫폼을 오가며 광고 레퍼런스(이미지·카피)를 수작업으로 수집하는 비효율을 해결하려 만든 텍스트-이미지 검색 툴. 베타 200+명 운영.",
+						p: "검색 응답이 평균 3초 이상 걸리며 **검색 과정에서 21%가 이탈**. 이미지+텍스트 30K+ 임베딩을 단일 DB(pgvector)에서 처리하는 구조라 **CPU 병목**이 발생했고, 검색 트래픽이 다른 트랜잭션성 API 성능까지 끌어내리고 있었음.",
+						a: [
+							"단일 DB 기반 pgvector 검색은 처리량·확장성에 한계가 있다고 판단, 검색 워크로드가 다른 API에 영향을 주지 않도록 **검색 기능을 완전히 분리**하는 방향으로 결정. GPU는 서비스 규모 대비 비용 부담이 커 **CPU 기반 수평 확장 유지**",
+							"**FastAPI + Faiss 전용 검색 서버**를 구축해 IVFFLAT 인덱스를 인메모리로 운영, **Cloud Run 컨테이너 단위 수평 확장** 구성. 인덱스 갱신은 새 인덱스 다운로드 완료 후 교체하는 **무중단 갱신** 구조로 구현"
+						],
+						r: "검색 응답 평균 **3.2초 → 0.9초**, 검색 중 이탈률 **21% → 6%**. GPU 도입 없이 비용 효율적인 임베딩 검색 시스템 확보.",
+						link: { text: "자세한 고민 과정", url: "https://blog.dylearning.com/note/designing-a-image-search-system-2" }
+					}
+				]
+			}
+		],
+		etc: [
+			"**지미**: GitHub Actions·Artifact Registry·Cloud Run을 연계한 CI/CD로 배포를 전 과정 자동화 (배포 시간 30분 → 3분), ORDER BY RAND() 풀스캔 피드를 세션 Seed 기반 랜덤 페이지네이션으로 재설계 → D+1 리텐션 **25.3% → 30.6%**"
+		]
+	}
+];
+
+const education = [{ school: "서울시립대학교", degree: "컴퓨터과학전공 학사 (GPA 4.12 / 4.5)", date: "2019.03 ~ 2026.08 (졸업 예정)" }];
+
+const awards = [
+	{ name: "마이데이터 아이디어 공모전", role: "과학기술정보통신부 장관상", date: "2023.08" },
+	{ name: "소프트웨어 마에스트로 13기 우수자 선정", role: "과학기술정보통신부 장관상", date: "2023.06" },
+	{ name: "TOPCIT 우수 성적상", role: "Level 4 / 한전KDN주식회사상 (680점)", date: "2022.12" },
+	{ name: "공군 사이버전사 경연대회", role: "대령급 상장 수상", date: "2021" }
+];
+
+const etcLines = [
+	"**창업·스타트업**: 예비창업패키지 선정·정부지원금 수령, 한양대 캠퍼스타운 입주 (리베이스)",
+	"**대외활동**: 소프트웨어 마에스트로 13기 (팀 리더·상위 8%), 시립대 최초 교내 해커톤 '플랑크톤' 주최 (60여 명), 오픈소스 기여 모임 10기, 클라우드 클럽 9기"
+];
+
+const md = (s: string) =>
+	s
+		.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:underline">$1</a>')
+		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+---
+
+<ResumeLayout title={`${header.name} | ML Engineer`} description={`${header.name} 경력기술서 ML Engineer`}>
+  <div class="flex justify-end mb-4 no-print">
+    <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
+      Print to PDF
+    </button>
+  </div>
+
+  <ResumeHeader {...header} />
+
+  <ResumeSection title="Career Timeline">
+    <ResumeTimeline items={careers} />
+  </ResumeSection>
+
+  <ResumeSection title="Experience">
+    {experience.map((exp) => (
+      <div class="exp">
+        <div class="exp-head">
+          <div>
+            <h3 class="exp-co">{exp.company}</h3>
+            <div class="exp-role">{exp.role}</div>
+          </div>
+          <span class="exp-date">{exp.date}</span>
+        </div>
+
+        <p class="exp-intro">
+          <span set:html={md(exp.intro)} />
+          {exp.link && <a href={exp.link.url} target="_blank" rel="noopener">{exp.link.text} ↗</a>}
+        </p>
+
+        {exp.groups?.map((g, gi) => (
+          <div class="grp">
+            {g.title && (
+              <div class="grp-head">
+                <span class="grp-t">{String(gi + 1).padStart(2, "0")}. {g.title}</span>
+                {g.links?.map((l) => <a class="grp-l" href={l.url} target="_blank" rel="noopener">{l.text} ↗</a>)}
+                <span class="grp-d">{g.date}</span>
+              </div>
+            )}
+            {g.items.map((it) => (
+              <div class="it">
+                <div class="it-t">{it.title}</div>
+                {it.jd && <p class="it-jd">↳ {it.jd}</p>}
+                {it.flow && (
+                  <div class="flow">
+                    {it.flow.map((f) => (
+                      <p><b>{f.k}</b> <span set:html={md(f.v)} /></p>
+                    ))}
+                  </div>
+                )}
+                <ul class="star">
+                  {it.bg && <li class="it-bg"><span class="k">배경.</span> <span set:html={md(it.bg)} /></li>}
+                  <li class="it-p"><span class="k">문제.</span> <span set:html={md(it.p)} /></li>
+                  <li class="it-a">
+                    <span class="k">해결.</span>
+                    {Array.isArray(it.a) ? (
+                      <ul class="sub">
+                        {it.a.map((t) => <li set:html={md(t)} />)}
+                      </ul>
+                    ) : (
+                      <span set:html={md(it.a)} />
+                    )}
+                  </li>
+                  {it.r && <li class="it-r"><span class="k">결과.</span> <span set:html={md(it.r)} /></li>}
+                  {it.link && <li class="it-link"><a href={it.link.url} target="_blank" rel="noopener">{it.link.text} ↗</a></li>}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ))}
+
+        {exp.etc && (
+          <ul class="bul">
+            {exp.etc.map((e) => <li set:html={md(e)} />)}
+          </ul>
+        )}
+      </div>
+    ))}
+  </ResumeSection>
+
+  <ResumeSection title="Education">
+    {education.map((edu) => <ResumeItem title={edu.school} subtitle={edu.degree} date={edu.date} />)}
+  </ResumeSection>
+
+  <ResumeSection title="Awards">
+    <ul class="award-list">
+      {awards.map((a) => <li>{a.name} · {a.role} ({a.date})</li>)}
+    </ul>
+  </ResumeSection>
+
+  <ResumeSection title="Etc.">
+    <ul class="bul">
+      {etcLines.map((e) => <li set:html={md(e)} />)}
+    </ul>
+  </ResumeSection>
+</ResumeLayout>
+
+<style>
+	/* ponytail: 유틸리티 클래스 조합보다 이 페이지 전용 CSS가 짧고 인쇄까지 예측 가능해서 직접 씀 */
+	.exp {
+		margin-bottom: 26px;
+	}
+	.exp-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		margin-bottom: 4px;
+	}
+	.exp-co {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 700;
+		color: #111318;
+	}
+	.exp-role {
+		font-size: 13px;
+		font-weight: 400;
+		color: #3f444c;
+	}
+	.exp-date {
+		flex: none;
+		font-size: 13px;
+		color: #565b64;
+	}
+	.exp-intro {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.65;
+		color: #33363d;
+	}
+	.exp-intro a {
+		margin-left: 4px;
+		color: #2563eb;
+		white-space: nowrap;
+	}
+
+	.grp {
+		margin-top: 16px;
+	}
+	.grp-head {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		border-left: 3px solid #c6cad1;
+		padding-left: 9px;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.grp-t {
+		font-size: 15px;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: #111318;
+	}
+	.grp-l {
+		font-size: 11.5px;
+		color: #2563eb;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.grp-l:hover {
+		text-decoration: underline;
+	}
+	.grp-d {
+		margin-left: auto;
+		flex: none;
+		font-size: 12px;
+		color: #565b64;
+	}
+
+	.it {
+		margin-top: 11px;
+		padding-left: 12px;
+	}
+	.it-t {
+		font-size: 13.5px;
+		font-weight: 700;
+		color: #111318;
+		margin-bottom: 3px;
+	}
+	.it-jd {
+		margin: 0 0 4px;
+		font-size: 11.5px;
+		color: #3757c4;
+	}
+
+	.flow {
+		margin: 4px 0 7px;
+		padding: 8px 13px;
+		background: #f4f5f7;
+		border-radius: 8px;
+		font-size: 12.5px;
+		line-height: 1.7;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.flow p {
+		margin: 0;
+		color: #24272c;
+	}
+	.flow b {
+		display: inline-block;
+		width: 30px;
+		color: #111318;
+	}
+
+	li.it-link {
+		list-style: none;
+		font-size: 12px;
+		margin-top: 1px;
+	}
+	li.it-link a {
+		color: #3757c4;
+		text-decoration: none;
+	}
+	li.it-link a:hover {
+		text-decoration: underline;
+	}
+
+	ul.star {
+		margin: 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	ul.star > li {
+		margin: 0 0 2px;
+		font-size: 13px;
+		line-height: 1.6;
+	}
+	ul.star > li::marker {
+		color: #c6cad1;
+	}
+	ul.sub {
+		margin: 2px 0 0;
+		padding-left: 16px;
+		list-style: circle;
+	}
+	ul.sub > li {
+		margin-bottom: 2px;
+	}
+	ul.sub > li::marker {
+		color: #c6cad1;
+	}
+	.it-bg {
+		color: #565b64;
+	}
+	.it-p {
+		color: #33363d;
+	}
+	.it-a {
+		color: #1a1d22;
+	}
+	.it-r {
+		color: #111318;
+	}
+	.k {
+		font-weight: 700;
+		text-indent: 0;
+		color: #111318;
+	}
+
+	ul.bul {
+		margin: 12px 0 0;
+		padding-left: 0;
+		list-style: none;
+	}
+	ul.bul > li {
+		margin-bottom: 4px;
+		font-size: 13px;
+		line-height: 1.65;
+		color: #1a1d22;
+	}
+	ul.bul > li::marker {
+		color: #9ca3af;
+	}
+
+	.award-list {
+		margin: 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	.award-list li {
+		font-size: 13px;
+		line-height: 1.65;
+		color: #1a1d22;
+		margin-bottom: 3px;
+	}
+	.award-list li::marker {
+		color: #9ca3af;
+	}
+
+	@media print {
+		/* ResumeLayout의 * { color: black !important } 를 되돌리는 색 복원 */
+		.it-jd {
+			color: #3757c4 !important;
+		}
+		.grp-l,
+		li.it-link a,
+		.exp-intro a {
+			color: #2563eb !important;
+		}
+		.flow {
+			background: #f4f5f7 !important;
+			-webkit-print-color-adjust: exact;
+			print-color-adjust: exact;
+		}
+		.it-bg,
+		.it-p {
+			color: #565b64 !important;
+		}
+		.grp-d,
+		.exp-date {
+			color: #565b64 !important;
+		}
+
+		.exp {
+			margin-bottom: 18px;
+		}
+	}
+</style>
