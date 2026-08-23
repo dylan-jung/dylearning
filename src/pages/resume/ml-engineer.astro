@@ -8,7 +8,7 @@ import ResumeItem from "../../components/resume/ResumeItem.astro";
 
 const header = {
 	name: "정민혁",
-	role: "NLP Research Engineer",
+	role: "ML Engineer (LLM)",
 	email: "dylanjungko@gmail.com",
 	phone: "010-4536-6741",
 	github: "https://github.com/dylan-jung",
@@ -97,7 +97,7 @@ const experience = [
 		intro: "50+ 채널 이커머스 데이터를 수집(일 500+ job)·분석하는 B2B 대시보드. 수집 파이프라인·집계·조회 API·운영 전담.",
 		etc: [
 			"일 10만+건 급증으로 집계 조회 p99가 10초를 넘자, MV·OLAP을 배제하고 **사전 집계 + 증분 갱신**으로 재설계 → **p99 1초 이내**, 이탈 직전 대형 고객사 2곳 유지",
-			"새벽 OOM 무한 재시도로 당일 수집이 중단되던 장애를 메모리 계측·limit 재산정으로 근본 해결, Loki·Grafana 관측 구축 → 크롤링 실패 티켓 **30건+ → 5건 미만**"
+			"새벽 OOM 무한 재시도로 당일 수집이 중단되던 장애를 메모리 계측·limit 재산정으로 근본 해결, **Loki·Grafana 관측·알림 체계 구축**으로 장애 인지를 알림 기반으로 전환"
 		]
 	},
 	{
@@ -134,7 +134,7 @@ const md = (s: string) =>
 		.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 ---
 
-<ResumeLayout title={`${header.name} | NLP Research Engineer`} description={`${header.name} 경력기술서 NLP Research Engineer`}>
+<ResumeLayout title={`${header.name} | ML Engineer (LLM)`} description={`${header.name} 경력기술서 ML Engineer (LLM)`}>
   <div class="flex justify-end mb-4 no-print">
     <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm font-medium cursor-pointer">
       Print to PDF
@@ -203,7 +203,9 @@ const md = (s: string) =>
   </ResumeSection>
 
   <ResumeSection title="Awards">
-    {awards.map((a) => <ResumeItem title={a.name} subtitle={a.role} date={a.date} />)}
+    <ul class="award-list">
+      {awards.map((a) => <li>{a.name} · {a.role} ({a.date})</li>)}
+    </ul>
   </ResumeSection>
 
   <ResumeSection title="Etc.">
@@ -223,26 +225,23 @@ const md = (s: string) =>
 		justify-content: space-between;
 		align-items: baseline;
 		gap: 12px;
-		border-bottom: 1px solid #e5e7eb;
-		padding-bottom: 7px;
-		margin-bottom: 8px;
+		margin-bottom: 4px;
 	}
 	.exp-co {
 		margin: 0;
-		font-size: 22px;
-		font-weight: 800;
-		letter-spacing: -0.02em;
+		font-size: 16px;
+		font-weight: 700;
 		color: #111318;
 	}
 	.exp-role {
-		font-size: 14px;
-		font-weight: 600;
-		color: #24272c;
+		font-size: 13px;
+		font-weight: 400;
+		color: #3f444c;
 	}
 	.exp-date {
 		flex: none;
 		font-size: 13px;
-		color: #3f444c;
+		color: #565b64;
 	}
 	.exp-intro {
 		margin: 0;
@@ -356,6 +355,21 @@ const md = (s: string) =>
 		color: #1a1d22;
 	}
 	ul.bul > li::marker {
+		color: #9ca3af;
+	}
+
+	.award-list {
+		margin: 0;
+		padding-left: 18px;
+		list-style: disc;
+	}
+	.award-list li {
+		font-size: 13px;
+		line-height: 1.65;
+		color: #1a1d22;
+		margin-bottom: 3px;
+	}
+	.award-list li::marker {
 		color: #9ca3af;
 	}
 
