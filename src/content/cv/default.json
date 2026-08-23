@@ -145,7 +145,7 @@
 						{
 							"label": "솔루션 구현",
 							"content": [
-								"A100에서 막혀 있던 MTP(spec decoding)를 **FA3 sm_80 패치가 적용된 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
+								"A100에서 막혀 있던 MTP(spec decoding)를 **타 팀에서 FA3 sm_80 패치를 적용해 준 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
 								"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + KV cache aware routing** 구조로 확장하는 방안 제안 (적용 예정)"
 							]
 						},
