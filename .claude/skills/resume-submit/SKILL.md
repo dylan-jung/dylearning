@@ -32,6 +32,16 @@ git checkout submit/<태그명> -- src/pages/resume/<파일> # 그 시점으로 
 - `submit/tossbank-mlops-20260816` — 토스뱅크 ML Engineer(ML/LLM Ops), `/resume/mlops` (33fa516)
 - `submit/lgai-mlops-20260823` — LG AI Platform&Infra MLOps Engineer, `/resume/mlops2` (실제 제출 표기는 8/19, 정정 반영 시점에 박제)
 
+## 지원 건 ↔ 이력서 ↔ 리뷰어 에이전트 매핑
+
+| 지원 건 (JD) | 이력서 경로 | 리뷰어 에이전트 | 제출 태그 |
+|---|---|---|---|
+| 토스증권 AI Tribe ML Engineer(LLM) | `/resume/ml-engineer` | `toss-resume-reviewer` | (미제출) |
+| 토스뱅크 ML Platform Team ML Engineer(ML/LLM Ops) | `/resume/mlops` (동결) | `tossbank-ml-platform-reviewer` | `submit/tossbank-mlops-20260816` |
+| LG AI연구원 Platform&Infra MLOps Engineer | `/resume/mlops2` | `lgai-mlops-reviewer` | `submit/lgai-mlops-20260823` |
+
+리뷰어 에이전트는 `.claude/agents/`에 있고, 해당 JD의 채용 담당자 페르소나로 이력서를 채점(5점×8 루브릭)한다. 새 지원 건이 생기면 JD를 받아 같은 형식의 리뷰어 에이전트를 만들고 이 표에 추가한다.
+
 ## 기존 경로 주의
 
 `/resume/mlops`(토스뱅크)와 `/resume/mlops2`(LG)는 이미 지원서에 URL이 들어갔을 수 있으므로 **경로 변경·삭제 금지**. 새 규칙(1번)은 다음 지원부터 적용한다.
