@@ -145,7 +145,7 @@
 						{
 							"label": "솔루션 구현",
 							"content": [
-								"A100에서 막혀 있던 MTP(spec decoding)를 **타 팀에서 FA3 sm_80 패치를 적용해 준 이미지로 활성화**, 학습 후 accept rate 확인 실험으로 검증",
+								"타 팀이 FA3 패치를 적용해 준 서빙 이미지를 기반으로 **MTP(spec decoding) 활성화**, accept rate 실측(30%대)과 **TPOT 약 30% 개선** 확인",
 								"프로덕션은 TP4 단일 노드를 넘어 **replica 수평 확장 + KV cache aware routing** 구조로 확장하는 방안 제안 (적용 예정)"
 							]
 						},
