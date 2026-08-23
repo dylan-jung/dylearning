@@ -1,0 +1,17 @@
+---
+// 현대오토에버 제출용 URL. 지금은 default CV를 그대로 렌더링 (페이크 라우팅).
+// JD 확정 후 내용을 오토에버에 맞춰 조정할 것.
+import { getEntry } from "astro:content";
+import ResumeLayout from "../../layouts/ResumeLayout.astro";
+import CvBody from "../../components/resume/CvBody.astro";
+
+const entry = await getEntry("cv", "default");
+if (!entry) {
+	throw new Error("Default CV not found");
+}
+const cv = entry.data;
+---
+
+<ResumeLayout title={`${cv.header.name} - CV`} description={cv.introLines?.join(" ") || "CV"}>
+  <CvBody cv={cv} />
+</ResumeLayout>
