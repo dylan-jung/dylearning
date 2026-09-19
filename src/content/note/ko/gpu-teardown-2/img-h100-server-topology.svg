@@ -1,0 +1,127 @@
+<svg viewBox="0 0 920 680" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { stroke-width: 1.4; rx: 6; }
+    .cpu  { fill: #e8edf4; stroke: #5b7aa8; }
+    .mem  { fill: #f5ede0; stroke: #c79a4e; }
+    .gpu  { fill: #e3f1ec; stroke: #3f9e80; }
+    .nic  { fill: #eef0f2; stroke: #8a929c; }
+    .infra{ fill: #f3f5f8; stroke: #9aa3ad; }
+    .fab  { fill: #e7ecf7; stroke: #5566b0; }
+    .t    { fill: #1f2933; font-size: 13px; }
+    .tb   { fill: #1f2933; font-size: 14px; font-weight: 600; }
+    .ts   { fill: #5a636e; font-size: 11px; }
+    .lab  { fill: #6b7480; font-size: 11px; }
+    .pcie { stroke: #9aa3ad; stroke-width: 1.4; fill: none; }
+    .nvl  { stroke: #5566b0; stroke-width: 2; fill: none; }
+    .upi  { stroke: #d08a3e; stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+    .numa { stroke: #b8bec6; stroke-width: 1.4; stroke-dasharray: 5 5; fill: none; }
+  </style>
+
+  <rect class="bg" x="0" y="0" width="920" height="680"/>
+
+  <!-- NUMA boundary -->
+  <line class="numa" x1="460" y1="56" x2="460" y2="468"/>
+  <text class="lab" x="460" y="48" text-anchor="middle">NUMA 경계 (소켓 간)</text>
+
+  <!-- ===== LEFT SOCKET : NUMA Node 0 ===== -->
+  <text class="ts" x="40" y="70" text-anchor="start">NUMA Node 0</text>
+
+  <!-- Host memory 0 -->
+  <rect class="box mem" x="28" y="86" width="96" height="54" rx="6"/>
+  <text class="t" x="76" y="108" text-anchor="middle">Host Mem #0</text>
+  <text class="ts" x="76" y="125" text-anchor="middle">(DRAM)</text>
+
+  <!-- CPU 0 -->
+  <rect class="box cpu" x="150" y="78" width="150" height="68" rx="6"/>
+  <text class="tb" x="225" y="108" text-anchor="middle">CPU 0</text>
+  <text class="ts" x="225" y="126" text-anchor="middle">Root Complex · Mem Ctrl</text>
+  <line class="pcie" x1="124" y1="112" x2="150" y2="112"/>
+
+  <!-- PCIe RC + switch left -->
+  <rect class="box infra" x="160" y="182" width="130" height="30" rx="5"/>
+  <text class="t" x="225" y="201" text-anchor="middle">PCIe Root Port</text>
+  <line class="pcie" x1="225" y1="146" x2="225" y2="182"/>
+  <rect class="box infra" x="160" y="232" width="130" height="28" rx="5"/>
+  <text class="t" x="225" y="250" text-anchor="middle">PCIe Switch</text>
+  <line class="pcie" x1="225" y1="212" x2="225" y2="232"/>
+
+  <!-- left GPUs + NICs -->
+  <g>
+    <rect class="box gpu" x="28"  y="304" width="54" height="46" rx="6"/><text class="t" x="55"  y="332" text-anchor="middle">GPU0</text>
+    <rect class="box gpu" x="90"  y="304" width="54" height="46" rx="6"/><text class="t" x="117" y="332" text-anchor="middle">GPU1</text>
+    <rect class="box gpu" x="152" y="304" width="54" height="46" rx="6"/><text class="t" x="179" y="332" text-anchor="middle">GPU2</text>
+    <rect class="box gpu" x="214" y="304" width="54" height="46" rx="6"/><text class="t" x="241" y="332" text-anchor="middle">GPU3</text>
+    <rect class="box nic" x="286" y="308" width="50" height="38" rx="5"/><text class="t" x="311" y="332" text-anchor="middle">NIC0</text>
+    <rect class="box nic" x="344" y="308" width="50" height="38" rx="5"/><text class="t" x="369" y="332" text-anchor="middle">NIC1</text>
+  </g>
+  <!-- fan from switch -->
+  <g class="pcie">
+    <path d="M225 260 L55 304"/><path d="M225 260 L117 304"/><path d="M225 260 L179 304"/>
+    <path d="M225 260 L241 304"/><path d="M225 260 L311 308"/><path d="M225 260 L369 308"/>
+  </g>
+
+  <!-- ===== RIGHT SOCKET : NUMA Node 1 ===== -->
+  <text class="ts" x="880" y="70" text-anchor="end">NUMA Node 1</text>
+
+  <!-- CPU 1 -->
+  <rect class="box cpu" x="620" y="78" width="150" height="68" rx="6"/>
+  <text class="tb" x="695" y="108" text-anchor="middle">CPU 1</text>
+  <text class="ts" x="695" y="126" text-anchor="middle">Root Complex · Mem Ctrl</text>
+
+  <!-- Host memory 1 -->
+  <rect class="box mem" x="796" y="86" width="96" height="54" rx="6"/>
+  <text class="t" x="844" y="108" text-anchor="middle">Host Mem #1</text>
+  <text class="ts" x="844" y="125" text-anchor="middle">(DRAM)</text>
+  <line class="pcie" x1="770" y1="112" x2="796" y2="112"/>
+
+  <!-- PCIe RC + switch right -->
+  <rect class="box infra" x="630" y="182" width="130" height="30" rx="5"/>
+  <text class="t" x="695" y="201" text-anchor="middle">PCIe Root Port</text>
+  <line class="pcie" x1="695" y1="146" x2="695" y2="182"/>
+  <rect class="box infra" x="630" y="232" width="130" height="28" rx="5"/>
+  <text class="t" x="695" y="250" text-anchor="middle">PCIe Switch</text>
+  <line class="pcie" x1="695" y1="212" x2="695" y2="232"/>
+
+  <!-- right GPUs + NICs -->
+  <g>
+    <rect class="box gpu" x="500" y="304" width="54" height="46" rx="6"/><text class="t" x="527" y="332" text-anchor="middle">GPU4</text>
+    <rect class="box gpu" x="562" y="304" width="54" height="46" rx="6"/><text class="t" x="589" y="332" text-anchor="middle">GPU5</text>
+    <rect class="box gpu" x="624" y="304" width="54" height="46" rx="6"/><text class="t" x="651" y="332" text-anchor="middle">GPU6</text>
+    <rect class="box gpu" x="686" y="304" width="54" height="46" rx="6"/><text class="t" x="713" y="332" text-anchor="middle">GPU7</text>
+    <rect class="box nic" x="758" y="308" width="50" height="38" rx="5"/><text class="t" x="783" y="332" text-anchor="middle">NIC8</text>
+    <rect class="box nic" x="816" y="308" width="50" height="38" rx="5"/><text class="t" x="841" y="332" text-anchor="middle">NIC9</text>
+  </g>
+  <g class="pcie">
+    <path d="M695 260 L527 304"/><path d="M695 260 L589 304"/><path d="M695 260 L651 304"/>
+    <path d="M695 260 L713 304"/><path d="M695 260 L783 308"/><path d="M695 260 L841 308"/>
+  </g>
+
+  <!-- UPI between CPUs -->
+  <line class="upi" x1="300" y1="112" x2="620" y2="112"/>
+  <rect x="430" y="100" width="60" height="22" rx="4" fill="#fbf2e6" stroke="#d08a3e" stroke-width="1.2"/>
+  <text class="t" x="460" y="116" text-anchor="middle" fill="#a96a23">UPI</text>
+
+  <!-- NVSwitch fabric -->
+  <rect class="box fab" x="28" y="420" width="838" height="46" rx="8"/>
+  <text class="tb" x="447" y="442" text-anchor="middle">NVSwitch Fabric</text>
+  <text class="ts" x="447" y="458" text-anchor="middle">GPU 간 NVLink 직결 (NV18) · all-to-all · PCIe 우회</text>
+  <g class="nvl">
+    <path d="M55 350 L55 420"/><path d="M117 350 L117 420"/><path d="M179 350 L179 420"/><path d="M241 350 L241 420"/>
+    <path d="M527 350 L527 420"/><path d="M589 350 L589 420"/><path d="M651 350 L651 420"/><path d="M713 350 L713 420"/>
+  </g>
+
+  <!-- Legend -->
+  <line x1="28" y1="520" x2="892" y2="520" stroke="#e3e6ea" stroke-width="1"/>
+  <text class="tb" x="28" y="552" text-anchor="start">경로 등급 (nvidia-smi topo -m)</text>
+  <text class="t" x="28" y="578" text-anchor="start">PIX (브리지 1개)  〈  PXB (브리지 2+)  〈  NODE (같은 NUMA)  〈  SYS (다른 NUMA · UPI 경유)</text>
+  <text class="ts" x="28" y="600" text-anchor="start">가까울수록 빠르다. SYS는 소켓을 건너는 가장 먼 경로. NV# 는 GPU 간 NVLink 직결로 PCIe 트리를 우회한다.</text>
+
+  <!-- color key -->
+  <g transform="translate(28,624)">
+    <line class="pcie" x1="0" y1="0" x2="26" y2="0"/><text class="ts" x="32" y="4">PCIe</text>
+    <line class="nvl" x1="110" y1="0" x2="136" y2="0"/><text class="ts" x="142" y="4">NVLink (NV#)</text>
+    <line class="upi" x1="270" y1="0" x2="296" y2="0"/><text class="ts" x="302" y="4">UPI</text>
+    <line class="numa" x1="360" y1="0" x2="386" y2="0"/><text class="ts" x="392" y="4">NUMA 경계</text>
+  </g>
+</svg>
