@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" viewBox="0 0 680 280" font-family="sans-serif">
+<defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2C2C2A"/></marker>
+</defs>
+<rect width="680" height="280" fill="#ffffff"/>
+<rect x="250" y="30" width="180" height="60" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="340" y="57" font-size="15" font-weight="500" fill="#2C2C2A" text-anchor="middle">에이전트</text>
+<text x="340" y="77" font-size="12" fill="#5F5E5A" text-anchor="middle">행동을 고르는 주체</text>
+<rect x="250" y="190" width="180" height="60" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+<text x="340" y="217" font-size="15" font-weight="500" fill="#2C2C2A" text-anchor="middle">환경</text>
+<text x="340" y="237" font-size="12" fill="#5F5E5A" text-anchor="middle">에이전트 밖의 모든 것</text>
+<path d="M430 60 H520 V220 H436" fill="none" stroke="#2C2C2A" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="530" y="136" font-size="14" fill="#2C2C2A">행동 A<tspan font-size="10" baseline-shift="sub">t</tspan></text>
+<path d="M250 220 H160 V60 H244" fill="none" stroke="#2C2C2A" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="150" y="130" font-size="14" fill="#2C2C2A" text-anchor="end">보상 R<tspan font-size="10" baseline-shift="sub">t+1</tspan></text>
+<text x="150" y="152" font-size="14" fill="#2C2C2A" text-anchor="end">다음 상태 S<tspan font-size="10" baseline-shift="sub">t+1</tspan></text>
+</svg>

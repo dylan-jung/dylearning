@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" viewBox="0 0 680 470" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5F5E5A"/></marker></defs>
+<rect width="680" height="470" fill="#ffffff"/>
+<!-- markov -->
+<rect x="200" y="20" width="280" height="54" rx="6" fill="#F7F6F2" stroke="#B4B2A9"/>
+<text x="340" y="42" font-size="14" font-weight="500" fill="#2C2C2A" text-anchor="middle">마르코프 성질</text>
+<text x="340" y="62" font-size="12" fill="#5F5E5A" text-anchor="middle">다음 상태는 현재 상태와 행동에만 의존</text>
+<!-- env -->
+<rect x="30" y="110" width="290" height="150" rx="6" fill="#E1F5EE" stroke="#0F6E56"/>
+<text x="175" y="134" font-size="14" font-weight="500" fill="#0F6E56" text-anchor="middle">환경이 정하는 것</text>
+<text x="50" y="164" font-size="13" fill="#2C2C2A">전이 확률  p(s′ | s, a)</text>
+<text x="50" y="190" font-size="13" fill="#2C2C2A">보상  r(s, a, s′)</text>
+<line x1="50" y1="206" x2="300" y2="206" stroke="#9FD8C4"/>
+<text x="50" y="230" font-size="13" fill="#2C2C2A">기대 보상  r(s, a) = Σ<tspan font-size="9" baseline-shift="sub">s′</tspan> p(s′ | s, a) r(s, a, s′)</text>
+<!-- agent -->
+<rect x="360" y="110" width="290" height="150" rx="6" fill="#EEEDFE" stroke="#534AB7"/>
+<text x="505" y="134" font-size="14" font-weight="500" fill="#534AB7" text-anchor="middle">에이전트가 정하는 것</text>
+<text x="380" y="164" font-size="13" fill="#2C2C2A">정책  π(a | s)</text>
+<text x="380" y="190" font-size="12" fill="#5F5E5A">결정적: 확률 0 또는 1</text>
+<text x="380" y="212" font-size="12" fill="#5F5E5A">확률적: 여러 행동에 양의 확률</text>
+<!-- markov arrows -->
+<path d="M270 74 L200 108" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M340 74 L340 300" fill="none" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<!-- trajectory -->
+<rect x="120" y="302" width="440" height="64" rx="6" fill="#FFFFFF" stroke="#2C2C2A"/>
+<text x="340" y="326" font-size="14" font-weight="500" fill="#2C2C2A" text-anchor="middle">궤적의 확률</text>
+<text x="340" y="350" font-size="13" fill="#2C2C2A" text-anchor="middle">π(a₀ | s₀) p(s₁ | s₀, a₀) π(a₁ | s₁) p(s₂ | s₁, a₁) ⋯</text>
+<path d="M175 260 L230 300" fill="none" stroke="#0F6E56" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M505 260 L450 300" fill="none" stroke="#534AB7" stroke-width="1.2" marker-end="url(#ah)"/>
+<!-- rewards -->
+<rect x="120" y="398" width="440" height="54" rx="6" fill="#F7F6F2" stroke="#B4B2A9" stroke-dasharray="5 3"/>
+<text x="340" y="421" font-size="14" font-weight="500" fill="#2C2C2A" text-anchor="middle">궤적을 따라 받는 보상의 합</text>
+<text x="340" y="441" font-size="12" fill="#5F5E5A" text-anchor="middle">다음 글: 수익(return), 가치 함수, 최적 정책</text>
+<path d="M340 366 L340 396" fill="none" stroke="#5F5E5A" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
