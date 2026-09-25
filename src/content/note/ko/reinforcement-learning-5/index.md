@@ -1,5 +1,5 @@
 ---
-title: Reinforcement Learning 5 - Bellman equation
+title: Reinforcement Learning 5 - Bellman Equation
 timestamp: 2026-09-24T23:26:00+09:00
 toc: true
 series: reinforcement-learning

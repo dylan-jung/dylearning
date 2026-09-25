@@ -1,5 +1,5 @@
 ---
-title: Reinforcement Learning 1 - k-armed bandit
+title: Reinforcement Learning 1 - K-Armed Bandit
 timestamp: 2026-09-23T14:37:00+09:00
 toc: true
 series: reinforcement-learning

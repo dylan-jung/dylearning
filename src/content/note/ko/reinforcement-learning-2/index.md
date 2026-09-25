@@ -1,5 +1,5 @@
 ---
-title: Reinforcement Learning 2 - nonstationary bandit
+title: Reinforcement Learning 2 - Nonstationary Bandit
 timestamp: 2026-09-23T17:52:00+09:00
 toc: true
 series: reinforcement-learning

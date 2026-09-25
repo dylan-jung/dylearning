@@ -1,5 +1,5 @@
 ---
-title: Reinforcement Learning 3 - Markov decision process
+title: Reinforcement Learning 3 - Markov Decision Process
 timestamp: 2026-09-24T15:08:00+09:00
 toc: true
 series: reinforcement-learning
