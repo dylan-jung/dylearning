@@ -1,6 +1,6 @@
 ---
 title: Reinforcement Learning 4 - Return and value function
-timestamp: 2026-09-24
+timestamp: 2026-09-24T19:43:00+09:00
 toc: true
 series: reinforcement-learning
 draft: false

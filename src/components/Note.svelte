@@ -28,8 +28,8 @@ let filtered: any[] = $derived.by(() => {
 			let matchCategory = categories.length === 0 || categories.some(category => note.data.categories?.includes(category));
 			return matchSeries && matchCategory;
 		})
-		// Sort by timestamp (newest first)
-		.sort((a, b) => b.data.top - a.data.top || b.data.timestamp.getTime() - a.data.timestamp.getTime());
+		// Sort by timestamp (newest first); within a series, oldest first so parts read in order
+		.sort((a, b) => b.data.top - a.data.top || (series ? 1 : -1) * (a.data.timestamp.getTime() - b.data.timestamp.getTime()));
 
 	if (!initial) return list;
 

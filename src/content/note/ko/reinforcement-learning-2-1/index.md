@@ -1,6 +1,6 @@
 ---
 title: Reinforcement Learning 2.1 - UCB and gradient bandit
-timestamp: 2026-09-23
+timestamp: 2026-09-23T21:14:00+09:00
 toc: true
 series: reinforcement-learning
 draft: true
